@@ -1,0 +1,51 @@
+.
+├── Makefile
+├── README.md
+├── app
+│   ├── api
+│   │   └── (dns)
+│   │       └── [provider]
+│   │           └── route.tsx
+│   ├── favicon.ico
+│   ├── layout.tsx
+│   └── page.tsx
+├── components
+│   ├── dns-table.tsx
+│   ├── layout.tsx
+│   ├── local-query.tsx
+│   ├── navigation.tsx
+│   ├── theme-provider.tsx
+│   ├── theme-toggle.tsx
+│   └── ui
+│       ├── accordion.tsx
+│       ├── button.tsx
+│       ├── checkbox.tsx
+│       ├── form.tsx
+│       ├── input.tsx
+│       ├── label.tsx
+│       ├── select.tsx
+│       └── tabs.tsx
+├── components.json
+├── constants
+│   ├── enum.ts
+│   ├── record-types.ts
+│   └── regex.ts
+├── css
+│   └── global.css
+├── lib
+│   ├── dns.ts
+│   └── utils.ts
+├── next-env.d.ts
+├── next.config.js
+├── package.json
+├── pages
+├── pnpm-lock.yaml
+├── postcss.config.js
+├── public
+│   ├── next.svg
+│   └── vercel.svg
+├── tailwind.config.ts
+├── tree.txt
+└── tsconfig.json
+
+11 directories, 37 files
