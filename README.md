@@ -35,3 +35,6 @@ We _assume_ you already have these installed.
 1. Install the required packages: `pnpm i`
 2. Run the local webserver: `pnpm run dev`
 
+
+## Testing
+
