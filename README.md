@@ -17,7 +17,6 @@ Here is the original Wireframe:![Whismical Wireframe of the original vision for 
 - [Next JS](https://nextjs.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Shadcn UI](https://ui.shadcn.com)
-- [Prisma.io](https://prisma.io/)
 - [React Hook Form](https://www.react-hook-form.com/)
 
 ## Development

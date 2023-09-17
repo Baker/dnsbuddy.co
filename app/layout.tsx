@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { Layout } from "@/components/layout";
-import Footer from "@/components/footer";
 
 export const metadata: Metadata = {
   title: "DnsBuddy | Index",
