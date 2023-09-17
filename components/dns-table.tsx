@@ -26,7 +26,7 @@ export default function DnsTable({ response }: { response: ResponseItem[] }) {
     return;
   }
   return (
-    <div className='rounded-lg bg-neutral-900 p-8'>
+    <div className='rounded-lg border bg-neutral-100 p-8 dark:bg-neutral-900'>
       <Table id='dns-table'>
         <TableCaption></TableCaption>
         <TableHeader>
