@@ -9,7 +9,10 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 18
-    - name: Install dependencies
-      run: pnpm install
+    - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: true
     - name: Run Eslint
       run: eslint . --ext .js,.jsx,.ts,.tsx
