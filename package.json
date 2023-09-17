@@ -1,12 +1,14 @@
 {
-  "name": "dnsbuddy",
+  "name": "dnsbuddy.com",
   "version": "0.1.0",
+  "homepage": "https://github.com/Baker/dnsbuddy.com",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",
@@ -38,5 +40,18 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
     "zod": "^3.22.2"
+  },
+  "browserslist": [
+    "chrome >=64",
+    "edge >=79",
+    "firefox >=67",
+    "opera >=51",
+    "safari >=12"
+  ],
+  "devDependencies": {
+    "@playwright/test": "^1.38.0",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.0.3",
+    "prettier-plugin-tailwindcss": "^0.5.4"
   }
 }

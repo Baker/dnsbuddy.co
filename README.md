@@ -17,7 +17,6 @@ Here is the original Wireframe:![Whismical Wireframe of the original vision for 
 - [Next JS](https://nextjs.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Shadcn UI](https://ui.shadcn.com)
-- [Prisma.io](https://prisma.io/)
 - [React Hook Form](https://www.react-hook-form.com/)
 
 ## Development
@@ -36,3 +35,12 @@ We _assume_ you already have these installed.
 1. Install the required packages: `pnpm i`
 2. Run the local webserver: `pnpm run dev`
 
+### CI
+
+As of right now we only use a few things to keep this repo formatted nicely, etc. 
+
+- [Playwright](https://playwright.dev/) - E2E Tests.
+- [Prettier](https://prettier.io/) - Code Formatter.
+- [Eslint](https://eslint.org/) - Linter.
+
+The above is all handled by our CI, Github actions. 

@@ -1,5 +1,5 @@
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -15,13 +15,13 @@ export const isValidUrl = (url: string) => {
 };
 
 export const isValidDomain = (url: string) => {
-  if (url.startsWith("http://")) {
+  if (url.startsWith('http://')) {
     return false;
   }
-  if (url.startsWith("http//")) {
+  if (url.startsWith('http//')) {
     return false;
   }
-  if (url.startsWith("www.")) {
+  if (url.startsWith('www.')) {
     return false;
   }
   return true;

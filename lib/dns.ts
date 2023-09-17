@@ -4,12 +4,15 @@ export const getDnsData = async (
   dns_url: string
 ) => {
   try {
-    const response = await fetch(`${dns_url}?name=${query}&type=${record_type}`, {
-      method: "GET",
-      headers: {
-        accept: "application/dns-json",
-      },
-    });
+    const response = await fetch(
+      `${dns_url}?name=${query}&type=${record_type}`,
+      {
+        method: 'GET',
+        headers: {
+          accept: 'application/dns-json',
+        },
+      }
+    );
 
     if (!response.ok) {
       console.error(`HTTP error! status: ${response.status}`);

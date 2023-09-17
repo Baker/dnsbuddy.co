@@ -1,4 +1,4 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function LocalQuery({
   domain,
@@ -8,23 +8,23 @@ export default function LocalQuery({
   record_type: string;
 }) {
   return (
-    <Tabs defaultValue="macos" className="text-sm pt-3">
+    <Tabs defaultValue='macos' className='pt-3 text-sm'>
       <TabsList>
-        <TabsTrigger value="windows">Windows</TabsTrigger>
-        <TabsTrigger value="macos">MacOS</TabsTrigger>
-        <TabsTrigger value="linux">Linux</TabsTrigger>
+        <TabsTrigger value='windows'>Windows</TabsTrigger>
+        <TabsTrigger value='macos'>MacOS</TabsTrigger>
+        <TabsTrigger value='linux'>Linux</TabsTrigger>
       </TabsList>
-      <TabsContent value="windows">
+      <TabsContent value='windows'>
         <code>
           nslookup +{record_type} {domain} +short
         </code>
       </TabsContent>
-      <TabsContent value="macos">
+      <TabsContent value='macos'>
         <code>
           dig {record_type} {domain} +short
         </code>
       </TabsContent>
-      <TabsContent value="linux">
+      <TabsContent value='linux'>
         <code>
           dig {record_type} {domain} +short
         </code>
