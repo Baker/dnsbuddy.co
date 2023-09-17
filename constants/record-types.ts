@@ -46,7 +46,8 @@ export const CommonRecordTypes = {
 export const RecordTypeDescriptions = {
   A: 'Address record - Returns a 32-bit IPv4 address, most commonly used to map hostnames to an IP address of the host.',
   NS: 'Name server record - Delegates a DNS zone to use the given authoritative name servers.',
-  CNAME: 'Canonical name record - Alias of one name to another: the DNS lookup will continue by retrying the lookup with the new name.',
+  CNAME:
+    'Canonical name record - Alias of one name to another: the DNS lookup will continue by retrying the lookup with the new name.',
   SOA: 'Start of authority record - Specifies core information about a DNS zone, including the primary name server, the email of the domain administrator, the domain serial number, and several timers relating to refreshing the zone.',
   PTR: 'Pointer record - Pointer to a canonical name. Unlike a CNAME, DNS processing stops and just the name is returned. The most common use is for implementing reverse DNS lookups.',
   MX: 'Mail exchange record - Maps a domain name to a list of message transfer agents for that domain.',

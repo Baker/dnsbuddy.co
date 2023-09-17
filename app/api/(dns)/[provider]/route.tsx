@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 
-import { getDnsData } from "@/lib/dns";
-import { ProviderToUrlMapping } from "@/constants/api";
+import { getDnsData } from '@/lib/dns';
+import { ProviderToUrlMapping } from '@/constants/api';
 
 export async function POST(
   request: Request,
@@ -11,7 +11,7 @@ export async function POST(
   if (provider) {
     try {
       const res = await request.json();
-      console.log(res)
+      console.log(res);
       const recordType = res.record_type;
       const query = res.query;
       // @ts-ignore
@@ -26,7 +26,7 @@ export async function POST(
       return NextResponse.json({ success: false, data: dnsData });
     } catch (error) {
       console.error(error);
-      return NextResponse.json({ success: false, data:error });
+      return NextResponse.json({ success: false, data: error });
     }
   } else {
     return {
