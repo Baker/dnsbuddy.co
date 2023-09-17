@@ -1,5 +1,5 @@
 name: CI
-on: [push, pull_request]
+on: [push]
 jobs:
   playwright:
     timeout-minutes: 60
@@ -39,7 +39,7 @@ jobs:
           version: 8
           run_install: true
       - name: Run Eslint
-        run: eslint . --ext .js,.jsx,.ts,.tsx
+        run: pnpm run lint
 
   prettier:
     timeout-minutes: 60
