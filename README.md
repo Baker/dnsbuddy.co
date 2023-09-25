@@ -35,12 +35,19 @@ We _assume_ you already have these installed.
 1. Install the required packages: `pnpm i`
 2. Run the local webserver: `pnpm run dev`
 
-### CI
+### Testing
 
-As of right now we only use a few things to keep this repo formatted nicely, etc. 
+Below are the two primary commands to run for tests:
+
+1. `pnpm run test:e2e`: Which will run the tests across the various browsers. _If you are lacking the packages for this it will ask you to install the dependencies._
+2. `pnpm exec playwright test --ui`: Which I personally use more when I am running tests, it gives you the UI so you can see and verify everything is working as expected.
+
+## CI
+
+As of right now we only use a few things to keep this repo formatted nicely, etc.
 
 - [Playwright](https://playwright.dev/) - E2E Tests.
 - [Prettier](https://prettier.io/) - Code Formatter.
 - [Eslint](https://eslint.org/) - Linter.
 
-The above is all handled by our CI, Github actions. 
+The above is all handled by our CI, Github actions.

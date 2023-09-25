@@ -43,9 +43,6 @@ import { ResponseItem } from '@/constants/dns';
 export default function Home() {
   const [isPending, startTransition] = useTransition();
   const [response, setResponse] = useState<ResponseItem[]>([]);
-  useEffect(() => {
-    console.log(response);
-  }, [response]);
   const formSchema = z.object({
     query: z
       .string()
@@ -87,9 +84,9 @@ export default function Home() {
             response: await response.json(),
           });
         }
+        // @ts-ignore
+        setResponse(responses);
       }
-      // @ts-ignore
-      setResponse(responses);
     });
   }
   return (
@@ -205,9 +202,9 @@ export default function Home() {
                   <AccordionContent>
                     {
                       RecordTypeDescriptions[
-                        form.watch(
-                          'record_type'
-                        ) as keyof typeof RecordTypeDescriptions
+                      form.watch(
+                        'record_type'
+                      ) as keyof typeof RecordTypeDescriptions
                       ]
                     }
                   </AccordionContent>

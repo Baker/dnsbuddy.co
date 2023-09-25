@@ -24,5 +24,7 @@ interface AnswerItem {
   name: string;
   ttl: number;
   data: string;
+  type: number;
+  Expires: string | null;
   answer: number;
 }

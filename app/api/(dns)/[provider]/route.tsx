@@ -11,7 +11,6 @@ export async function POST(
   if (provider) {
     try {
       const res = await request.json();
-      console.log(res);
       const recordType = res.record_type;
       const query = res.query;
       // @ts-ignore

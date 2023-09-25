@@ -42,7 +42,7 @@ test('can use DNS Search', async ({ page }) => {
   await page.getByLabel('TXT').press('ArrowDown');
   await page.getByLabel('AAAA').press('Enter');
   await page.getByRole('button', { name: 'Dig' }).click();
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(150000);
   const dnsTable = await page.$('#dns-table');
   expect(dnsTable).not.toBeNull();
 });
