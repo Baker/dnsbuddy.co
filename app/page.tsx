@@ -33,7 +33,7 @@ import {
   RecordTypeDescriptions,
 } from '@/constants/record-types';
 import { DOMAIN_REGEX } from '@/constants/regex';
-import { useTransition, useState } from 'react';
+import { useTransition, useState, useEffect } from 'react';
 import { isValidDomain } from '@/lib/utils';
 import DnsTable from '@/components/dns-table';
 import { ProviderToUrlMapping } from '@/constants/api';
@@ -47,11 +47,22 @@ export default function Home() {
   const [response, setResponse] = useState<ResponseItem[]>([]);
   const searchParams = useSearchParams()
   const recordType = searchParams.get('record_type');
-  if (!RecordTypeDescriptions.hasOwnProperty(recordType as keyof typeof RecordTypeDescriptions) && recordType != null) {
-    router.push(`/${searchParams.get('query') != null ? `?query=${searchParams.get('query')}` : ''}`, { scroll: false })
-  }
+  useEffect(() => {
+    if (!RecordTypeDescriptions.hasOwnProperty(recordType as keyof typeof RecordTypeDescriptions) && recordType != null) {
+      router.push(`/${searchParams.get('query') != null ? `?query=${searchParams.get('query')}` : ''}`, { scroll: false })
+    }
+  }, [])
 
-  const recordValue = recordType != null ? recordType : ''
+  let recordValue
+  if (recordType != null) {
+    if (RecordTypeDescriptions.hasOwnProperty(recordType as keyof typeof RecordTypeDescriptions)) {
+      recordValue = recordType
+    } else {
+      recordValue = undefined
+    }
+  } else {
+    recordValue = undefined
+  }
 
   const formSchema = z.object({
     query: z
