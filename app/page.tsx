@@ -16,7 +16,6 @@ import {
   FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import {
@@ -34,15 +33,26 @@ import {
   RecordTypeDescriptions,
 } from '@/constants/record-types';
 import { DOMAIN_REGEX } from '@/constants/regex';
-import { useTransition, useState, useEffect } from 'react';
-import { delay, isValidDomain } from '@/lib/utils';
+import { useTransition, useState } from 'react';
+import { isValidDomain } from '@/lib/utils';
 import DnsTable from '@/components/dns-table';
 import { ProviderToUrlMapping } from '@/constants/api';
 import { ResponseItem } from '@/constants/dns';
+import { useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
+  const router = useRouter()
   const [isPending, startTransition] = useTransition();
   const [response, setResponse] = useState<ResponseItem[]>([]);
+  const searchParams = useSearchParams()
+  const recordType = searchParams.get('record_type');
+  if (!RecordTypeDescriptions.hasOwnProperty(recordType as keyof typeof RecordTypeDescriptions) && recordType != null) {
+    router.push(`/${searchParams.get('query') != null ? `?query=${searchParams.get('query')}` : ''}`, { scroll: false })
+  }
+
+  const recordValue = recordType != null ? recordType : ''
+
   const formSchema = z.object({
     query: z
       .string()
@@ -57,7 +67,8 @@ export default function Home() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      query: '',
+      query: searchParams.get('query') || '',
+      record_type: recordValue
     },
     mode: 'onChange',
   });
@@ -194,7 +205,7 @@ export default function Home() {
                   />
                 </AccordionContent>
               </AccordionItem>
-              {form.watch('record_type') ? (
+              {form.watch('record_type') && RecordTypeDescriptions[form.watch('record_type') as keyof typeof RecordTypeDescriptions] != null ? (
                 <AccordionItem value='item-2'>
                   <AccordionTrigger>
                     What is a {form.watch('record_type')}?
