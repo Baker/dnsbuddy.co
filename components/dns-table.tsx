@@ -73,7 +73,7 @@ export default function DnsTable({ response }: { response: ResponseItem[] }) {
                   if (response.type == 16 && !response.data.startsWith('"')) {
                     // For whatever reason Google doesn't return TXT with "" but the rest do.
                     return (
-                      <pre key={index}>"{response.data}"</pre>
+                      <pre key={index}>&quot;{response.data}&quot;</pre>
                     )
                   }
                   return (
