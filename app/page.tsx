@@ -110,6 +110,7 @@ export default function Home() {
         setResponse(responses);
       }
     });
+    router.push(`/?query=${values.query}&record_type=${values.record_type}`, { scroll: false })
   }
   return (
     <main>

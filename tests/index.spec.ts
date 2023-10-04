@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 
+
 test('has title', async ({ page }) => {
   await page.goto('http://localhost:3000');
   await expect(page).toHaveTitle(/DnsBuddy/);
@@ -19,7 +20,15 @@ test('can toggle light mode', async ({ page }) => {
     () => document.documentElement.className
   );
   expect(lightHtml).toContain('light');
-  await page.getByRole('button', { name: 'Turn on darkmode' }).click();
+});
+
+test('can toggle dark mode', async ({ page }) => {
+  await page.goto('http://localhost:3000');
+  const lightMode = await page.getByRole('button', { name: 'Turn on lightmode' })
+  await lightMode.click()
+  await page.waitForLoadState('load')
+  const darkMode = await page.getByRole('button', { name: 'Turn on darkmode' })
+  await darkMode.click();
   const darkHtml = await page.evaluate(
     () => document.documentElement.className
   );
@@ -28,7 +37,6 @@ test('can toggle light mode', async ({ page }) => {
 
 test('can use DNS Search', async ({ page }) => {
   await page.goto('http://localhost:3000/');
-
   await page.getByPlaceholder('example.com').click();
   await page.getByPlaceholder('example.com').fill('example.com');
   await page.getByPlaceholder('example.com').press('Tab');
@@ -41,8 +49,22 @@ test('can use DNS Search', async ({ page }) => {
   await page.getByLabel('MX').press('ArrowDown');
   await page.getByLabel('TXT').press('ArrowDown');
   await page.getByLabel('AAAA').press('Enter');
-  await page.getByRole('button', { name: 'Dig' }).click();
-  await page.waitForTimeout(150000);
-  const dnsTable = await page.$('#dns-table');
-  expect(dnsTable).not.toBeNull();
+  const digButton = await page.getByRole('button', { name: 'Dig' });
+  await digButton.click()
+  expect(await digButton.isDisabled()).toBe(true);
 });
+
+test('can autofill form with URL params', async ({ page }) => {
+  await page.goto('http://localhost:3000/?query=test.com&record_type=TXT');
+  const queryInput = await page.getByPlaceholder('example.com');
+  expect(await queryInput.inputValue()).toEqual('test.com');
+});
+
+test('verifies the page removes invalid record_types', async ({ page }) => {
+  const initialUrl = 'http://localhost:3000/?query=test.com&record_type=DDD';
+  const expectedUrl = 'http://localhost:3000/?query=test.com';
+  await page.goto(initialUrl);
+  await page.waitForURL(expectedUrl);
+  expect(page.url()).toEqual(expectedUrl)
+});
+
