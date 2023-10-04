@@ -101,13 +101,10 @@ export default function Home() {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         } else {
-          responses.push({
-            provider: provider,
-            response: await response.json(),
-          });
+          const responseData = await response.json();
+          setResponse((prevResponse) => [...prevResponse, { provider, response: responseData }]);
         }
         // @ts-ignore
-        setResponse(responses);
       }
     });
     router.push(`/?query=${values.query}&record_type=${values.record_type}`, { scroll: false })

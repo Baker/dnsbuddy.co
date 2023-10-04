@@ -16,6 +16,7 @@ import {
 import { CrossCircledIcon, InfoCircledIcon } from '@radix-ui/react-icons';
 import { CheckCircle } from 'lucide-react';
 import { ResponseItem } from '@/constants/dns';
+import { ProviderToLabelMapping } from '@/constants/api';
 
 export default function DnsTable({ response }: { response: ResponseItem[] }) {
   if (
@@ -62,7 +63,7 @@ export default function DnsTable({ response }: { response: ResponseItem[] }) {
                 )}
               </TableCell>
               <TableCell className='flex min-h-[116px] items-center'>
-                {item.provider}
+                {ProviderToLabelMapping[item.provider as keyof typeof ProviderToLabelMapping]}
               </TableCell>
               <TableCell className='whitespace-nowrap text-left '>
                 {item.response.data.Answer.map((response, index) => {
