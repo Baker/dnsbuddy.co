@@ -16,7 +16,6 @@ import {
   FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import {
@@ -35,17 +34,36 @@ import {
 } from '@/constants/record-types';
 import { DOMAIN_REGEX } from '@/constants/regex';
 import { useTransition, useState, useEffect } from 'react';
-import { delay, isValidDomain } from '@/lib/utils';
+import { isValidDomain } from '@/lib/utils';
 import DnsTable from '@/components/dns-table';
 import { ProviderToUrlMapping } from '@/constants/api';
 import { ResponseItem } from '@/constants/dns';
+import { useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
+  const router = useRouter()
   const [isPending, startTransition] = useTransition();
   const [response, setResponse] = useState<ResponseItem[]>([]);
+  const searchParams = useSearchParams()
+  const recordType = searchParams.get('record_type');
   useEffect(() => {
-    console.log(response);
-  }, [response]);
+    if (!RecordTypeDescriptions.hasOwnProperty(recordType as keyof typeof RecordTypeDescriptions) && recordType != null) {
+      router.push(`/${searchParams.get('query') != null ? `?query=${searchParams.get('query')}` : ''}`, { scroll: false })
+    }
+  }, [])
+
+  let recordValue
+  if (recordType != null) {
+    if (RecordTypeDescriptions.hasOwnProperty(recordType as keyof typeof RecordTypeDescriptions)) {
+      recordValue = recordType
+    } else {
+      recordValue = undefined
+    }
+  } else {
+    recordValue = undefined
+  }
+
   const formSchema = z.object({
     query: z
       .string()
@@ -60,7 +78,8 @@ export default function Home() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      query: '',
+      query: searchParams.get('query') || '',
+      record_type: recordValue
     },
     mode: 'onChange',
   });
@@ -82,15 +101,13 @@ export default function Home() {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         } else {
-          responses.push({
-            provider: provider,
-            response: await response.json(),
-          });
+          const responseData = await response.json();
+          setResponse((prevResponse) => [...prevResponse, { provider, response: responseData }]);
         }
+        // @ts-ignore
       }
-      // @ts-ignore
-      setResponse(responses);
     });
+    router.push(`/?query=${values.query}&record_type=${values.record_type}`, { scroll: false })
   }
   return (
     <main>
@@ -197,7 +214,7 @@ export default function Home() {
                   />
                 </AccordionContent>
               </AccordionItem>
-              {form.watch('record_type') ? (
+              {form.watch('record_type') && RecordTypeDescriptions[form.watch('record_type') as keyof typeof RecordTypeDescriptions] != null ? (
                 <AccordionItem value='item-2'>
                   <AccordionTrigger>
                     What is a {form.watch('record_type')}?
@@ -205,9 +222,9 @@ export default function Home() {
                   <AccordionContent>
                     {
                       RecordTypeDescriptions[
-                        form.watch(
-                          'record_type'
-                        ) as keyof typeof RecordTypeDescriptions
+                      form.watch(
+                        'record_type'
+                      ) as keyof typeof RecordTypeDescriptions
                       ]
                     }
                   </AccordionContent>

@@ -9,7 +9,7 @@ function ThemeToggle() {
 
   return (
     <Button
-      className=' bg-transparent text-black hover:bg-gray-200 dark:text-white dark:hover:bg-slate-700'
+      className=' bg-transparent text-black hover:bg-neutral-200 dark:text-white dark:hover:bg-neutral-900'
       id='theme-toggle'
       name='theme-toggle'
       onClick={() => {

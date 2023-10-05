@@ -16,6 +16,7 @@ import {
 import { CrossCircledIcon, InfoCircledIcon } from '@radix-ui/react-icons';
 import { CheckCircle } from 'lucide-react';
 import { ResponseItem } from '@/constants/dns';
+import { ProviderToLabelMapping } from '@/constants/api';
 
 export default function DnsTable({ response }: { response: ResponseItem[] }) {
   if (
@@ -34,6 +35,7 @@ export default function DnsTable({ response }: { response: ResponseItem[] }) {
             <TableHead className='w-[100px]'>Status</TableHead>
             <TableHead className=''>
               Location
+              {/* Starting Tooltip */}
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
@@ -44,6 +46,7 @@ export default function DnsTable({ response }: { response: ResponseItem[] }) {
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
+              {/* Ending Tooltip */}
             </TableHead>
             <TableHead className='text-left'>Response</TableHead>
           </TableRow>
@@ -60,12 +63,24 @@ export default function DnsTable({ response }: { response: ResponseItem[] }) {
                 )}
               </TableCell>
               <TableCell className='flex min-h-[116px] items-center'>
-                {item.provider}{' '}
+                {ProviderToLabelMapping[item.provider as keyof typeof ProviderToLabelMapping]}
               </TableCell>
               <TableCell className='whitespace-nowrap text-left '>
-                {item.response.data.Answer.map((response, index) => (
-                  <pre key={index}>{response.data}</pre>
-                ))}
+                {item.response.data.Answer.map((response, index) => {
+                  if (response.type == 46) {
+                    // This will remove the RRSIG which some DOH return.
+                    return null;
+                  }
+                  if (response.type == 16 && !response.data.startsWith('"')) {
+                    // For whatever reason Google doesn't return TXT with "" but the rest do.
+                    return (
+                      <pre key={index}>&quot;{response.data}&quot;</pre>
+                    )
+                  }
+                  return (
+                    <pre key={index}>{response.data}</pre>
+                  )
+                })}
               </TableCell>
             </TableRow>
           ))}
