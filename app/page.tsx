@@ -86,9 +86,12 @@ export default function Home() {
   const recordTypes = Object.keys(CommonRecordTypes);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    startTransition(async () => {
-      let responses: { provider: string; response: Response }[] = [];
+    if (response.length > 0) {
+      // Handle Multiple queries easier, by resetting state.
+      setResponse([])
+    }
 
+    startTransition(async () => {
       for (const provider of Object.keys(ProviderToUrlMapping)) {
         const response = await fetch(`/api/${provider}/`, {
           method: 'POST',
@@ -104,137 +107,86 @@ export default function Home() {
           const responseData = await response.json();
           setResponse((prevResponse) => [...prevResponse, { provider, response: responseData }]);
         }
-        // @ts-ignore
       }
     });
     router.push(`/?query=${values.query}&record_type=${values.record_type}`, { scroll: false })
   }
   return (
-    <main>
-      <div className='relative isolate overflow-hidden pb-8 pt-56 sm:pb-20'>
-        <div className='mx-auto max-w-7xl px-6 lg:px-8'>
-          <div className='mx-auto max-w-2xl'>
-            <div className='text-center'>
-              <h1 className='text-3xl font-bold tracking-tight text-black dark:text-white sm:text-5xl'>
-                DNS Lookups, made easy.
-              </h1>
-              <p className='mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300'>
-                Making DNS Lookups, cleaner, easier and faster in one place.
-              </p>
-              <div className='mt-10 flex min-w-full items-center justify-center'>
-                <div className='w-full md:w-1/2'>
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className=''>
-                      <FormField
-                        control={form.control}
-                        name='query'
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input
-                                className='min-w-0 flex-auto rounded-md border-0 bg-black/5 px-3.5 text-gray-600 shadow-sm ring-1 ring-inset ring-black/10 focus:ring-2 focus:ring-inset focus:ring-black dark:bg-white/5 dark:text-gray-200 dark:ring-white/10 dark:focus:ring-white sm:text-sm sm:leading-6'
-                                {...field}
-                                disabled={isPending}
-                                placeholder={'example.com'}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <div className='inline-flex w-full pt-3'>
-                        <FormField
-                          control={form.control}
-                          name='record_type'
-                          render={({ field }) => (
-                            <FormItem className='mr-6 w-3/4 text-gray-600 dark:text-gray-200'>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                                disabled={isPending}
-                                name='record_type'
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder='Select record type' />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {recordTypes.map((value) => (
-                                    <SelectItem key={value} value={value}>
-                                      {value}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormDescription></FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <Button
-                          type='submit'
+    <main className="relative isolate overflow-hidden">
+      <div className=' pb-8 pt-56 sm:pb-20 mx-auto max-w-2xl px-6 lg:px-8 text-center'>
+        <h1 className='text-3xl font-bold tracking-tight text-black dark:text-white sm:text-5xl'>
+          DNS Lookups, made easy.
+        </h1>
+        <p className='mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300'>
+          Making DNS Lookups, cleaner, easier and faster in one place.
+        </p>
+        <div className='mt-10 flex min-w-full items-center justify-center'>
+          <div className='w-full md:w-1/2'>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className=''>
+                <FormField
+                  control={form.control}
+                  name='query'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          className='min-w-0 flex-auto rounded-md border-0 bg-black/5 px-3.5 text-gray-600 shadow-sm ring-1 ring-inset ring-black/10 focus:ring-2 focus:ring-inset focus:ring-black dark:bg-white/5 dark:text-gray-200 dark:ring-white/10 dark:focus:ring-white sm:text-sm sm:leading-6'
+                          {...field}
                           disabled={isPending}
-                          className='h-full w-1/2'
+                          placeholder={'example.com'}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className='inline-flex w-full pt-3'>
+                  <FormField
+                    control={form.control}
+                    name='record_type'
+                    render={({ field }) => (
+                      <FormItem className='mr-6 w-3/4 text-gray-600 dark:text-gray-200'>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          disabled={isPending}
+                          name='record_type'
                         >
-                          <MagnifyingGlassIcon className='' />{' '}
-                          {isPending ? 'Digging..' : 'Dig'}
-                        </Button>
-                      </div>
-                    </form>
-                  </Form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className='relative isolate overflow-hidden pt-14 sm:pb-20'>
-        <div className='mx-auto max-w-7xl px-6 lg:px-8'>
-          <div className='mx-auto max-w-4xl'>
-            {response ? <DnsTable response={response} /> : ''}
-          </div>
-        </div>
-      </div>
-      <div className='relative isolate overflow-hidden pt-14 sm:pb-20'>
-        <div className='mx-auto max-w-7xl px-6 lg:px-8'>
-          <div className='mx-auto max-w-2xl'>
-            <Accordion type='single' collapsible>
-              <AccordionItem value='item-1'>
-                <AccordionTrigger>
-                  How can I query this locally?
-                </AccordionTrigger>
-                <AccordionContent>
-                  This should be easy, just depends on your local system. Below
-                  you should find the instructions for the various operating
-                  systems.
-                  <LocalQuery
-                    domain={form.watch('query') || 'example.com'}
-                    record_type={form.watch('record_type') || 'txt'}
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder='Select record type' />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {recordTypes.map((value) => (
+                              <SelectItem key={value} value={value}>
+                                {value}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormDescription></FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </AccordionContent>
-              </AccordionItem>
-              {form.watch('record_type') && RecordTypeDescriptions[form.watch('record_type') as keyof typeof RecordTypeDescriptions] != null ? (
-                <AccordionItem value='item-2'>
-                  <AccordionTrigger>
-                    What is a {form.watch('record_type')}?
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    {
-                      RecordTypeDescriptions[
-                      form.watch(
-                        'record_type'
-                      ) as keyof typeof RecordTypeDescriptions
-                      ]
-                    }
-                  </AccordionContent>
-                </AccordionItem>
-              ) : (
-                ''
-              )}
-            </Accordion>
+                  <Button
+                    type='submit'
+                    disabled={isPending}
+                    className='h-full w-1/2'
+                  >
+                    <MagnifyingGlassIcon className='' />{' '}
+                    {isPending ? 'Digging..' : 'Dig'}
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </div>
         </div>
+      </div>
+      <div className=' pt-14 sm:pb-20 px-6 lg:px-8 mx-auto max-w-4xl'>
+        {response ? <DnsTable response={response} /> : ''}
       </div>
     </main>
   );
