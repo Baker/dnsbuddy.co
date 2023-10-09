@@ -38,29 +38,46 @@ import { isValidDomain } from '@/lib/utils';
 import DnsTable from '@/components/dns-table';
 import { ProviderToUrlMapping } from '@/constants/api';
 import { ResponseItem } from '@/constants/dns';
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation';
 
 export default function Home() {
-  const router = useRouter()
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [response, setResponse] = useState<ResponseItem[]>([]);
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
   const recordType = searchParams.get('record_type');
-  useEffect(() => {
-    if (!RecordTypeDescriptions.hasOwnProperty(recordType as keyof typeof RecordTypeDescriptions) && recordType != null) {
-      router.push(`/${searchParams.get('query') != null ? `?query=${searchParams.get('query')}` : ''}`, { scroll: false })
-    }
-  }, [])
 
-  let recordValue
+  useEffect(() => {
+    if (
+      !RecordTypeDescriptions.hasOwnProperty(
+        recordType as keyof typeof RecordTypeDescriptions
+      ) &&
+      recordType != null
+    ) {
+      router.push(
+        `/${
+          searchParams.get('query') != null
+            ? `?query=${searchParams.get('query')}`
+            : ''
+        }`,
+        { scroll: false }
+      );
+    }
+  }, []);
+
+  let recordValue;
   if (recordType != null) {
-    if (RecordTypeDescriptions.hasOwnProperty(recordType as keyof typeof RecordTypeDescriptions)) {
-      recordValue = recordType
+    if (
+      RecordTypeDescriptions.hasOwnProperty(
+        recordType as keyof typeof RecordTypeDescriptions
+      )
+    ) {
+      recordValue = recordType;
     } else {
-      recordValue = undefined
+      recordValue = undefined;
     }
   } else {
-    recordValue = undefined
+    recordValue = undefined;
   }
 
   const formSchema = z.object({
@@ -78,7 +95,7 @@ export default function Home() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       query: searchParams.get('query') || '',
-      record_type: recordValue
+      record_type: recordValue,
     },
     mode: 'onChange',
   });
@@ -87,7 +104,7 @@ export default function Home() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (response.length > 0) {
       // Handle Multiple queries easier, by resetting state.
-      setResponse([])
+      setResponse([]);
     }
 
     startTransition(async () => {
@@ -104,15 +121,22 @@ export default function Home() {
           throw new Error(`HTTP error! status: ${response.status}`);
         } else {
           const responseData = await response.json();
-          setResponse((prevResponse) => [...prevResponse, { provider, response: responseData }]);
+          if (responseData.data.Answer) {
+            setResponse((prevResponse) => [
+              ...prevResponse,
+              { provider, response: responseData },
+            ]);
+          }
         }
       }
     });
-    router.push(`/?query=${values.query}&record_type=${values.record_type}`, { scroll: false })
+    router.push(`/?query=${values.query}&record_type=${values.record_type}`, {
+      scroll: false,
+    });
   }
   return (
-    <main className="relative isolate overflow-hidden">
-      <div className=' pb-8 pt-56 sm:pb-20 mx-auto max-w-2xl px-6 lg:px-8 text-center'>
+    <main className='relative isolate overflow-hidden'>
+      <div className=' mx-auto max-w-2xl px-6 pb-8 pt-56 text-center sm:pb-20 lg:px-8'>
         <h1 className='text-3xl font-bold tracking-tight text-black dark:text-white sm:text-5xl'>
           DNS Lookups, made easy.
         </h1>
@@ -184,7 +208,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className=' pt-14 sm:pb-20 px-6 lg:px-8 mx-auto max-w-4xl'>
+      <div className=' mx-auto max-w-4xl px-6 pt-14 sm:pb-20 lg:px-8'>
         {response ? <DnsTable response={response} /> : ''}
       </div>
     </main>

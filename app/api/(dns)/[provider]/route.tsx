@@ -24,7 +24,6 @@ export async function POST(
       }
       return NextResponse.json({ success: false, data: dnsData });
     } catch (error) {
-      console.error(error);
       return NextResponse.json({ success: false, data: error });
     }
   } else {
