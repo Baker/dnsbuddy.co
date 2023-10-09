@@ -38,8 +38,7 @@ import { isValidDomain } from '@/lib/utils';
 import DnsTable from '@/components/dns-table';
 import { ProviderToUrlMapping } from '@/constants/api';
 import { ResponseItem } from '@/constants/dns';
-import { useSearchParams } from 'next/navigation'
-import { useRouter } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 
 export default function Home() {
   const router = useRouter()
@@ -71,7 +70,7 @@ export default function Home() {
       .trim()
       .regex(DOMAIN_REGEX, { message: 'The URL you provided is not valid.' })
       .refine(isValidDomain, {
-        message: 'The URL contains a protcol, please remove it.',
+        message: 'The URL contains a protocol, please remove it.',
       }),
     record_type: z.string(),
   });
@@ -117,7 +116,7 @@ export default function Home() {
         <h1 className='text-3xl font-bold tracking-tight text-black dark:text-white sm:text-5xl'>
           DNS Lookups, made easy.
         </h1>
-        <p className='mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300'>
+        <p className='mt-6 text-lg leading-8 text-neutral-600 dark:text-neutral-400'>
           Making DNS Lookups, cleaner, easier and faster in one place.
         </p>
         <div className='mt-10 flex min-w-full items-center justify-center'>

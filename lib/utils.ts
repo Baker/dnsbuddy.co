@@ -29,3 +29,19 @@ export const isValidDomain = (url: string) => {
 
 export const delay = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
+
+export const stringToList = (string: string) => {
+  const stringArray = string.split("\n");
+  return stringArray;
+}
+
+export const isIpListLengthCheck = (string: string) => {
+  const list = stringToList(string)
+  return list.length <= 100
+}
+
+export const isValidIpAddress = (ipAddress: string) => {
+  const ipRegex = /^([0-9]{1,3}\.){3}[0-9]{1,3}$/;
+  return ipRegex.test(ipAddress);
+}
