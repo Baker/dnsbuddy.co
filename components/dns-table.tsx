@@ -63,24 +63,28 @@ export default function DnsTable({ response }: { response: ResponseItem[] }) {
                 )}
               </TableCell>
               <TableCell className='flex min-h-[116px] items-center'>
-                {ProviderToLabelMapping[item.provider as keyof typeof ProviderToLabelMapping]}
+                {
+                  ProviderToLabelMapping[
+                    item.provider as keyof typeof ProviderToLabelMapping
+                  ]
+                }
               </TableCell>
               <TableCell className='whitespace-nowrap text-left '>
-                {item.response.data.Answer.map((response, index) => {
-                  if (response.type == 46) {
-                    // This will remove the RRSIG which some DOH return.
-                    return null;
-                  }
-                  if (response.type == 16 && !response.data.startsWith('"')) {
-                    // For whatever reason Google doesn't return TXT with "" but the rest do.
-                    return (
-                      <pre key={index}>&quot;{response.data}&quot;</pre>
-                    )
-                  }
-                  return (
-                    <pre key={index}>{response.data}</pre>
-                  )
-                })}
+                {Array.isArray(item.response.data.Answer) ? (
+                  item.response.data.Answer.map((response, index) => {
+                    if (response.type == 46) {
+                      // This will remove the RRSIG which some DOH return.
+                      return null;
+                    }
+                    if (response.type == 16 && !response.data.startsWith('"')) {
+                      // For whatever reason Google doesn't return TXT with "" but the rest do.
+                      return <pre key={index}>&quot;{response.data}&quot;</pre>;
+                    }
+                    return <pre key={index}>{response.data}</pre>;
+                  })
+                ) : (
+                  <p>No Answer data available.</p>
+                )}
               </TableCell>
             </TableRow>
           ))}

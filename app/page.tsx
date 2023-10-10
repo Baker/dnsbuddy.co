@@ -121,12 +121,10 @@ export default function Home() {
           throw new Error(`HTTP error! status: ${response.status}`);
         } else {
           const responseData = await response.json();
-          if (responseData.data.Answer) {
-            setResponse((prevResponse) => [
-              ...prevResponse,
-              { provider, response: responseData },
-            ]);
-          }
+          setResponse((prevResponse) => [
+            ...prevResponse,
+            { provider, response: responseData },
+          ]);
         }
       }
     });
