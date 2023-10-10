@@ -19,11 +19,7 @@ import { ResponseItem } from '@/constants/dns';
 import { ProviderToLabelMapping } from '@/constants/api';
 
 export default function DnsTable({ response }: { response: ResponseItem[] }) {
-  if (
-    !response ||
-    response.length === 0 ||
-    !response.some((item) => item.response.data.Answer)
-  ) {
+  if (!response || response.length === 0) {
     return;
   }
   return (
@@ -83,7 +79,25 @@ export default function DnsTable({ response }: { response: ResponseItem[] }) {
                     return <pre key={index}>{response.data}</pre>;
                   })
                 ) : (
-                  <p>No Answer data available.</p>
+                  <p>
+                    The record is not set.
+                    {/* Starting Tooltip */}
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <InfoCircledIcon className='ml-1 h-[18px] w-[18px] text-black dark:text-white' />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>
+                            This is a generic response, we did not get a real
+                            answer from the DNS provider for the select record
+                            type.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    {/* Ending Tooltip */}
+                  </p>
                 )}
               </TableCell>
             </TableRow>

@@ -13,8 +13,8 @@ export async function POST(
       const res = await request.json();
       const recordType = res.record_type;
       const query = res.query;
-      // @ts-ignore
-      const dnsUrl = ProviderToUrlMapping[provider];
+      const dnsUrl =
+        ProviderToUrlMapping[provider as keyof typeof ProviderToUrlMapping];
       const dnsData = await getDnsData(query, recordType, dnsUrl);
       if (dnsData.error) {
         return NextResponse.json({ success: false, data: dnsData });
