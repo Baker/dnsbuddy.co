@@ -16,6 +16,7 @@ export default function Footer() {
         <Link href='//francispbaker.com' className='font-semibold underline'>
           Francis Baker
         </Link>
+        .
       </p>{' '}
     </footer>
   );
