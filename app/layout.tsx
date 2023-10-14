@@ -1,13 +1,8 @@
 import '@/css/global.css';
-import type { Metadata } from 'next';
 
 import { ThemeProvider } from '@/components/theme-provider';
 import { Layout } from '@/components/layout';
 
-export const metadata: Metadata = {
-  title: 'DnsBuddy | Index',
-  description: 'Your friendly neighborhood DNS lookup tool.',
-};
 
 export default function RootLayout({
   children,

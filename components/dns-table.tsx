@@ -61,7 +61,7 @@ export default function DnsTable({ response }: { response: ResponseItem[] }) {
               <TableCell className='flex min-h-[116px] items-center'>
                 {
                   ProviderToLabelMapping[
-                    item.provider as keyof typeof ProviderToLabelMapping
+                  item.provider as keyof typeof ProviderToLabelMapping
                   ]
                 }
               </TableCell>
