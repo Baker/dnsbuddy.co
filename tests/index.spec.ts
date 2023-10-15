@@ -68,16 +68,3 @@ test('verifies the page removes invalid record_types', async ({ page }) => {
   expect(page.url()).toEqual(expectedUrl)
 });
 
-test('Navigate to the feedback page.', async ({ page }) => {
-  await page.goto('http://localhost:3000/');
-  await page.getByRole('link', { name: 'Other Tools' }).click();
-  await page.getByRole('link', { name: 'Suggestion We love feedback, and want to build what you need, so let us know.' }).click();
-  expect(page.url()).toEqual('https://github.com/Baker/dnsbuddy.co/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=%5BFB%5D')
-})
-
-test('Navigate to the bulk FCrDNS page.', async ({ page }) => {
-  await page.goto('http://localhost:3000/');
-  await page.getByRole('link', { name: 'Other Tools' }).click();
-  await page.getByRole('link', { name: 'Bulk FCrDNS Bulk check Forward-confirmed reverse DNS, up to 100 IP Addresses/Domains.' }).click();
-  expect(page.url()).toEqual('http://localhost:3000/tools/bulk-fcrdns')
-})

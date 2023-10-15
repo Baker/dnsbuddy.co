@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
+import type { Metadata } from 'next';
 
 const ToolsList = [
   {
@@ -30,6 +31,11 @@ const ToolsList = [
     link: 'https://github.com/Baker/dnsbuddy.co/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=%5BFB%5D',
   },
 ];
+
+export const metadata: Metadata = {
+  title: 'Other Tools | DnsBuddy',
+  description: 'This page contains a list of the various other DNS related tools we maintain today.',
+};
 
 export default function Tools() {
   return (

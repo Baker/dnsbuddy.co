@@ -1,4 +1,10 @@
 import { BulkFCrDNSForm } from "@/components/forms/forms";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Bulk FCrDNS | DnsBuddy',
+  description: 'This tool allows you to look up to 100 different IP Addresses and check to make sure they perform a forward confirmation reverse DNS (FCrDNS).',
+};
 
 export default function BulkFCrDNS() {
   return (
