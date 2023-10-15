@@ -9,6 +9,8 @@ import {
     FormControl,
     FormField,
     FormItem,
+    FormLabel,
+    FormDescription,
     FormMessage,
 } from '@/components/ui/form';
 import {
@@ -126,6 +128,7 @@ export function DnsLookUpForm() {
                                 name='query'
                                 render={({ field }) => (
                                     <FormItem>
+                                        <FormLabel className='sr-only'>Query</FormLabel>
                                         <FormControl>
                                             <Input
                                                 className='min-w-0 flex-auto rounded-md border-0 bg-black/5 px-3.5 text-gray-600 shadow-sm ring-1 ring-inset ring-black/10 focus:ring-2 focus:ring-inset focus:ring-black dark:bg-white/5 dark:text-gray-200 dark:ring-white/10 dark:focus:ring-white sm:text-sm sm:leading-6'
@@ -134,6 +137,7 @@ export function DnsLookUpForm() {
                                                 placeholder={'example.com'}
                                             />
                                         </FormControl>
+                                        <FormDescription className='sr-only'>This is where you input your domain or IP Address that you want to look up the DNS results for.</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -163,6 +167,7 @@ export function DnsLookUpForm() {
                                                     ))}
                                                 </SelectContent>
                                             </Select>
+                                            <FormDescription className='sr-only'>This is where you select the record type you want to look up the DNS records for.</FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -170,7 +175,7 @@ export function DnsLookUpForm() {
                                 <Button
                                     type='submit'
                                     disabled={isPending}
-                                    className='h-full w-1/2'
+                                    className='h-full w-1/2 text-black'
                                 >
                                     <MagnifyingGlassIcon className='' />{' '}
                                     {isPending ? 'Digging..' : 'Dig'}
@@ -208,7 +213,7 @@ export function BulkFCrDNSForm() {
             const IpAddressString = values.query;
             const IpAddressList = IpAddressString.split('\n');
             const deduplicatedList = Array.from(new Set(IpAddressList));
-            console.log(deduplicatedList);
+            console.log(deduplicatedList, IpAddressList.length, deduplicatedList.length);
         })
     }
     return (
@@ -221,6 +226,7 @@ export function BulkFCrDNSForm() {
                             name='query'
                             render={({ field }) => (
                                 <FormItem>
+                                    <FormLabel className='sr-only'>IP Address List</FormLabel>
                                     <FormControl>
                                         <Textarea
                                             placeholder='Enter up to 100 IP Addresses, separated by a new line'
@@ -229,6 +235,7 @@ export function BulkFCrDNSForm() {
                                             disabled={isPending}
                                         />
                                     </FormControl>
+                                    <FormDescription className='sr-only'>Input the list of IP Addresses that you want to look up the and verify the FCrDNS is valid. Please know each IP Address is separated by a new line.</FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -236,7 +243,7 @@ export function BulkFCrDNSForm() {
                         <Button
                             type='submit'
                             disabled={isPending}
-                            className='mt-2 h-full w-1/4'
+                            className='mt-2 h-full w-1/4 text-black'
                         >
                             {isPending ? 'Checking..' : 'Check'}
                         </Button>
