@@ -1,3 +1,9 @@
+export interface BulkResponseList {
+  ip_address: string,
+  a_record: ResponseItem[],
+  reverse_dns: ResponseItem[]
+}
+
 export interface ResponseItem {
   provider: string;
   response: {

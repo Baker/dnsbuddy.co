@@ -32,8 +32,8 @@ import {
 } from '@/constants/record-types';
 import { useTransition, useState, useEffect, startTransition } from 'react';
 import DnsTable from '@/components/dns-table';
-import { ProviderToUrlMapping } from '@/constants/api';
-import { ResponseItem } from '@/constants/dns';
+import { ProviderToLabelMapping, ProviderToUrlMapping } from '@/constants/api';
+import { BulkResponseList, ResponseItem } from '@/constants/dns';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { bulkFCrDNSFormSchema, dnsLookupFormSchema } from '@/components/forms/schema';
 
@@ -186,7 +186,7 @@ export function DnsLookUpForm() {
                 </div>
 
             </div>
-            <div className='mx-auto max-w-4xl px-6 pt-14 sm:pb-20 lg:px-8'>
+            <div className='mx-auto max-w-full md:max-w-4xl px-1 pt-14 sm:pb-20'>
                 {response ? <DnsTable response={response} /> : ''}
             </div>
 
@@ -198,22 +198,56 @@ export function DnsLookUpForm() {
 export function BulkFCrDNSForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
-
+    const dnsProviders = Object.keys(ProviderToLabelMapping)
+    const [response, setResponse] = useState<BulkResponseList[]>([]);
     const [isPending, startTransition] = useTransition();
 
     const form = useForm<z.infer<typeof bulkFCrDNSFormSchema>>({
         resolver: zodResolver(bulkFCrDNSFormSchema),
         defaultValues: {
             query: '',
+            dns_provider: ProviderToLabelMapping.cloudflare
         },
         mode: 'onChange',
     });
     async function onSubmit(values: z.infer<typeof bulkFCrDNSFormSchema>) {
+        if (response.length > 0) {
+            // Handle Multiple queries easier, by resetting state.
+            setResponse([]);
+        }
+
         startTransition(async () => {
             const IpAddressString = values.query;
             const IpAddressList = IpAddressString.split('\n');
             const deduplicatedList = Array.from(new Set(IpAddressList));
-            console.log(deduplicatedList, IpAddressList.length, deduplicatedList.length);
+
+            for (const ip of deduplicatedList) {
+                const ptr_record = await fetch(`/api/${values.dns_provider}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: ip, record_type: "ptr" }),
+                });
+                const a_record = await fetch(`/api/${values.dns_provider}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: ptr_record, record_type: "a" }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                } else {
+                    const responseData = await response.json();
+                    setResponse((prevResponse) => [
+                        ...prevResponse,
+
+                    ]);
+
+                }
+            }
         })
     }
     return (
@@ -240,13 +274,46 @@ export function BulkFCrDNSForm() {
                                 </FormItem>
                             )}
                         />
-                        <Button
-                            type='submit'
-                            disabled={isPending}
-                            className='mt-2 h-full w-1/4 text-black'
-                        >
-                            {isPending ? 'Checking..' : 'Check'}
-                        </Button>
+                        <div className="inline-flex w-full pt-3">
+                            <FormField control={form.control}
+                                name='dns_provider'
+                                render={({ field }) => (
+                                    <FormItem className=' mr-6 w-3/4 text-gray-600 dark:text-gray-200'>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            disabled={isPending}
+                                            name='dns_provider'
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder='Select DNS Provider/location' />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {dnsProviders.map((value) => (
+                                                    <SelectItem key={value} value={value}>
+                                                        {
+                                                            ProviderToLabelMapping[
+                                                            value as keyof typeof ProviderToLabelMapping
+                                                            ]
+                                                        }
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormDescription className='sr-only'>This is where you select the DNS Provider you want us to use.</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <Button
+                                type='submit'
+                                disabled={isPending}
+                                className='h-full w-1/2 text-black'
+                            >
+                                {isPending ? 'Checking..' : 'Check'}
+                            </Button>
+                        </div>
                     </form>
                 </Form>
             </div>

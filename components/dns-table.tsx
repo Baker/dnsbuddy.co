@@ -32,16 +32,18 @@ export default function DnsTable({ response }: { response: ResponseItem[] }) {
             <TableHead className=''>
               Location
               {/* Starting Tooltip */}
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <InfoCircledIcon className='ml-1 h-[18px] w-[18px] text-black dark:text-white' />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>This could be location or DNS Provider.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <div className='hidden md:contents'>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <InfoCircledIcon className='ml-1 h-[18px] w-[18px] text-black dark:text-white' />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>This could be location or DNS Provider.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               {/* Ending Tooltip */}
             </TableHead>
             <TableHead className='text-left'>Response</TableHead>

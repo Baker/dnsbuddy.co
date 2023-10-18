@@ -10,6 +10,11 @@ const ToolsList = [
     link: '/tools/bulk-fcrdns',
   },
   // {
+  //     name: 'Bulk DNS Lookup',
+  //     description: 'Bulk check DNS records for up to 100 IP Addresses/Domains.',
+  //     link: '/tools/bulk-lookup'
+  // },
+  // {
   //     name: 'WhoIS',
   //     description: 'Check the WhoIS Information for a given domain or IP Address.',
   //     link: '/tools/whois'
