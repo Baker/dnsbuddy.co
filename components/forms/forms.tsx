@@ -237,16 +237,7 @@ export function BulkFCrDNSForm() {
                     body: JSON.stringify({ query: ptr_record, record_type: "a" }),
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                } else {
-                    const responseData = await response.json();
-                    setResponse((prevResponse) => [
-                        ...prevResponse,
 
-                    ]);
-
-                }
             }
         })
     }
