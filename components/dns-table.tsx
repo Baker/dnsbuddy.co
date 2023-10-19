@@ -15,15 +15,15 @@ import {
 } from '@/components/ui/tooltip';
 import { CrossCircledIcon, InfoCircledIcon } from '@radix-ui/react-icons';
 import { CheckCircle } from 'lucide-react';
-import { ResponseItem } from '@/constants/dns';
+import { ProviderResponse } from '@/constants/dns';
 import { ProviderToLabelMapping } from '@/constants/api';
 
-export default function DnsTable({ response }: { response: ResponseItem[] }) {
+export default function DnsTable({ response }: { response: ProviderResponse[] }) {
   if (!response || response.length === 0) {
     return;
   }
   return (
-    <div className='rounded-lg border bg-neutral-100 p-8 dark:bg-neutral-900'>
+    <div className='rounded-lg border bg-neutral-100 px-8 pt-8 dark:bg-neutral-900'>
       <Table id='dns-table'>
         <TableCaption></TableCaption>
         <TableHeader>
@@ -84,20 +84,22 @@ export default function DnsTable({ response }: { response: ResponseItem[] }) {
                   <p>
                     The record is not set.
                     {/* Starting Tooltip */}
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <InfoCircledIcon className='ml-1 h-[18px] w-[18px] text-black dark:text-white' />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>
-                            This is a generic response, we did not get a real
-                            answer from the DNS provider for the select record
-                            type.
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <div className='hidden md:contents'>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <InfoCircledIcon className='ml-1 h-[18px] w-[18px] text-black dark:text-white' />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>
+                              This is a generic response, we did not get a real
+                              answer from the DNS provider for the select record
+                              type.
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                     {/* Ending Tooltip */}
                   </p>
                 )}
@@ -106,6 +108,6 @@ export default function DnsTable({ response }: { response: ResponseItem[] }) {
           ))}
         </TableBody>
       </Table>
-    </div>
+    </div >
   );
 }

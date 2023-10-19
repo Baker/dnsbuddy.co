@@ -1,25 +1,29 @@
 export interface BulkResponseList {
-  ip_address: string,
-  a_record: ResponseItem[],
-  reverse_dns: ResponseItem[]
+  id: number
+  status: boolean
+  ptrRecord: string | null
+  aRecord: string | null
 }
 
 export interface ResponseItem {
-  provider: string;
-  response: {
-    data: {
-      AD: boolean;
-      CD: boolean;
-      RA: boolean;
-      RD: boolean;
-      TC: boolean;
-      status: number;
-      Question: QuestionItem[];
-      Answer: AnswerItem[];
-    };
-    success: boolean;
+  data: {
+    AD: boolean;
+    CD: boolean;
+    RA: boolean;
+    RD: boolean;
+    TC: boolean;
+    status: number;
+    Question: QuestionItem;
+    Answer: AnswerItem[];
   };
+  success: boolean;
+};
+
+export interface ProviderResponse {
+  provider: string;
+  response: ResponseItem
 }
+
 
 interface QuestionItem {
   name: string;

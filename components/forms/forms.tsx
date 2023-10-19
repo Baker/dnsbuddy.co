@@ -33,14 +33,16 @@ import {
 import { useTransition, useState, useEffect, startTransition } from 'react';
 import DnsTable from '@/components/dns-table';
 import { ProviderToLabelMapping, ProviderToUrlMapping } from '@/constants/api';
-import { BulkResponseList, ResponseItem } from '@/constants/dns';
+import { BulkResponseList, ProviderResponse, ResponseItem } from '@/constants/dns';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { bulkFCrDNSFormSchema, dnsLookupFormSchema } from '@/components/forms/schema';
+import { DataTable } from '@/components/tables/data-table';
+import { BulkFCrDNSColumnDef } from '@/components/tables/columns';
 
 export function DnsLookUpForm() {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
-    const [response, setResponse] = useState<ResponseItem[]>([]);
+    const [response, setResponse] = useState<ProviderResponse[]>([]);
     const searchParams = useSearchParams();
     const recordType = searchParams.get('record_type');
 
@@ -131,7 +133,7 @@ export function DnsLookUpForm() {
                                         <FormLabel className='sr-only'>Query</FormLabel>
                                         <FormControl>
                                             <Input
-                                                className='min-w-0 flex-auto rounded-md border-0 bg-black/5 px-3.5 text-gray-600 shadow-sm ring-1 ring-inset ring-black/10 focus:ring-2 focus:ring-inset focus:ring-black dark:bg-white/5 dark:text-gray-200 dark:ring-white/10 dark:focus:ring-white sm:text-sm sm:leading-6'
+                                                className='min-w-0 flex-auto rounded-md bg-black/5 px-3.5 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200 sm:text-sm sm:leading-6'
                                                 {...field}
                                                 disabled={isPending}
                                                 placeholder={'example.com'}
@@ -147,7 +149,7 @@ export function DnsLookUpForm() {
                                     control={form.control}
                                     name='record_type'
                                     render={({ field }) => (
-                                        <FormItem className='mr-6 w-3/4 text-gray-600 dark:text-gray-200'>
+                                        <FormItem className='mr-6 w-3/4 text-gray-600 dark:text-gray-200 '>
                                             <Select
                                                 onValueChange={field.onChange}
                                                 defaultValue={field.value}
@@ -155,7 +157,7 @@ export function DnsLookUpForm() {
                                                 name='record_type'
                                             >
                                                 <FormControl>
-                                                    <SelectTrigger>
+                                                    <SelectTrigger className='bg-black/5 dark:bg-white/5'>
                                                         <SelectValue placeholder='Select record type' />
                                                     </SelectTrigger>
                                                 </FormControl>
@@ -186,7 +188,7 @@ export function DnsLookUpForm() {
                 </div>
 
             </div>
-            <div className='mx-auto max-w-full md:max-w-4xl px-1 pt-14 sm:pb-20'>
+            <div className='mx-auto max-w-full md:max-w-4xl px-1 pt-14'>
                 {response ? <DnsTable response={response} /> : ''}
             </div>
 
@@ -197,17 +199,12 @@ export function DnsLookUpForm() {
 
 export function BulkFCrDNSForm() {
     const router = useRouter();
-    const searchParams = useSearchParams();
     const dnsProviders = Object.keys(ProviderToLabelMapping)
     const [response, setResponse] = useState<BulkResponseList[]>([]);
     const [isPending, startTransition] = useTransition();
 
     const form = useForm<z.infer<typeof bulkFCrDNSFormSchema>>({
         resolver: zodResolver(bulkFCrDNSFormSchema),
-        defaultValues: {
-            query: '',
-            dns_provider: ProviderToLabelMapping.cloudflare
-        },
         mode: 'onChange',
     });
     async function onSubmit(values: z.infer<typeof bulkFCrDNSFormSchema>) {
@@ -222,22 +219,34 @@ export function BulkFCrDNSForm() {
             const deduplicatedList = Array.from(new Set(IpAddressList));
 
             for (const ip of deduplicatedList) {
+
                 const ptr_record = await fetch(`/api/${values.dns_provider}/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ query: ip, record_type: "ptr" }),
-                });
-                const a_record = await fetch(`/api/${values.dns_provider}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ query: ptr_record, record_type: "a" }),
-                });
-
-
+                    body: JSON.stringify({ query: ip, record_type: "PTR" }),
+                })
+                const ptrRecord: ResponseItem = await ptr_record.json()
+                if (ptrRecord?.data?.Answer?.[0].data) {
+                    const a_record = await fetch(`/api/${values.dns_provider}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ query: ptrRecord?.data?.Answer?.[0].data, record_type: "A" }),
+                    });
+                    const aRecord: ResponseItem = await a_record.json()
+                    setResponse((prevResponse) => [
+                        ...prevResponse,
+                        { id: response.length, status: aRecord?.data?.Answer?.[0].data == ip, aRecord: ip, ptrRecord: ptrRecord?.data?.Answer?.[0].data },
+                    ]);
+                } else {
+                    setResponse((prevResponse) => [
+                        ...prevResponse,
+                        { id: response.length, status: false, aRecord: ip, ptrRecord: ptrRecord?.data?.Answer?.[0].data },
+                    ]);
+                }
             }
         })
     }
@@ -258,6 +267,7 @@ export function BulkFCrDNSForm() {
                                             rows={10}
                                             {...field}
                                             disabled={isPending}
+                                            className='bg-black/5 px-3.5 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200 leading-6'
                                         />
                                     </FormControl>
                                     <FormDescription className='sr-only'>Input the list of IP Addresses that you want to look up the and verify the FCrDNS is valid. Please know each IP Address is separated by a new line.</FormDescription>
@@ -265,18 +275,18 @@ export function BulkFCrDNSForm() {
                                 </FormItem>
                             )}
                         />
-                        <div className="inline-flex w-full pt-3">
+                        <div className="inline-flex w-full pt-3 pb-2">
                             <FormField control={form.control}
                                 name='dns_provider'
                                 render={({ field }) => (
-                                    <FormItem className=' mr-6 w-3/4 text-gray-600 dark:text-gray-200'>
+                                    <FormItem className=' mr-3 w-3/4 text-gray-600 dark:text-gray-200'>
                                         <Select
                                             onValueChange={field.onChange}
                                             disabled={isPending}
                                             name='dns_provider'
                                         >
                                             <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger className='bg-black/5 px-3.5 text-gray-600 dark:bg-white/5 dark:text-gray-200'>
                                                     <SelectValue placeholder='Select DNS Provider/location' />
                                                 </SelectTrigger>
                                             </FormControl>
@@ -307,8 +317,11 @@ export function BulkFCrDNSForm() {
                         </div>
                     </form>
                 </Form>
+                <div></div>
             </div>
-
+            <div className='mx-auto max-w-full md:max-w-4xl pt-14 pb-20'>
+                {response.length > 0 ? <DataTable data={response} columns={BulkFCrDNSColumnDef} /> : ''}
+            </div>
         </>
     )
 }
