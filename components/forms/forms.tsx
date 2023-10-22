@@ -31,18 +31,18 @@ import {
     RecordTypeDescriptions,
 } from '@/constants/record-types';
 import { useTransition, useState, useEffect, startTransition } from 'react';
-import DnsTable from '@/components/dns-table';
 import { ProviderToLabelMapping, ProviderToUrlMapping } from '@/constants/api';
-import { BulkResponseList, ProviderResponse, ResponseItem } from '@/constants/dns';
+import { BulkResponseList, ResponseList } from '@/constants/data';
+import { ProviderResponse, ResponseItem } from '@/constants/dns';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { bulkFCrDNSFormSchema, dnsLookupFormSchema } from '@/components/forms/schema';
 import { DataTable } from '@/components/tables/data-table';
-import { BulkFCrDNSColumnDef } from '@/components/tables/columns';
+import { BulkFCrDNSColumnDef, DnsLookupColumnDef } from '@/components/tables/columns';
 
 export function DnsLookUpForm() {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
-    const [response, setResponse] = useState<ProviderResponse[]>([]);
+    const [response, setResponse] = useState<ResponseList[]>([]);
     const searchParams = useSearchParams();
     const recordType = searchParams.get('record_type');
 
@@ -96,7 +96,7 @@ export function DnsLookUpForm() {
 
         startTransition(async () => {
             for (const provider of Object.keys(ProviderToUrlMapping)) {
-                const response = await fetch(`/api/${provider}/`, {
+                const query = await fetch(`/api/${provider}/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -104,13 +104,19 @@ export function DnsLookUpForm() {
                     body: JSON.stringify(values),
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                if (!query.ok) {
+                    throw new Error(`HTTP error! status: ${query.status}`);
                 } else {
-                    const responseData = await response.json();
+                    const queryData: ResponseItem = await query.json();
+                    console.log(queryData.data.Answer)
                     setResponse((prevResponse) => [
                         ...prevResponse,
-                        { provider, response: responseData },
+                        {
+                            id: response.length,
+                            status: queryData.success,
+                            location: ProviderToLabelMapping[provider as keyof typeof ProviderToLabelMapping],
+                            response: ''
+                        },
                     ]);
                 }
             }
@@ -139,7 +145,9 @@ export function DnsLookUpForm() {
                                                 placeholder={'example.com'}
                                             />
                                         </FormControl>
-                                        <FormDescription className='sr-only'>This is where you input your domain or IP Address that you want to look up the DNS results for.</FormDescription>
+                                        <FormDescription className='sr-only'>
+                                            This is where you input your domain or IP Address that you want to look up the DNS results for.
+                                        </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -189,7 +197,7 @@ export function DnsLookUpForm() {
 
             </div>
             <div className='mx-auto max-w-full md:max-w-4xl px-1 pt-14'>
-                {response ? <DnsTable response={response} /> : ''}
+                {response.length > 0 ? <DataTable data={response} columns={DnsLookupColumnDef} pagination={false} download={false} /> : ''}
             </div>
 
         </>
@@ -319,8 +327,8 @@ export function BulkFCrDNSForm() {
                 </Form>
                 <div></div>
             </div>
-            <div className='mx-auto max-w-full md:max-w-4xl pt-14 pb-20'>
-                {response.length > 0 ? <DataTable data={response} columns={BulkFCrDNSColumnDef} /> : ''}
+            <div className='mx-auto max-w-full md:max-w-4xl pt-8 pb-20'>
+                {response.length > 0 ? <DataTable data={response} columns={BulkFCrDNSColumnDef} pagination={true} download={true} /> : ''}
             </div>
         </>
     )
