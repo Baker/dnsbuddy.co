@@ -336,7 +336,7 @@ export function BulkFCrDNSForm() {
                 <div></div>
             </div>
             <div className='mx-auto max-w-full md:max-w-4xl pt-8 pb-20'>
-                {response.length > 0 ? <DataTable data={response} columns={BulkFCrDNSColumnDef} pagination={true} download={true} /> : ''}
+                {response.length > 0 ? <DataTable data={response} columns={BulkFCrDNSColumnDef} pagination={true} download={false} /> : ''}
             </div>
         </>
     )
