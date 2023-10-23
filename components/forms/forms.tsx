@@ -268,7 +268,7 @@ export function BulkFCrDNSForm() {
     }
     return (
         <>
-            <div className="mx-auto max-w-2xl">
+            <div className="mx-auto max-w-xl">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className='mt-8'>
                         <FormField
