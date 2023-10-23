@@ -33,7 +33,7 @@ import {
 import { useTransition, useState, useEffect, startTransition } from 'react';
 import { ProviderToLabelMapping, ProviderToUrlMapping } from '@/constants/api';
 import { BulkResponseList, ResponseList } from '@/constants/data';
-import { ProviderResponse, ResponseItem } from '@/constants/dns';
+import { ProviderResponse, ResponseItem, AnswerItem } from '@/constants/dns';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { bulkFCrDNSFormSchema, dnsLookupFormSchema } from '@/components/forms/schema';
 import { DataTable } from '@/components/tables/data-table';
@@ -108,14 +108,22 @@ export function DnsLookUpForm() {
                     throw new Error(`HTTP error! status: ${query.status}`);
                 } else {
                     const queryData: ResponseItem = await query.json();
-                    console.log(queryData.data.Answer)
+                    const answers: string[] = []
+                    for (const item in queryData.data.Answer) {
+                        const resp = queryData.data.Answer[item]
+                        if (resp.type == 16 && !resp.data.startsWith('"')) {
+                            answers.push(`&quot;${resp.data}&quot;`);
+                        } else if (resp.type != 46) {
+                            answers.push(resp.data);
+                        }
+                    }
                     setResponse((prevResponse) => [
                         ...prevResponse,
                         {
                             id: response.length,
                             status: queryData.success,
                             location: ProviderToLabelMapping[provider as keyof typeof ProviderToLabelMapping],
-                            response: ''
+                            response: answers
                         },
                     ]);
                 }
@@ -196,7 +204,7 @@ export function DnsLookUpForm() {
                 </div>
 
             </div>
-            <div className='mx-auto max-w-full md:max-w-4xl px-1 pt-14'>
+            <div className='mx-auto max-w-full md:max-w-4xl pt-8 pb-20'>
                 {response.length > 0 ? <DataTable data={response} columns={DnsLookupColumnDef} pagination={false} download={false} /> : ''}
             </div>
 

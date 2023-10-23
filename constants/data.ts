@@ -8,5 +8,5 @@ export interface BulkResponseList {
 export interface ResponseList {
   id: number;
   location: string;
-  response: string;
+  response: string[];
 }

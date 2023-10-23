@@ -23,7 +23,7 @@ interface QuestionItem {
   type: number;
 }
 
-interface AnswerItem {
+export interface AnswerItem {
   name: string;
   ttl: number;
   data: string;

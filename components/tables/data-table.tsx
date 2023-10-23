@@ -124,9 +124,10 @@ export function DataTable<TData, TValue>({
                                     {row.getVisibleCells().map((cell) => {
                                         return (
                                             <TableCell key={cell.id} className="dark:text-gray-300 text-left py-3">
-                                                {Array.isArray(cell.column.columnDef.cell) ? (
-                                                    cell.column.columnDef.cell.map((item) => (
-                                                        <div key={item}>{item}</div>
+                                                {Array.isArray(cell.getValue()) ? (
+                                                    // @ts-ignore
+                                                    cell.getValue().map((item, index) => (
+                                                        <pre key={index}>{item}</pre>
                                                     ))
                                                 ) : (
                                                     flexRender(cell.column.columnDef.cell, cell.getContext())
@@ -147,31 +148,33 @@ export function DataTable<TData, TValue>({
                 </Table>
             </div>
 
-            {(pagination) ? (
-                <div className="flex items-center py-4">
-                    <div className="mr-auto space-x-1 ">
-                        <p className="dark:text-gray-300 px-4 py-2 h-10">Total Results: {table.getFilteredRowModel().rows.length}</p>
+            {
+                (pagination) ? (
+                    <div className="flex items-center py-4">
+                        <div className="mr-auto space-x-1 ">
+                            <p className="dark:text-gray-300 px-4 py-2 h-10">Total Results: {table.getFilteredRowModel().rows.length}</p>
+                        </div>
+                        <div className="ml-auto space-x-1">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => table.previousPage()}
+                                disabled={!table.getCanPreviousPage()}
+                            >
+                                Previous
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => table.nextPage()}
+                                disabled={!table.getCanNextPage()}
+                            >
+                                Next
+                            </Button>
+                        </div>
                     </div>
-                    <div className="ml-auto space-x-1">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => table.previousPage()}
-                            disabled={!table.getCanPreviousPage()}
-                        >
-                            Previous
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => table.nextPage()}
-                            disabled={!table.getCanNextPage()}
-                        >
-                            Next
-                        </Button>
-                    </div>
-                </div>
-            ) : null}
+                ) : null
+            }
         </div >
     )
 }
