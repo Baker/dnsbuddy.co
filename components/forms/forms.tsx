@@ -112,7 +112,7 @@ export function DnsLookUpForm() {
                     for (const item in queryData.data.Answer) {
                         const resp = queryData.data.Answer[item]
                         if (resp.type == 16 && !resp.data.startsWith('"')) {
-                            answers.push(`&quot;${resp.data}&quot;`);
+                            answers.push(`"${resp.data}"`);
                         } else if (resp.type != 46) {
                             answers.push(resp.data);
                         }
