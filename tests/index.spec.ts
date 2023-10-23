@@ -40,7 +40,7 @@ test('can use DNS Search', async ({ page }) => {
   await page.getByPlaceholder('example.com').click();
   await page.getByPlaceholder('example.com').fill('example.com');
   await page.getByPlaceholder('example.com').press('Tab');
-  await page.locator('[id="\\:Rrddakq\\:-form-item"]').press('ArrowDown');
+  await page.locator('[id="\\:Rptdakq\\:-form-item"]').press('ArrowDown');
   await page.getByLabel('A', { exact: true }).press('ArrowDown');
   await page.getByLabel('NS').press('ArrowDown');
   await page.getByLabel('CNAME').press('ArrowDown');
