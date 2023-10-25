@@ -66,6 +66,7 @@ export function DataTable<TData, TValue>({
         });
         return bodyRows;
     });
+    const csvData = [csvHeader, csvBody]
 
     const table = useReactTable({
         data,
@@ -114,7 +115,7 @@ export function DataTable<TData, TValue>({
                 </DropdownMenu>
                 {(download) ? (
                     <Button variant="outline" className="ml-auto">
-                        <CSVLink header={csvHeader} data={csvBody}>
+                        <CSVLink data={csvData}>
                             Download
                         </CSVLink>
                     </Button>

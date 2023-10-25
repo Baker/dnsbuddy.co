@@ -213,7 +213,6 @@ export function DnsLookUpForm() {
 }
 
 export function BulkFCrDNSForm() {
-    const router = useRouter();
     const dnsProviders = Object.keys(ProviderToLabelMapping)
     const [response, setResponse] = useState<BulkResponseList[]>([]);
     const [isPending, startTransition] = useTransition();
