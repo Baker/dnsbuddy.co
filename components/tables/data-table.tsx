@@ -58,7 +58,7 @@ export function DataTable<TData, TValue>({
         Object.entries(row as any[]).forEach(([key, value]) => {
             if (Array.isArray(value)) {
                 value.forEach((item) => {
-                    const newRow = { ...row };
+                    const newRow = { ...row } as Record<string, any>;
                     newRow[key] = item;
                     bodyRows.push(newRow);
                 });
