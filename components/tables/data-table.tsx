@@ -58,7 +58,7 @@ export function DataTable<TData, TValue>({
         Object.entries(row as any[]).forEach(([key, value]) => {
             if (Array.isArray(value)) {
                 value.forEach((item) => {
-                    const newRow = { ...row } as Record<string, any>;
+                    const newRow = { ...row } as Record<string | number, string | number>;
                     newRow[key] = item;
                     bodyRows.push(newRow);
                 });
@@ -66,7 +66,6 @@ export function DataTable<TData, TValue>({
         });
         return bodyRows;
     });
-    const csvData = [csvHeader, csvBody]
 
     const table = useReactTable({
         data,
@@ -115,7 +114,7 @@ export function DataTable<TData, TValue>({
                 </DropdownMenu>
                 {(download) ? (
                     <Button variant="outline" className="ml-auto">
-                        <CSVLink data={csvData}>
+                        <CSVLink headers={csvHeader} data={csvBody}>
                             Download
                         </CSVLink>
                     </Button>
