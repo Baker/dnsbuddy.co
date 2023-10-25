@@ -120,7 +120,6 @@ export function DnsLookUpForm() {
                     setResponse((prevResponse) => [
                         ...prevResponse,
                         {
-                            id: response.length,
                             status: queryData.success,
                             location: ProviderToLabelMapping[provider as keyof typeof ProviderToLabelMapping],
                             response: answers
@@ -205,7 +204,7 @@ export function DnsLookUpForm() {
 
             </div>
             <div className='mx-auto max-w-full md:max-w-4xl pt-8 pb-20'>
-                {response.length > 0 ? <DataTable data={response} columns={DnsLookupColumnDef} pagination={false} download={false} /> : ''}
+                {response.length > 0 ? <DataTable data={response} columns={DnsLookupColumnDef} pagination={false} download={true} /> : ''}
             </div>
 
         </>
@@ -255,12 +254,12 @@ export function BulkFCrDNSForm() {
                     const aRecord: ResponseItem = await a_record.json()
                     setResponse((prevResponse) => [
                         ...prevResponse,
-                        { id: response.length, status: aRecord?.data?.Answer?.[0].data == ip, aRecord: ip, ptrRecord: ptrRecord?.data?.Answer?.[0].data },
+                        { status: aRecord?.data?.Answer?.[0].data == ip, aRecord: ip, ptrRecord: ptrRecord?.data?.Answer?.[0].data },
                     ]);
                 } else {
                     setResponse((prevResponse) => [
                         ...prevResponse,
-                        { id: response.length, status: false, aRecord: ip, ptrRecord: ptrRecord?.data?.Answer?.[0].data },
+                        { status: false, aRecord: ip, ptrRecord: ptrRecord?.data?.Answer?.[0].data },
                     ]);
                 }
             }
@@ -268,75 +267,76 @@ export function BulkFCrDNSForm() {
     }
     return (
         <>
-            <div className="mx-auto max-w-xl">
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className='mt-8'>
-                        <FormField
-                            control={form.control}
-                            name='query'
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className='sr-only'>IP Address List</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            placeholder='Enter up to 100 IP Addresses, separated by a new line'
-                                            rows={10}
-                                            {...field}
-                                            disabled={isPending}
-                                            className='bg-black/5 px-3.5 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200 leading-6'
-                                        />
-                                    </FormControl>
-                                    <FormDescription className='sr-only'>Input the list of IP Addresses that you want to look up the and verify the FCrDNS is valid. Please know each IP Address is separated by a new line.</FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <div className="inline-flex w-full pt-3 pb-2">
-                            <FormField control={form.control}
-                                name='dns_provider'
+            <div className="flex mx-auto items-center justify-center max-w-2xl">
+                <div className="w-full">
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className='mt-8'>
+                            <FormField
+                                control={form.control}
+                                name='query'
                                 render={({ field }) => (
-                                    <FormItem className=' mr-3 w-3/4 text-gray-600 dark:text-gray-200'>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            disabled={isPending}
-                                            name='dns_provider'
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger className='bg-black/5 px-3.5 text-gray-600 dark:bg-white/5 dark:text-gray-200'>
-                                                    <SelectValue placeholder='Select DNS Provider/location' />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {dnsProviders.map((value) => (
-                                                    <SelectItem key={value} value={value}>
-                                                        {
-                                                            ProviderToLabelMapping[
-                                                            value as keyof typeof ProviderToLabelMapping
-                                                            ]
-                                                        }
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        <FormDescription className='sr-only'>This is where you select the DNS Provider you want us to use.</FormDescription>
+                                    <FormItem>
+                                        <FormLabel className='sr-only'>IP Address List</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                placeholder='Enter up to 100 IP Addresses, separated by a new line'
+                                                rows={10}
+                                                {...field}
+                                                disabled={isPending}
+                                                className='bg-black/5 px-3.5 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200 leading-6'
+                                            />
+                                        </FormControl>
+                                        <FormDescription className='sr-only'>Input the list of IP Addresses that you want to look up the and verify the FCrDNS is valid. Please know each IP Address is separated by a new line.</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                            <Button
-                                type='submit'
-                                disabled={isPending}
-                                className='h-full w-1/2 text-black'
-                            >
-                                {isPending ? 'Checking..' : 'Check'}
-                            </Button>
-                        </div>
-                    </form>
-                </Form>
-                <div></div>
+                            <div className="inline-flex w-full pt-3 pb-2">
+                                <FormField control={form.control}
+                                    name='dns_provider'
+                                    render={({ field }) => (
+                                        <FormItem className=' mr-3 w-3/4 text-gray-600 dark:text-gray-200'>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                disabled={isPending}
+                                                name='dns_provider'
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger className='bg-black/5 px-3.5 text-gray-600 dark:bg-white/5 dark:text-gray-200'>
+                                                        <SelectValue placeholder='Select DNS Provider/location' />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {dnsProviders.map((value) => (
+                                                        <SelectItem key={value} value={value}>
+                                                            {
+                                                                ProviderToLabelMapping[
+                                                                value as keyof typeof ProviderToLabelMapping
+                                                                ]
+                                                            }
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormDescription className='sr-only'>This is where you select the DNS Provider you want us to use.</FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button
+                                    type='submit'
+                                    disabled={isPending}
+                                    className='h-full w-1/2 text-black'
+                                >
+                                    {isPending ? 'Checking..' : 'Check'}
+                                </Button>
+                            </div>
+                        </form>
+                    </Form>
+                </div>
             </div>
             <div className='mx-auto max-w-full md:max-w-4xl pt-8 pb-20'>
-                {response.length > 0 ? <DataTable data={response} columns={BulkFCrDNSColumnDef} pagination={true} download={false} /> : ''}
+                {response.length > 0 ? <DataTable data={response} columns={BulkFCrDNSColumnDef} pagination={true} download={true} /> : ''}
             </div>
         </>
     )
