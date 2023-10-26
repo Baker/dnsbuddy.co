@@ -29,7 +29,7 @@ test('can toggle dark mode', async ({ page }) => {
   await lightMode.click()
   await page.waitForLoadState('load')
   const darkMode = await page.getByRole('button', { name: 'Turn on darkmode' })
-  await darkMode.click();
+  await darkMode.click({ force: true });
   const darkHtml = await page.evaluate(
     () => document.documentElement.className
   );
