@@ -62,6 +62,8 @@ export function DataTable<TData, TValue>({
                     newRow[key] = item;
                     bodyRows.push(newRow);
                 });
+            } else {
+                bodyRows.push(row)
             }
         });
         return bodyRows;
