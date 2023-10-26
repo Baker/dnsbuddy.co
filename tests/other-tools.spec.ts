@@ -6,12 +6,11 @@ test('has main here', async ({ page }) => {
     expect(textElement).not.toBeNull();
 });
 
-test('Navigate to the feedback page.', async ({ page }) => {
+test('Feedback box exists.', async ({ page }) => {
     await page.goto('http://localhost:3000/');
     await page.getByRole('link', { name: 'Other Tools' }).click();
-    await page.getByRole('link', { name: 'Suggestion' }).click();
-    const textElement = await page.$(`text="We love feedback, and want to build what you need, so let us know."`);
-    expect(page.url()).toContain(textElement);
+    await page.waitForURL('http://localhost:3000/tools');
+    expect(await page.getByText('We love feedback, and want to build what you need, so let us know.').isVisible()).toBe(true);
 })
 
 test('Navigate to the bulk FCrDNS page.', async ({ page }) => {
@@ -19,5 +18,6 @@ test('Navigate to the bulk FCrDNS page.', async ({ page }) => {
     await page.goto('http://localhost:3000/');
     await page.getByRole('link', { name: 'Other Tools' }).click();
     await page.getByRole('link', { name: 'Bulk FCrDNS' }).click();
+    await page.waitForURL(expectedUrl);
     expect(page.url()).toEqual(expectedUrl);
 })
