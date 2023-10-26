@@ -28,8 +28,6 @@ export async function POST(
       return NextResponse.json({ success: false, data: error });
     }
   } else {
-    return {
-      notFound: true,
-    };
+    return NextResponse.json({ success: false, data: 'Invalid Provider' })
   }
 }

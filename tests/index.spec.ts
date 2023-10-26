@@ -25,11 +25,9 @@ test('can toggle light mode', async ({ page }) => {
 test('can toggle dark mode', async ({ page }) => {
   test.slow()
   await page.goto('http://localhost:3000');
-  const lightMode = await page.getByRole('button', { name: 'Turn on lightmode' })
-  await lightMode.click()
+  await page.getByRole('button', { name: 'Turn on lightmode' }).click()
   await page.waitForLoadState('load')
-  const darkMode = await page.getByRole('button', { name: 'Turn on darkmode' })
-  await darkMode.click({ force: true });
+  await page.getByRole('button', { name: 'Turn on darkmode' }).click();
   const darkHtml = await page.evaluate(
     () => document.documentElement.className
   );
