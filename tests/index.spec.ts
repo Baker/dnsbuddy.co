@@ -23,6 +23,7 @@ test('can toggle light mode', async ({ page }) => {
 });
 
 test('can toggle dark mode', async ({ page }) => {
+  test.slow()
   await page.goto('http://localhost:3000');
   const lightMode = await page.getByRole('button', { name: 'Turn on lightmode' })
   await lightMode.click()

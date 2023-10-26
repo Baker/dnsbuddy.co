@@ -1,16 +1,8 @@
 # 🌐 DnsBuddy
 
+[![CI](https://github.com/Baker/dnsbuddy.co/actions/workflows/ci.yml/badge.svg)](https://github.com/Baker/dnsbuddy.co/actions/workflows/ci.yml)
+
 This is an open sourced website that you can use to pull up various DNS related records. This tool takes advantage of various DOH APIs (DNS over HTTPS), so thank you to those who run those (Google, Cloudflare, etc.)
-
-## Goals
-
-Let's talk about the goals of this site, I want to have this documented here that way it will hopefully provide some guidance around issue's or features offered.
-
-- Allow the end user to easily look up records.
-- Attempt to educate the end user about what the purpose of the record(s) are/is.
-- Provide the end user with clear guidance around how to look up these records locally.
-
-Here is the original Wireframe:![Whismical Wireframe of the original vision for this project.](https://i.imgur.com/KO1xPGo.png)
 
 ## Built with
 

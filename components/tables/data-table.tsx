@@ -9,6 +9,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table"
+import { CSVLink } from "react-csv";
 import {
     Table,
     TableBody,
@@ -45,6 +46,26 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+
+    const csvHeader = columns.map((column) => ({
+        // @ts-ignore
+        label: (column.label || column.header).charAt(0).toUpperCase() + (column.label || column.header).slice(1),
+        // @ts-ignore
+        key: column.accessorKey,
+    }))
+    const csvBody = data.flatMap((row) => {
+        const bodyRows: any[] = [];
+        Object.entries(row as any[]).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+                value.forEach((item) => {
+                    const newRow = { ...row } as Record<string | number, string | number>;
+                    newRow[key] = item;
+                    bodyRows.push(newRow);
+                });
+            }
+        });
+        return bodyRows;
+    });
 
     const table = useReactTable({
         data,
@@ -93,7 +114,9 @@ export function DataTable<TData, TValue>({
                 </DropdownMenu>
                 {(download) ? (
                     <Button variant="outline" className="ml-auto">
-                        Download CSV
+                        <CSVLink headers={csvHeader} data={csvBody}>
+                            Download
+                        </CSVLink>
                     </Button>
                 ) : null}
             </div>

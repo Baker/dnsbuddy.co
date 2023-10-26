@@ -43,6 +43,9 @@ dependencies:
   '@types/react':
     specifier: 18.2.21
     version: 18.2.21
+  '@types/react-csv':
+    specifier: ^1.1.7
+    version: 1.1.7
   '@types/react-dom':
     specifier: 18.2.7
     version: 18.2.7
@@ -79,6 +82,9 @@ dependencies:
   react:
     specifier: 18.2.0
     version: 18.2.0
+  react-csv:
+    specifier: ^2.2.2
+    version: 2.2.2
   react-dom:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
@@ -1246,6 +1252,12 @@ packages:
 
   /@types/prop-types@15.7.9:
     resolution: {integrity: sha512-n1yyPsugYNSmHgxDFjicaI2+gCNjsBck8UX9kuofAKlc0h1bL+20oSF72KeNaW2DUlesbEVCFgyV2dPGTiY42g==}
+    dev: false
+
+  /@types/react-csv@1.1.7:
+    resolution: {integrity: sha512-MOXBoBrLm3Bz0xxQ1I367PhioZRxjBwmMsSUgckPP04UJw6iHbije37Auct9v+EAHGih2v1eYxchCaoqgJ8idQ==}
+    dependencies:
+      '@types/react': 18.2.21
     dev: false
 
   /@types/react-dom@18.2.7:
@@ -3130,6 +3142,10 @@ packages:
 
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
+
+  /react-csv@2.2.2:
+    resolution: {integrity: sha512-RG5hOcZKZFigIGE8LxIEV/OgS1vigFQT4EkaHeKgyuCbUAu9Nbd/1RYq++bJcJJ9VOqO/n9TZRADsXNDR4VEpw==}
+    dev: false
 
   /react-dom@18.2.0(react@18.2.0):
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}

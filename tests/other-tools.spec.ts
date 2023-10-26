@@ -1,5 +1,11 @@
 import { test, expect } from '@playwright/test';
 
+test('has main here', async ({ page }) => {
+    await page.goto('http://localhost:3000/tools');
+    const textElement = await page.$(`text="Tools"`);
+    expect(textElement).not.toBeNull();
+});
+
 test('Navigate to the feedback page.', async ({ page }) => {
     const expectedUrl = 'https://github.com/Baker/dnsbuddy.co/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=%5BFB%5D'
     await page.goto('http://localhost:3000/');
