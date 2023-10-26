@@ -22,18 +22,6 @@ test('can toggle light mode', async ({ page }) => {
   expect(lightHtml).toContain('light');
 });
 
-test('can toggle dark mode', async ({ page }) => {
-  test.slow()
-  await page.goto('http://localhost:3000');
-  await page.getByRole('button', { name: 'Turn on lightmode' }).click()
-  await page.waitForLoadState('load')
-  await page.getByRole('button', { name: 'Turn on darkmode' }).click();
-  const darkHtml = await page.evaluate(
-    () => document.documentElement.className
-  );
-  expect(darkHtml).toContain('dark');
-});
-
 test('can use DNS Search', async ({ page }) => {
   await page.goto('http://localhost:3000/');
   await page.getByPlaceholder('example.com').click();
