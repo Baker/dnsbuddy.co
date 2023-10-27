@@ -69,6 +69,7 @@ jobs:
           retention-days: 2
 
   vercel-preview:
+    if: github.event_name == 'push' && github.ref != 'refs/heads/main'
     timeout-minutes: 60
     runs-on: ubuntu-latest
     needs: [prettier, eslint, playwright]
