@@ -1,9 +1,21 @@
 name: CI
+
 on:
   push:
     branches:
       - main
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+      - converted_to_draft
+
+concurrency:
+  group: ci-tests-${{ github.ref }}-1
+  cancel-in-progress: true
+
 jobs:
   eslint:
     timeout-minutes: 60
@@ -15,6 +27,7 @@ jobs:
         name: Setup Node
         with:
           node-version: 18
+          cache: 'pnpm'
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         with:
@@ -33,6 +46,7 @@ jobs:
         name: Setup Node
         with:
           node-version: 18
+          cache: 'pnpm'
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         with:
@@ -52,6 +66,7 @@ jobs:
         name: Setup Node
         with:
           node-version: 18
+          cache: 'pnpm'
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         with:
@@ -83,6 +98,7 @@ jobs:
         name: Setup Node
         with:
           node-version: 18
+          cache: 'pnpm'
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         with:
