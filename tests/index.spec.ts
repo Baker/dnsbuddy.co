@@ -26,16 +26,8 @@ test('can use DNS Search', async ({ page }) => {
   await page.goto('http://localhost:3000/');
   await page.getByPlaceholder('example.com').click();
   await page.getByPlaceholder('example.com').fill('example.com');
-  await page.getByPlaceholder('example.com').press('Tab');
-  await page.locator('[id="\\:Rptdakq\\:-form-item"]').press('ArrowDown');
-  await page.getByLabel('A', { exact: true }).press('ArrowDown');
-  await page.getByLabel('NS').press('ArrowDown');
-  await page.getByLabel('CNAME').press('ArrowDown');
-  await page.getByLabel('SOA').press('ArrowDown');
-  await page.getByLabel('PTR').press('ArrowDown');
-  await page.getByLabel('MX').press('ArrowDown');
-  await page.getByLabel('TXT').press('ArrowDown');
-  await page.getByLabel('AAAA').press('Enter');
+  const optionToSelect = await page.locator('option', { hasText: 'TXT' }).textContent();
+  await page.locator('select').selectOption({ label: optionToSelect });
   const digButton = await page.getByRole('button', { name: 'Dig' });
   await digButton.click()
   expect(await digButton.isDisabled()).toBe(true);
