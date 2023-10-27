@@ -105,7 +105,7 @@ export function DnsLookUpForm() {
                 });
 
                 if (!query.ok) {
-                    throw new Error(`HTTP error! status: ${query.status}`);
+                    throw new Error(`Error: DnsLookupForm status=${query.status} provider=${provider}`);
                 } else {
                     const queryData: ResponseItem = await query.json();
                     const answers: string[] = []
