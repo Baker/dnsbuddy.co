@@ -6,13 +6,11 @@ test('has main here', async ({ page }) => {
     expect(textElement).not.toBeNull();
 });
 
-test('Navigate to the feedback page.', async ({ page }) => {
-    const expectedUrl = 'https://github.com/Baker/dnsbuddy.co/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=%5BFB%5D'
+test('Feedback box exists.', async ({ page }) => {
     await page.goto('http://localhost:3000/');
     await page.getByRole('link', { name: 'Other Tools' }).click();
-    await page.getByRole('link', { name: 'Suggestion' }).click();
-    await page.waitForURL(expectedUrl);
-    expect(page.url()).toEqual(expectedUrl);
+    await page.waitForURL('http://localhost:3000/tools');
+    expect(await page.getByText('We love feedback, and want to build what you need, so let us know.').isVisible()).toBe(true);
 })
 
 test('Navigate to the bulk FCrDNS page.', async ({ page }) => {
