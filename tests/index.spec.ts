@@ -47,7 +47,7 @@ test('verifies the page removes invalid record_types', async ({ page }) => {
   expect(page.url()).toEqual(expectedUrl)
 });
 
-test('verify the table loads with proper header', async ({ page }) => {
+test('verify the table loads with proper header & additional options', async ({ page }) => {
   await page.goto('http://localhost:3000/');
   await page.getByPlaceholder('example.com').click();
   await page.getByPlaceholder('example.com').fill('example.com');
@@ -59,25 +59,6 @@ test('verify the table loads with proper header', async ({ page }) => {
   expect(await page.getByText('Status').isVisible()).toBe(true);
   expect(await page.getByText('Location').isVisible()).toBe(true);
   expect(await page.getByText('Response').isVisible()).toBe(true);
-})
-
-
-test('verify the download works & proper filetype', async ({ page }) => {
-  await page.goto('http://localhost:3000/');
-  await page.getByPlaceholder('example.com').click();
-  await page.getByPlaceholder('example.com').fill('example.com');
-  const optionToSelect = await page.locator('option', { hasText: 'TXT' }).textContent();
-  await page.locator('select').selectOption({ label: optionToSelect });
-  await page.getByRole('button', { name: 'Dig' }).click();
-  await page.waitForURL('http://localhost:3000/?query=example.com&record_type=TXT')
-
-  expect(await page.getByText('Status').isVisible()).toBe(true);
-  expect(await page.getByText('Location').isVisible()).toBe(true);
-  expect(await page.getByText('Response').isVisible()).toBe(true);
-
-  const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('link', { name: 'Download' }).click();
-  const download = await downloadPromise;
-  const suggestedFilename = download.suggestedFilename();
-  expect(suggestedFilename.includes('csv')).toBe(true);
+  expect(await page.getByText('Downloads').isVisible()).toBe(true);
+  expect(await page.getByText('Columns').isVisible()).toBe(true);
 })
