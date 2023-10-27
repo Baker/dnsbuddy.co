@@ -62,3 +62,21 @@ test('verify the table loads with proper header & additional options', async ({ 
   expect(await page.getByText('Downloads').isVisible()).toBe(true);
   expect(await page.getByText('Columns').isVisible()).toBe(true);
 })
+
+test('verify the table loads with proper locations', async ({ page }) => {
+  await page.goto('http://localhost:3000/');
+  await page.getByPlaceholder('example.com').click();
+  await page.getByPlaceholder('example.com').fill('example.com');
+  const optionToSelect = await page.locator('option', { hasText: 'TXT' }).textContent();
+  await page.locator('select').selectOption({ label: optionToSelect });
+  await page.getByRole('button', { name: 'Dig' }).click();
+  await page.waitForURL('http://localhost:3000/?query=example.com&record_type=TXT')
+
+  expect(await page.getByText('Cloudflare').isVisible()).toBe(true);
+  expect(await page.getByText('Google').isVisible()).toBe(true);
+  expect(await page.getByText('Chicago, US').isVisible()).toBe(true);
+  expect(await page.getByText('New York, US').isVisible()).toBe(true);
+  expect(await page.getByText('San Jose, US').isVisible()).toBe(true);
+  expect(await page.getByText('Frankfurt, DE').isVisible()).toBe(true);
+  expect(await page.getByText('Hong Kong, CN').isVisible()).toBe(true);
+})
