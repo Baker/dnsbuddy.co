@@ -1,13 +1,14 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { exampleResponseItem } from '@/tests/mock/api';
+import { ProviderToLabelMapping } from '@/constants/api';
 
 // Reusable setup code
-const setup = async (page) => {
+const setup = async (page: Page) => {
   await page.goto('http://localhost:3000/');
   await page.getByPlaceholder('example.com').click();
   await page.getByPlaceholder('example.com').fill('example.com');
   const optionToSelect = await page.locator('option', { hasText: 'TXT' }).textContent();
-  await page.locator('select').selectOption({ label: optionToSelect });
+  await page.locator('select').selectOption({ label: optionToSelect as string });
 };
 
 
@@ -78,14 +79,9 @@ test.describe('verify the table loads', () => {
   });
 
   test('with proper locations', async ({ page }) => {
-    expect(await page.getByText('Cloudflare').isVisible()).toBe(true);
-    expect(await page.getByText('Google').isVisible()).toBe(true);
-    expect(await page.getByText('Quad9').isVisible()).toBe(true);
-    expect(await page.getByText('Alibaba').isVisible()).toBe(true);
-    expect(await page.getByText('Chicago, US').isVisible()).toBe(true);
-    expect(await page.getByText('New York, US').isVisible()).toBe(true);
-    expect(await page.getByText('San Jose, US').isVisible()).toBe(true);
-    expect(await page.getByText('Frankfurt, DE').isVisible()).toBe(true);
-    expect(await page.getByText('Hong Kong, CN').isVisible()).toBe(true);
+    const dnsProviders = Object.values(ProviderToLabelMapping)
+    for (const dnsProvider in dnsProviders) {
+      expect(await page.getByText(dnsProviders[dnsProvider]).isVisible()).toBe(true);
+    }
   });
 });

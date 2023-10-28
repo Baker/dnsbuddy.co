@@ -1,10 +1,9 @@
 import { BulkDnsLookupForm } from '@/components/forms/forms';
 import type { Metadata } from 'next';
-import Link from "next/link";
 
 export const metadata: Metadata = {
     title: 'Bulk DNS Lookup | DnsBuddy',
-    description: 'This tool allows you to look up to 100 different IP Addresses and check to make sure they perform a forward confirmation reverse DNS (FCrDNS).',
+    description: 'This tool allows users to check multiple domains or IP addresses for a specific record type against a chosen DNS provider or location.',
 };
 
 export default function BulkFCrDNS() {
@@ -15,7 +14,7 @@ export default function BulkFCrDNS() {
                     Bulk DNS Lookup
                 </h1>
                 <p className='mt-6 text-lg leading-8 text-neutral-600 dark:text-neutral-400 md:w-3/4 lg:w-1/2 mx-auto'>
-                    This tool allows you to lookup a 100 different domain records, for anything IP Address related we recommend using the <Link className="font-semibold underline dark:text-gray-300" href={`/tools/bulk-fcrdns`}>Bulk FCrDNS tool</Link>.
+                    This tool allows users to check multiple domains or IP addresses for a specific record type against a chosen DNS provider or location.
                 </p>
                 <BulkDnsLookupForm />
             </div>
