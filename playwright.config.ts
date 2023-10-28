@@ -45,24 +45,8 @@ export default defineConfig({
 
     /* Test against mobile viewports. */
     {
-      name: 'Mobile Chrome - Pixel 5',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'Mobile Chrome - Pixel 6',
-      use: { ...devices['Pixel 6'] },
-    },
-    {
       name: 'Mobile Chrome - Pixel 7',
       use: { ...devices['Pixel 7'] },
-    },
-    {
-      name: 'Mobile Safari - iPhone 12',
-      use: { ...devices['iPhone 12'] },
-    },
-    {
-      name: 'Mobile Safari - iPhone 13',
-      use: { ...devices['iPhone 13'] },
     },
     {
       name: 'Mobile Safari - iPhone 14',
