@@ -36,7 +36,7 @@ export const stringToList = (string: string): string[] => {
   return stringArray;
 }
 
-export const isIpListLengthCheck = (string: string): boolean => {
+export const bulkLengthCheck = (string: string): boolean => {
   const list = stringToList(string)
   return list.length <= 100
 }
@@ -44,4 +44,8 @@ export const isIpListLengthCheck = (string: string): boolean => {
 export const isValidIpAddress = (ipAddress: string): boolean => {
   const ipRegex = /^([0-9]{1,3}\.){3}[0-9]{1,3}$/;
   return ipRegex.test(ipAddress);
+}
+
+export const timeUnix = (): number => {
+  return parseInt((new Date().getTime() / 1000).toFixed(0))
 }

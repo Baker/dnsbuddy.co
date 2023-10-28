@@ -74,6 +74,8 @@ test('verify the table loads with proper locations', async ({ page }) => {
 
   expect(await page.getByText('Cloudflare').isVisible()).toBe(true);
   expect(await page.getByText('Google').isVisible()).toBe(true);
+  expect(await page.getByText('Quad9').isVisible()).toBe(true);
+  expect(await page.getByText('Alibaba').isVisible()).toBe(true);
   expect(await page.getByText('Chicago, US').isVisible()).toBe(true);
   expect(await page.getByText('New York, US').isVisible()).toBe(true);
   expect(await page.getByText('San Jose, US').isVisible()).toBe(true);
