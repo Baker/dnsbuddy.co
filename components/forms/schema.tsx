@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { bulkLengthCheck, isValidDomain, isValidIpAddress, isValidUrl, stringToList } from '@/lib/utils';
+import { bulkLengthCheck, isValidDomain, isValidUrl, stringToList } from '@/lib/utils';
 
 
 export const dnsLookupFormSchema = z.object({

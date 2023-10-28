@@ -30,10 +30,10 @@ import {
     CommonRecordTypes,
     RecordTypeDescriptions,
 } from '@/constants/record-types';
-import { useTransition, useState, useEffect, startTransition } from 'react';
+import { useTransition, useState, useEffect } from 'react';
 import { ProviderToLabelMapping, ProviderToUrlMapping } from '@/constants/api';
 import { BulkResponseList, ResponseList, BulkFCrDNSResponseList } from '@/constants/data';
-import { ProviderResponse, ResponseItem, AnswerItem } from '@/constants/dns';
+import { ResponseItem } from '@/constants/dns';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { bulkDnsLookup, bulkFCrDNSFormSchema, dnsLookupFormSchema } from '@/components/forms/schema';
 import { DataTable } from '@/components/tables/data-table';

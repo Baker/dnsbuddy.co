@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { exampleResponseItem } from '@/tests/mock/api';
 
 
 test('has title', async ({ page }) => {
@@ -23,6 +24,10 @@ test('can toggle light mode', async ({ page }) => {
 });
 
 test('can use DNS Search', async ({ page }) => {
+  await page.route('*/**/api/**', async route => {
+    await route.fulfill({ contentType: 'application/json', json: exampleResponseItem });
+  })
+
   await page.goto('http://localhost:3000/');
   await page.getByPlaceholder('example.com').click();
   await page.getByPlaceholder('example.com').fill('example.com');
@@ -48,6 +53,10 @@ test('verifies the page removes invalid record_types', async ({ page }) => {
 });
 
 test('verify the table loads with proper header & additional options', async ({ page }) => {
+  await page.route('*/**/api/**', async route => {
+    await route.fulfill({ contentType: 'application/json', json: exampleResponseItem });
+  })
+
   await page.goto('http://localhost:3000/');
   await page.getByPlaceholder('example.com').click();
   await page.getByPlaceholder('example.com').fill('example.com');
@@ -57,13 +66,17 @@ test('verify the table loads with proper header & additional options', async ({ 
   await page.waitForURL('http://localhost:3000/?query=example.com&record_type=TXT')
 
   expect(await page.getByText('Status').isVisible()).toBe(true);
-  expect(await page.getByText('Location').isVisible()).toBe(true);
+  expect(await page.getByText('Provider').isVisible()).toBe(true);
   expect(await page.getByText('Response').isVisible()).toBe(true);
   expect(await page.getByText('Downloads').isVisible()).toBe(true);
   expect(await page.getByText('Columns').isVisible()).toBe(true);
 })
 
 test('verify the table loads with proper locations', async ({ page }) => {
+  await page.route('*/**/api/**', async route => {
+    await route.fulfill({ contentType: 'application/json', json: exampleResponseItem });
+  })
+
   await page.goto('http://localhost:3000/');
   await page.getByPlaceholder('example.com').click();
   await page.getByPlaceholder('example.com').fill('example.com');
