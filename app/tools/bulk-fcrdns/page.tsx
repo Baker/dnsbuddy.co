@@ -4,6 +4,19 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Bulk FCrDNS | DnsBuddy',
   description: 'This tool allows you to look up to 100 different IP Addresses and check to make sure they perform a forward confirmation reverse DNS (FCrDNS).',
+  twitter: {
+    card: 'summary',
+    title: 'Bulk FCrDNS',
+    description: 'This tool allows you to look up to 100 different IP Addresses and check to make sure they perform a forward confirmation reverse DNS (FCrDNS).',
+  },
+  openGraph: {
+    title: 'Bulk FCrDNS',
+    description: 'This tool allows you to look up to 100 different IP Addresses and check to make sure they perform a forward confirmation reverse DNS (FCrDNS).',
+    url: 'https://DnsBuddy.co',
+    siteName: 'DnsBuddy',
+    locale: 'en_US',
+    type: 'website',
+  }
 };
 
 export default function BulkFCrDNS() {
@@ -13,7 +26,7 @@ export default function BulkFCrDNS() {
         <h1 className='text-3xl font-bold tracking-tight text-black dark:text-white sm:text-5xl'>
           Bulk FCrDNS Check
         </h1>
-        <p className='mt-6 text-lg leading-8 text-neutral-600 dark:text-neutral-400 md:w-1/2 lg:w-1/3 mx-auto'>
+        <p className='mt-6 text-lg leading-8 text-neutral-600 dark:text-neutral-400 md:w-3/4 lg:w-1/2 mx-auto'>
           This tool allows you to look up to 100 different IP Addresses and
           check to make sure they perform a forward confirmation reverse DNS
           (FCrDNS).

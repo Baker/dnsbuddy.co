@@ -32,7 +32,7 @@ We _assume_ you already have these installed.
 Below are the two primary commands to run for tests:
 
 1. `pnpm run test:e2e`: Which will run the tests across the various browsers. _If you are lacking the packages for this it will ask you to install the dependencies._
-2. `pnpm exec playwright test --ui`: Which I personally use more when I am running tests, it gives you the UI so you can see and verify everything is working as expected.
+2. `pnpm run test:ui`: Which I personally use more when I am running tests, it gives you the UI so you can see and verify everything is working as expected.
 
 ## CI
 

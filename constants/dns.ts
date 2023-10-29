@@ -5,8 +5,8 @@ export interface ResponseItem {
     RA: boolean;
     RD: boolean;
     TC: boolean;
-    status: number;
-    Question: QuestionItem;
+    Status: number;
+    Question: QuestionItem[];
     Answer: AnswerItem[];
   };
   success: boolean;
@@ -25,9 +25,8 @@ interface QuestionItem {
 
 export interface AnswerItem {
   name: string;
-  ttl: number;
+  TTL: number;
   data: string;
   type: number;
   Expires?: string;
-  answer: number;
 }

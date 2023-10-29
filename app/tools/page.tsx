@@ -4,16 +4,23 @@ import type { Metadata } from 'next';
 
 const ToolsList = [
   {
+    name: 'DNS Record Lookup',
+    description:
+      'This checks a record across multiple DNS Providers and locations.',
+    link: '/',
+  },
+  {
+    name: 'Bulk DNS Record Lookup',
+    description:
+      'Bulk check DNS Record, for up to 100 IP Addresses/Domains.',
+    link: '/tools/bulk-dns-lookup',
+  },
+  {
     name: 'Bulk FCrDNS',
     description:
       'Bulk check Forward-confirmed reverse DNS, up to 100 IP Addresses/Domains.',
     link: '/tools/bulk-fcrdns',
   },
-  // {
-  //     name: 'Bulk DNS Lookup',
-  //     description: 'Bulk check DNS records for up to 100 IP Addresses/Domains.',
-  //     link: '/tools/bulk-lookup'
-  // },
   // {
   //     name: 'WhoIS',
   //     description: 'Check the WhoIS Information for a given domain or IP Address.',
@@ -40,6 +47,19 @@ const ToolsList = [
 export const metadata: Metadata = {
   title: 'Other Tools | DnsBuddy',
   description: 'This page contains a list of the various other DNS related tools we maintain today.',
+  twitter: {
+    card: 'summary',
+    title: 'Other Tools',
+    description: 'This page contains a list of the various other DNS related tools we maintain today.',
+  },
+  openGraph: {
+    title: 'Other Tools',
+    description: 'This page contains a list of the various other DNS related tools we maintain today.',
+    url: 'https://DnsBuddy.co',
+    siteName: 'DnsBuddy',
+    locale: 'en_US',
+    type: 'website',
+  }
 };
 
 export default function Tools() {

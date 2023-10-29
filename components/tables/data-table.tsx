@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 
 import { ExtendedColumnDef } from "@/components/tables/columns"
+import { timeUnix } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
     columns: ExtendedColumnDef<TData, TValue>[]
@@ -47,6 +48,15 @@ export function DataTable<TData, TValue>({
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 
+    if (columns.length > 1) {
+        columns.forEach((column) => {
+            // @ts-ignore
+            if (!column.isVisible && !columnVisibility[column.accessorKey]) {
+                // @ts-ignore
+                columnVisibility[column.accessorKey] = column.isVisible;
+            }
+        });
+    }
     const csvHeader = columns.map((column) => ({
         // @ts-ignore
         label: (column.label || column.header).charAt(0).toUpperCase() + (column.label || column.header).slice(1),
@@ -55,15 +65,32 @@ export function DataTable<TData, TValue>({
     }))
     const csvBody = data.flatMap((row) => {
         const bodyRows: any[] = [];
+        const uniqueRows: Set<string> = new Set();
         Object.entries(row as any[]).forEach(([key, value]) => {
             if (Array.isArray(value)) {
                 value.forEach((item) => {
                     const newRow = { ...row } as Record<string | number, string | number>;
                     newRow[key] = item;
-                    bodyRows.push(newRow);
+                    const rowString = JSON.stringify(newRow);
+                    if (!uniqueRows.has(rowString)) {
+                        uniqueRows.add(rowString);
+                        bodyRows.push(newRow);
+                    }
                 });
             } else {
-                bodyRows.push(row)
+                const rowString = JSON.stringify(row);
+                if (!uniqueRows.has(rowString)) {
+                    let isValueArray = false;
+                    Object.values(row as any[]).forEach((value) => {
+                        if (Array.isArray(value)) {
+                            isValueArray = true;
+                        }
+                    });
+                    if (!isValueArray) {
+                        uniqueRows.add(rowString);
+                        bodyRows.push(row);
+                    }
+                }
             }
         });
         return bodyRows;
@@ -116,7 +143,7 @@ export function DataTable<TData, TValue>({
                 </DropdownMenu>
                 {(download) ? (
                     <Button variant="outline" className="ml-auto">
-                        <CSVLink headers={csvHeader} data={csvBody}>
+                        <CSVLink headers={csvHeader} data={csvBody} filename={`dnsbuddy.co-${timeUnix()}.csv`}>
                             Download
                         </CSVLink>
                     </Button>
