@@ -51,7 +51,7 @@ export function DataTable<TData, TValue>({
     if (columns.length > 1) {
         columns.forEach((column) => {
             // @ts-ignore
-            if (!column.isVisible && !columnVisibility[column.accessorKey]) {
+            if (column.isVisible === false && columnVisibility[column.accessorKey] === undefined) {
                 // @ts-ignore
                 columnVisibility[column.accessorKey] = column.isVisible;
             }
