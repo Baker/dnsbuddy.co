@@ -47,6 +47,19 @@ const ToolsList = [
 export const metadata: Metadata = {
   title: 'Other Tools | DnsBuddy',
   description: 'This page contains a list of the various other DNS related tools we maintain today.',
+  twitter: {
+    card: 'summary',
+    title: 'Other Tools',
+    description: 'This page contains a list of the various other DNS related tools we maintain today.',
+  },
+  openGraph: {
+    title: 'Other Tools',
+    description: 'This page contains a list of the various other DNS related tools we maintain today.',
+    url: 'https://DnsBuddy.co',
+    siteName: 'DnsBuddy',
+    locale: 'en_US',
+    type: 'website',
+  }
 };
 
 export default function Tools() {

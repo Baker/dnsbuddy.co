@@ -4,6 +4,19 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
     title: 'Bulk DNS Lookup | DnsBuddy',
     description: 'This tool allows users to check multiple domains or IP addresses for a specific record type against a chosen DNS provider or location.',
+    twitter: {
+        card: 'summary',
+        title: 'Bulk DNS Lookup',
+        description: 'This tool allows users to check multiple domains or IP addresses for a specific record type against a chosen DNS provider or location.',
+    },
+    openGraph: {
+        title: 'Bulk DNS Lookup',
+        description: 'This tool allows users to check multiple domains or IP addresses for a specific record type against a chosen DNS provider or location.',
+        url: 'https://DnsBuddy.co',
+        siteName: 'DnsBuddy',
+        locale: 'en_US',
+        type: 'website',
+    }
 };
 
 export default function BulkFCrDNS() {
