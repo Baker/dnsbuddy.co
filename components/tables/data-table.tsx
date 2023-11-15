@@ -1,4 +1,4 @@
-// @ts-nocheck 
+// @ts-nocheck
 'use client';
 
 import {
@@ -189,12 +189,13 @@ export function DataTable<TData, TValue>({
                         className='py-3 text-left dark:text-gray-300'
                       >
                         {Array.isArray(cell.getValue())
-                          ? (cell.getValue() as any[])
-                            .map((item, index) => (
-                              <pre key={index}>{item}</pre>
-                            ))
-                          : flexRender(cell.column.columnDef.cell, cell.getContext())
-                        }
+                          ? (cell.getValue() as any[]).map((item, index) => (
+                            <pre key={index}>{item}</pre>
+                          ))
+                          : flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
                       </TableCell>
                     );
                   })}
