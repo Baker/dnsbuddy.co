@@ -3,7 +3,6 @@ import '@/css/global.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Layout } from '@/components/layout';
 
-
 export default function RootLayout({
   children,
 }: {

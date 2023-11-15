@@ -11,8 +11,7 @@ const ToolsList = [
   },
   {
     name: 'Bulk DNS Record Lookup',
-    description:
-      'Bulk check DNS Record, for up to 100 IP Addresses/Domains.',
+    description: 'Bulk check DNS Record, for up to 100 IP Addresses/Domains.',
     link: '/tools/bulk-dns-lookup',
   },
   {
@@ -45,27 +44,30 @@ const ToolsList = [
 ];
 
 export const metadata: Metadata = {
-  title: 'Other Tools | DnsBuddy',
-  description: 'This page contains a list of the various other DNS related tools we maintain today.',
+  title: 'Tools | DnsBuddy',
+  description:
+    'This page contains a list of the various other DNS related tools we maintain today.',
   twitter: {
     card: 'summary',
-    title: 'Other Tools',
-    description: 'This page contains a list of the various other DNS related tools we maintain today.',
+    title: 'Tools',
+    description:
+      'This page contains a list of the various other DNS related tools we maintain today.',
   },
   openGraph: {
-    title: 'Other Tools',
-    description: 'This page contains a list of the various other DNS related tools we maintain today.',
-    url: 'https://DnsBuddy.co',
+    title: 'Tools',
+    description:
+      'This page contains a list of the various other DNS related tools we maintain today.',
+    url: 'https://DnsBuddy.co/tools',
     siteName: 'DnsBuddy',
     locale: 'en_US',
     type: 'website',
-  }
+  },
 };
 
 export default function Tools() {
   return (
     <main className='relative isolate overflow-hidden'>
-      <div className='max-w-4xl mx-auto px-6 pt-56 text-center lg:px-8'>
+      <div className='mx-auto max-w-4xl px-6 pt-56 text-center lg:px-8'>
         <h1 className='text-3xl font-bold tracking-tight text-black dark:text-white sm:text-5xl'>
           Tools
         </h1>
@@ -78,7 +80,7 @@ export default function Tools() {
           {ToolsList.map((tool) => (
             <Link
               href={tool.link}
-              className='rounded-md bg-neutral-100 p-8 dark:bg-neutral-900'
+              className='rounded-md border bg-black/5 p-8 dark:bg-white/5'
               key={tool.name}
             >
               <h2 className='text-lg font-semibold'>{tool.name}</h2>

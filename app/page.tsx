@@ -1,4 +1,4 @@
-import { DnsLookUpForm } from '@/components/forms/forms'
+import { DnsLookUpForm } from '@/components/forms/forms';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     siteName: 'DnsBuddy',
     locale: 'en_US',
     type: 'website',
-  }
+  },
 };
 
 export default function Home() {
