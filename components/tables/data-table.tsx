@@ -166,9 +166,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   );
                 })}
@@ -190,12 +190,12 @@ export function DataTable<TData, TValue>({
                       >
                         {Array.isArray(cell.getValue())
                           ? (cell.getValue() as any[]).map((item, index) => (
-                            <pre key={index}>{item}</pre>
-                          ))
+                              <pre key={index}>{item}</pre>
+                            ))
                           : flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
                       </TableCell>
                     );
                   })}
