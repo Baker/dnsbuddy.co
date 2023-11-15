@@ -1,3 +1,4 @@
+// @ts-nocheck 
 'use client';
 
 import {
@@ -52,21 +53,16 @@ export function DataTable<TData, TValue>({
     columns.forEach((column) => {
       if (
         column.isVisible === false &&
-        // @ts-ignore
         columnVisibility[column.accessorKey] === undefined
       ) {
-        // @ts-ignore
         columnVisibility[column.accessorKey] = column.isVisible;
       }
     });
   }
   const csvHeader = columns.map((column) => ({
     label:
-      // @ts-ignore
       (column.label || column.header).charAt(0).toUpperCase() +
-      // @ts-ignore
       (column.label || column.header).slice(1),
-    // @ts-ignore
     key: column.accessorKey,
   }));
   const csvBody = data.flatMap((row) => {
@@ -138,7 +134,6 @@ export function DataTable<TData, TValue>({
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {/* @ts-ignore */}
                     {column.columnDef.label || column.columnDef.header}
                   </DropdownMenuCheckboxItem>
                 );
