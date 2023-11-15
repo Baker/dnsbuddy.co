@@ -50,9 +50,9 @@ export function DataTable<TData, TValue>({
 
   if (columns.length > 1) {
     columns.forEach((column) => {
-      // @ts-ignore
       if (
         column.isVisible === false &&
+        // @ts-ignore
         columnVisibility[column.accessorKey] === undefined
       ) {
         // @ts-ignore
@@ -61,9 +61,10 @@ export function DataTable<TData, TValue>({
     });
   }
   const csvHeader = columns.map((column) => ({
-    // @ts-ignore
     label:
+      // @ts-ignore
       (column.label || column.header).charAt(0).toUpperCase() +
+      // @ts-ignore
       (column.label || column.header).slice(1),
     // @ts-ignore
     key: column.accessorKey,
@@ -170,9 +171,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}
@@ -193,16 +194,12 @@ export function DataTable<TData, TValue>({
                         className='py-3 text-left dark:text-gray-300'
                       >
                         {Array.isArray(cell.getValue())
-                          ? // @ts-ignore
-                            cell
-                              .getValue()
-                              .map((item, index) => (
-                                <pre key={index}>{item}</pre>
-                              ))
-                          : flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
+                          ? (cell.getValue() as any[])
+                            .map((item, index) => (
+                              <pre key={index}>{item}</pre>
+                            ))
+                          : flexRender(cell.column.columnDef.cell, cell.getContext())
+                        }
                       </TableCell>
                     );
                   })}

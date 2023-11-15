@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
     "test:e2e": "playwright test",
     "test:e2e:debug": "DEBUG=pw:browser playwright test",
     "test:ui": "playwright test --ui"
