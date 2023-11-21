@@ -39,7 +39,7 @@ export const DnsLookupColumnDef: ExtendedColumnDef<ResponseList>[] = [
   {
     accessorKey: 'provider',
     header: ({ column }) => {
-      return <DataTableColumnHeader column={column} title='DNS Provider' />;
+      return <DataTableColumnHeader column={column} title='Provider' />;
     },
     label: 'provider',
   },

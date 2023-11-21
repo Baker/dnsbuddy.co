@@ -15,16 +15,16 @@ const ToolsList = [
     link: '/tools/bulk-dns-lookup',
   },
   {
+    name: 'WHOIS Lookup',
+    description: 'Check the WHOIS Information for a domain.',
+    link: '/tools/whois',
+  },
+  {
     name: 'Bulk FCrDNS',
     description:
       'Bulk check Forward-confirmed reverse DNS, up to 100 IP Addresses/Domains.',
     link: '/tools/bulk-fcrdns',
   },
-  // {
-  //     name: 'WhoIS',
-  //     description: 'Check the WhoIS Information for a given domain or IP Address.',
-  //     link: '/tools/whois'
-  // },
   // {
   //     name: 'DMARC Analyzer',
   //     description: 'Checks the domains DMARC record, and analyzes the current record.',

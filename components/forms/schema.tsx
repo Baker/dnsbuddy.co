@@ -43,3 +43,9 @@ export const bulkDnsLookup = z.object({
   dns_provider: z.string(),
   record_type: z.string(),
 });
+
+export const whoIsFormSchema = z.object({
+  query: z.string().toLowerCase().trim().refine(isValidDomain, {
+    message: 'The URL contains a protocol, please remove it.',
+  }),
+});
