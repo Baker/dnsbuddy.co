@@ -79,7 +79,7 @@ test.describe('verify the table loads', () => {
     await page.waitForURL(
       'http://localhost:3000/?query=example.com&record_type=TXT'
     );
-    await page.waitForLoadState()
+    await page.waitForLoadState();
   });
 
   test('with proper header & additional options', async ({ page }) => {
