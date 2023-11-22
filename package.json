@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:debug": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
     "format:check": "prettier --check .",
@@ -52,6 +53,7 @@
     "safari >=12"
   ],
   "devDependencies": {
+    "@next/bundle-analyzer": "14.0.3",
     "@playwright/test": "^1.40.0",
     "@types/node": "20.9.4",
     "@types/react": "18.2.38",

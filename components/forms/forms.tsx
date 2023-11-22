@@ -625,7 +625,7 @@ export function WhoisForm() {
   }
   return (
     <>
-      <div className='mx-auto flex max-w-2xl items-center justify-center'>
+      <div className='mx-auto flex max-w-2xl items-center justify-center px-4'>
         <div className='w-full md:w-1/2'>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className=''>
@@ -666,7 +666,7 @@ export function WhoisForm() {
         </div>
       </div>
       {response !== undefined ? (
-        <div className='mx-auto my-6 max-w-full text-left text-gray-600 dark:text-gray-300 md:max-w-4xl'>
+        <div className='mx-auto my-6 max-w-full px-4 text-left text-gray-600 dark:text-gray-300 md:max-w-4xl'>
           <div className='grid grid-cols-3 gap-4 rounded-md border bg-black/5 p-8 dark:bg-white/5'>
             <h2 className='col-span-3 text-xl text-black dark:text-white'>
               Registar Information
@@ -697,33 +697,33 @@ export function WhoisForm() {
             </span>
           </div>
           <div className='grid grid-cols-6 gap-4'>
-            <div className='col-span-4 mt-6 grid grid-cols-3 gap-4 rounded-md border bg-black/5 p-8 leading-5 dark:bg-white/5'>
-              <h2 className='col-span-3 text-xl text-black dark:text-white'>
-                Registar Information
+            <div className='col-span-6 mt-6 grid grid-cols-3 gap-4 rounded-md border bg-black/5 p-8 leading-5 dark:bg-white/5 md:col-span-4'>
+              <h2 className='col-span-6 text-xl text-black dark:text-white md:col-span-4'>
+                Registration Information
               </h2>
               <h3 className='col-span-1'>Registration Date</h3>
-              <span className='col-span-2'>
+              <span className='col-span-5 md:col-span-3'>
                 {new Date(response.createdDate).toLocaleString()}
                 <GenericToolTip
                   text={`Here is the original timestamp in UTC: ${response.createdDate}`}
                 />
               </span>
               <h3 className='col-span-1'>Updated date</h3>
-              <span className='col-span-2'>
+              <span className='col-span-5 md:col-span-3'>
                 {new Date(response.updatedDate).toLocaleString()}
                 <GenericToolTip
                   text={`Here is the original timestamp in UTC: ${response.updatedDate}`}
                 />
               </span>
               <h3 className='col-span-1'>Expiration date</h3>
-              <span className='col-span-2'>
+              <span className='col-span-5 md:col-span-3'>
                 {new Date(response.expiryDate).toLocaleString()}
                 <GenericToolTip
                   text={`Here is the original timestamp in UTC: ${response.expiryDate}`}
                 />
               </span>
             </div>
-            <div className='col-span-2 mt-6 grid grid-cols-2 gap-4 rounded-md border bg-black/5 p-8 leading-5 dark:bg-white/5'>
+            <div className='col-span-6 mt-6 grid grid-cols-2 gap-4 rounded-md border bg-black/5 p-8 leading-5 dark:bg-white/5 md:col-span-2'>
               <h2 className='col-span-2 text-xl text-black dark:text-white'>
                 Nameservers
               </h2>
