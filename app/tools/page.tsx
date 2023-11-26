@@ -16,7 +16,7 @@ const ToolsList = [
   },
   {
     name: 'WHOIS Lookup',
-    description: 'Check the WHOIS Information for a domain.',
+    description: 'Check the WHOIS Information for a domain or IP Address.',
     link: '/tools/whois',
   },
   {

@@ -21,3 +21,8 @@ export const ProviderToLabelMapping = {
   frankfurt: 'Frankfurt, DE',
   hong_kong: 'Hong Kong, CN',
 };
+
+export const WhoIsTypes = {
+  IP_ADDRESS: 'IP Address',
+  DOMAIN: 'Domain',
+};

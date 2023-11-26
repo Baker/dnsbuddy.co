@@ -30,6 +30,7 @@ import { useTransition, useState, useEffect } from 'react';
 import {
   ProviderToLabelMapping,
   ProviderToUrlMapping,
+  WhoIsTypes,
 } from '@/lib/constants/api';
 import {
   BulkResponseList,
@@ -50,9 +51,11 @@ import {
   BulkFCrDNSColumnDef,
   DnsLookupColumnDef,
 } from '@/components/tables/columns';
-import { DomainWhoisData } from '@/lib/types/whois';
-import Link from 'next/link';
-import GenericToolTip from '../tooltip';
+import { DomainWhoisData, IPWhoisData } from '@/lib/types/whois';
+import {
+  DomainWhoisResponse,
+  IpAddressWhoisReponse,
+} from '@/components/forms/responses';
 
 export function DnsLookUpForm() {
   const router = useRouter();
@@ -98,7 +101,7 @@ export function DnsLookUpForm() {
   const form = useForm<z.infer<typeof dnsLookupFormSchema>>({
     resolver: zodResolver(dnsLookupFormSchema),
     defaultValues: {
-      query: searchParams.get('query') || undefined,
+      query: searchParams.get('query') || '',
       record_type: recordValue,
     },
     mode: 'onChange',
@@ -596,18 +599,25 @@ export function BulkDnsLookupForm() {
 export function WhoisForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [response, setResponse] = useState<DomainWhoisData>();
+  const [response, setResponse] = useState<DomainWhoisData | IPWhoisData>();
+  const [domainType, setDomainType] = useState<Boolean>();
   const searchParams = useSearchParams();
 
   const form = useForm<z.infer<typeof whoIsFormSchema>>({
     resolver: zodResolver(whoIsFormSchema),
     defaultValues: {
-      query: searchParams.get('query') || undefined,
+      query: searchParams.get('query') || '',
+      type: searchParams.get('type') || '',
     },
     mode: 'onChange',
   });
 
   async function onSubmit(values: z.infer<typeof whoIsFormSchema>) {
+    if (response !== undefined) {
+      // Handle Multiple queries easier, by resetting state.
+      setResponse(undefined);
+    }
+
     startTransition(async () => {
       const query = await fetch(`/api/whois`, {
         method: 'POST',
@@ -616,10 +626,12 @@ export function WhoisForm() {
         },
         body: JSON.stringify(values),
       });
-
+      setDomainType(
+        WhoIsTypes[values.type as keyof typeof WhoIsTypes] === WhoIsTypes.DOMAIN
+      );
       setResponse(await query.json());
     });
-    router.push(`/tools/whois?query=${values.query}`, {
+    router.push(`/tools/whois?query=${values.query}&type=${values.type}`, {
       scroll: false,
     });
   }
@@ -651,7 +663,39 @@ export function WhoisForm() {
                   </FormItem>
                 )}
               />
-              <div className='inline-flex w-full justify-end pt-3'>
+              <div className='mb-1 inline-flex w-full pt-3'>
+                <FormField
+                  control={form.control}
+                  name='type'
+                  render={({ field }) => (
+                    <FormItem className='mr-6 w-3/4 text-gray-600 dark:text-gray-200 '>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        disabled={isPending}
+                        name='type'
+                      >
+                        <FormControl>
+                          <SelectTrigger className='bg-black/5 dark:bg-white/5'>
+                            <SelectValue placeholder='Select type' />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.keys(WhoIsTypes).map((value: string) => (
+                            <SelectItem key={value} value={value}>
+                              {WhoIsTypes[value as keyof typeof WhoIsTypes]}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription className='sr-only'>
+                        This is where you select the type you want to look up
+                        the WHOIS data for.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <Button
                   type='submit'
                   disabled={isPending}
@@ -666,100 +710,11 @@ export function WhoisForm() {
         </div>
       </div>
       {response !== undefined ? (
-        <div className='mx-auto my-6 max-w-full px-4 text-left text-gray-600 dark:text-gray-300 md:max-w-4xl'>
-          <div className='grid grid-cols-3 gap-4 rounded-md border bg-black/5 p-8 dark:bg-white/5'>
-            <h2 className='col-span-3 text-xl text-black dark:text-white'>
-              Registar Information
-            </h2>
-            <h3 className='col-span-1'>Registar</h3>
-            <span className='col-span-2 '>{response.registar}</span>
-            <h3 className='col-span-1'>Referral URL</h3>
-            <span className='col-span-2'>
-              <Link className='underline' href={response.registarURL}>
-                {response.registarURL}
-              </Link>
-            </span>
-            <h3 className='col-span-1'>WHOIS Server</h3>
-            <span className='col-span-2'>{response.registarWHOISServer}</span>
-            <h3 className='col-span-1'>Status</h3>
-            <span className='col-span-2'>
-              {Array.isArray(response.domainStatus) ? (
-                response.domainStatus.map((item, index) => (
-                  <pre key={index} className='whitespace-pre-line'>
-                    {item}
-                  </pre>
-                ))
-              ) : (
-                <pre className='whitespace-pre-line'>
-                  {response.domainStatus}
-                </pre>
-              )}
-            </span>
-          </div>
-          <div className='grid grid-cols-6 gap-4'>
-            <div className='col-span-6 mt-6 grid grid-cols-3 gap-4 rounded-md border bg-black/5 p-8 leading-5 dark:bg-white/5 md:col-span-4'>
-              <h2 className='col-span-6 text-xl text-black dark:text-white md:col-span-4'>
-                Registration Information
-              </h2>
-              <h3 className='col-span-1'>Registration Date</h3>
-              <span className='col-span-5 md:col-span-3'>
-                {new Date(response.createdDate).toLocaleString()}
-                <GenericToolTip
-                  text={`Here is the original timestamp in UTC: ${response.createdDate}`}
-                />
-              </span>
-              <h3 className='col-span-1'>Updated date</h3>
-              <span className='col-span-5 md:col-span-3'>
-                {new Date(response.updatedDate).toLocaleString()}
-                <GenericToolTip
-                  text={`Here is the original timestamp in UTC: ${response.updatedDate}`}
-                />
-              </span>
-              <h3 className='col-span-1'>Expiration date</h3>
-              <span className='col-span-5 md:col-span-3'>
-                {new Date(response.expiryDate).toLocaleString()}
-                <GenericToolTip
-                  text={`Here is the original timestamp in UTC: ${response.expiryDate}`}
-                />
-              </span>
-            </div>
-            <div className='col-span-6 mt-6 grid grid-cols-2 gap-4 rounded-md border bg-black/5 p-8 leading-5 dark:bg-white/5 md:col-span-2'>
-              <h2 className='col-span-2 text-xl text-black dark:text-white'>
-                Nameservers
-              </h2>
-              <p>
-                {response.nameServer.map((item, index) => (
-                  <pre key={index} className=''>
-                    {item}
-                  </pre>
-                ))}
-              </p>
-            </div>
-          </div>
-          <details>
-            <summary>Raw Whois</summary>
-            <pre>
-              {/* TODO: Need to fix this for the Array still but its late. */}
-              {Object.keys(response.raw).map((key: any) => {
-                if (Array.isArray(response.raw[key])) {
-                  [...(response.raw[key] as string)].map(
-                    (item: string, index: number) => (
-                      <pre key={index} className='whitespace-pre-line'>
-                        {item}
-                      </pre>
-                    )
-                  );
-                } else {
-                  return (
-                    <pre key={key}>
-                      {key}: {response.raw[key]}
-                    </pre>
-                  );
-                }
-              })}
-            </pre>
-          </details>
-        </div>
+        domainType ? (
+          <DomainWhoisResponse response={response as DomainWhoisData} />
+        ) : !domainType ? (
+          <IpAddressWhoisReponse response={response as IPWhoisData} />
+        ) : null
       ) : null}
     </>
   );
