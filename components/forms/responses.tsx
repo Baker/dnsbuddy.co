@@ -81,7 +81,9 @@ export function DomainWhoisResponse({
       <details className='mt-4'>
         <summary>Raw Whois</summary>
         {Object.keys(response.raw).map((key: string, index: number) => {
-          {/* @ts-ignore */}
+          {
+            /* @ts-ignore */
+          }
           if (Array.isArray(response.raw[key])) {
             return (
               <>
