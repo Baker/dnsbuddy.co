@@ -2,7 +2,6 @@ import { DomainWhoisData, IPWhoisData } from '@/lib/types/whois';
 import Link from 'next/link';
 import GenericToolTip from '@/components/tooltip';
 import Image from 'next/image';
-import { number } from 'zod';
 
 export function DomainWhoisResponse({
   response,
@@ -81,9 +80,7 @@ export function DomainWhoisResponse({
       <details className='mt-4'>
         <summary>Raw Whois</summary>
         {Object.keys(response.raw).map((key: string, index: number) => {
-          {
-            /* @ts-ignore */
-          }
+          // @ts-ignore
           if (Array.isArray(response.raw[key])) {
             return (
               <>
