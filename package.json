@@ -1,6 +1,6 @@
 {
   "name": "dnsbuddy.com",
-  "version": "0.1.0",
+  "version": "1.1.1",
   "homepage": "https://github.com/Baker/dnsbuddy.com",
   "private": true,
   "scripts": {
@@ -13,7 +13,8 @@
     "format:write": "prettier --write .",
     "test:e2e": "playwright test",
     "test:e2e:debug": "DEBUG=pw:browser playwright test",
-    "test:ui": "playwright test --ui"
+    "test:ui": "playwright test --ui",
+    "test:ui:debug": "DEBUG=pw:browser playwright test --ui"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",

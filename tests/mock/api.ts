@@ -24,7 +24,7 @@ export const exampleDNSResponseItem: ResponseItem = {
   },
 };
 
-export const DomainWhoisResponse: DomainWhoisData = {
+export const exampleDomainWhoisResponse: DomainWhoisData = {
   domainStatus: [
     'clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited',
     'clientTransferProhibited https://icann.org/epp#clientTransferProhibited',
@@ -41,7 +41,7 @@ export const DomainWhoisResponse: DomainWhoisData = {
   raw: ['This is an example response.'],
 };
 
-export const IpAddressWhoisResponse: IPWhoisData = {
+export const exampleIpAddressV4WhoisResponse: IPWhoisData = {
   range: '156.70.12.0 - 156.70.13.255',
   route: '156.70.12.0/23',
   NetName: 'MS-820',
@@ -67,3 +67,6 @@ export const IpAddressWhoisResponse: IPWhoisData = {
     'This is an example response.'
   ],
 };
+
+export const exampleIpAddressV6WhoisResponse: IPWhoisData = {
+}

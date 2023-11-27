@@ -602,6 +602,26 @@ export function WhoisForm() {
   const [response, setResponse] = useState<DomainWhoisData | IPWhoisData>();
   const [domainType, setDomainType] = useState<Boolean>();
   const searchParams = useSearchParams();
+  const whoisType = searchParams.get('type')
+
+  useEffect(() => {
+    if (
+      !WhoIsTypes.hasOwnProperty(
+        whoisType as keyof typeof WhoIsTypes
+      ) &&
+      whoisType != null
+    ) {
+      router.push(
+        `/tools/whois${
+          searchParams.get('query') != null
+            ? `?query=${searchParams.get('query')}`
+            : ''
+        }`,
+        { scroll: false }
+      );
+    }
+  }, []);
+
 
   const form = useForm<z.infer<typeof whoIsFormSchema>>({
     resolver: zodResolver(whoIsFormSchema),
