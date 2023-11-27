@@ -53,7 +53,7 @@ jobs:
           node-version: 18
           cache: 'pnpm'
       - name: Run Prettier
-        run: pnpm exec prettier --write  .
+        run: pnpm exec prettier --check .
 
   playwright:
     timeout-minutes: 60
