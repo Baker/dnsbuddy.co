@@ -4,6 +4,7 @@ interface organisation {
   Address: string;
   City: string;
   StateProv: string;
+  PostalCode: string;
   Country: string;
   RegDate: string;
   Updated: string;
@@ -11,51 +12,19 @@ interface organisation {
   Ref: string;
 }
 
-interface noc {
-  OrgNOCHandle: string;
-  OrgNOCName: string;
-  OrgNOCPhone: string;
-  OrgNOCEmail: string;
-  OrgNOCRef: string;
-}
-
-interface abuse {
-  OrgAbuseHandle: string;
-  OrgAbuseName: string;
-  OrgAbusePhone: string;
-  OrgAbuseEmail: string;
-  OrgAbuseRef: string;
-}
-
-interface technical {
-  OrgTechHandle: string;
-  OrgTechName: string;
-  OrgTechPhone: string;
-  OrgTechEmail: string;
-  OrgTechRef: string;
-}
-
-interface routing {
-  OrgRoutingHandle: string;
-  OrgRoutingName: string;
-  OrgRoutingPhone: string;
-  OrgRoutingEmail: string;
-  OrgRoutingRef: string;
-}
-
-interface dns {
-  OrgDNSHandle: string;
-  OrgDNSName: string;
-  OrgDNSPhone: string;
-  OrgDNSEmail: string;
-  OrgDNSRef: string;
+interface contact {
+  Handle: string;
+  Name: string;
+  Phone: string;
+  Email: string;
+  Ref: string;
 }
 
 export interface IPWhoisData {
   range: string;
   route: string;
   NetName: string;
-  NetType: string;
+  NetType?: string;
   Parent: string;
   asn: string;
   Organization: string;
@@ -65,11 +34,11 @@ export interface IPWhoisData {
   ResourceLink?: string;
   ReferralServer?: string;
   organisation: organisation;
-  contactNoc?: noc;
-  contactAbuse?: abuse;
-  contactTechnical?: technical;
-  contactRouting: routing;
-  contactDNS: dns;
+  contactNoc?: contact;
+  contactAbuse?: contact;
+  contactTechnical?: contact;
+  contactRouting?: contact;
+  contactDNS?: contact;
   text: string[];
 }
 

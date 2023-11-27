@@ -710,12 +710,16 @@ export function WhoisForm() {
         </div>
       </div>
       {response !== undefined ? (
-        domainType ? (
-          <DomainWhoisResponse response={response as DomainWhoisData} />
-        ) : !domainType ? (
-          <IpAddressWhoisReponse response={response as IPWhoisData} />
-        ) : null
-      ) : null}
+          Object.keys(response).length === 0 ? (
+            <p className='mx-auto my-6 rounded-md border bg-black/5 p-8 dark:bg-white/5 text-gray-600 dark:text-gray-300 md:max-w-4xl'>No data available, this could be due to an invalid domain, or IP Address.</p>
+          ) : (
+            domainType ? (
+              <DomainWhoisResponse response={response as DomainWhoisData} />
+            ) : !domainType ? (
+              <IpAddressWhoisReponse response={response as IPWhoisData} />
+            ) : null
+          )
+        ) : null}
     </>
   );
 }

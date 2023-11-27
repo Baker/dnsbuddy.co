@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { exampleResponseItem } from '@/tests/mock/api';
+import { exampleDNSResponseItem } from '@/tests/mock/api';
 import { ProviderToLabelMapping } from '@/lib/constants/api';
 
 // Reusable setup code
@@ -40,7 +40,7 @@ test('can use DNS Search', async ({ page }) => {
   await page.route('*/**/api/**', async (route) => {
     await route.fulfill({
       contentType: 'application/json',
-      json: exampleResponseItem,
+      json: exampleDNSResponseItem,
     });
   });
 
@@ -70,7 +70,7 @@ test.describe('verify the table loads', () => {
     await page.route('*/**/api/**', async (route) => {
       await route.fulfill({
         contentType: 'application/json',
-        json: exampleResponseItem,
+        json: exampleDNSResponseItem,
       });
     });
 

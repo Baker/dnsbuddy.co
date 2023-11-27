@@ -2,6 +2,8 @@ import * as z from 'zod';
 import {
   bulkLengthCheck,
   isValidDomain,
+  isValidIpAddressV4,
+  isValidIpAddressV6,
   isValidUrl,
   stringToList,
 } from '@/lib/utils';
@@ -51,19 +53,58 @@ export const bulkDnsLookup = z.object({
   record_type: z.string(),
 });
 
-export const whoIsFormSchema = z.object({
-  query: z
-    .string()
-    .toLowerCase()
-    .trim()
-    .min(3, { message: 'The URL is not long enough.' })
-    .refine(isValidDomain, {
-      message: 'The URL contains a protocol, please remove it.',
-    }),
-  type: z
-    .string()
-    .min(3, { message: 'Please select a valid type.' })
-    .refine((val) => Object.keys(WhoIsTypes).includes(val), {
-      message: 'The type is not a valid WhoIs type.',
-    }),
-});
+export const whoIsFormSchema = z
+  .object({
+    query: z
+      .string()
+      .toLowerCase()
+      .trim()
+      .min(3, { message: 'The query is not long enough.' })
+      .refine(isValidDomain, {
+        message: 'The URL contains a protocol, please remove it.',
+      }),
+    type: z
+      .string()
+      .min(3, { message: 'Please select a valid type.' })
+      .refine((val) => Object.keys(WhoIsTypes).includes(val), {
+        message: 'The type is not a valid WhoIs type.',
+      }),
+  })
+  .refine(
+    // Content this is checking if the IP is a valid IPv4 or IPv6 based on the type selected.
+    (schema) => {
+      if (
+        WhoIsTypes[schema.type as keyof typeof WhoIsTypes] ===
+        WhoIsTypes.IP_ADDRESS
+      ) {
+        return (
+          isValidIpAddressV4(schema.query) || isValidIpAddressV6(schema.query)
+        );
+      } else {
+        return true;
+      }
+    },
+    {
+      message: 'The IP Addresss is either an invalid IPv4 or IPv6.',
+      path: ['query'],
+    }
+  )
+  .refine(
+    // Content this is checking if the Domain is a valid IPv4 or IPv6 based on the type selected and if so directs them to select IP Address.
+    (schema) => {
+      if (
+        WhoIsTypes[schema.type as keyof typeof WhoIsTypes] === WhoIsTypes.DOMAIN
+      ) {
+        return !(
+          isValidIpAddressV4(schema.query) || isValidIpAddressV6(schema.query)
+        );
+      } else {
+        return true;
+      }
+    },
+    {
+      message:
+        'The Domain is either an IPv4 or IPv6, please select IP Address below.',
+      path: ['query'],
+    }
+  );

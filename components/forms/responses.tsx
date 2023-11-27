@@ -68,13 +68,13 @@ export function DomainWhoisResponse({
           <h2 className='col-span-2 text-xl text-black dark:text-white'>
             Nameservers
           </h2>
-          <p>
+          <span>
             {response.nameServer.map((item, index) => (
               <pre key={index} className=''>
                 {item}
               </pre>
             ))}
-          </p>
+          </span>
         </div>
       </div>
       <details className='mt-4'>
@@ -121,7 +121,7 @@ export function IpAddressWhoisReponse({ response }: { response: IPWhoisData }) {
           <span className='col-span-2 '>{response.NetName}</span>
           <h3 className='col-span-1'>Range</h3>
           <span className='col-span-2'>
-            <Link className='underline' href={response.Ref}>
+            <Link className='underline break-all' href={response.Ref}>
               {response.range}
             </Link>
           </span>
@@ -154,8 +154,10 @@ export function IpAddressWhoisReponse({ response }: { response: IPWhoisData }) {
           <span className='col-span-2'>{response.organisation.Address}</span>
           <h3 className='col-span-1'>City</h3>
           <span className='col-span-2'>{response.organisation.City}</span>
-          <h3 className='col-span-1'>StateProv</h3>
+          <h3 className='col-span-1'>State/Providence</h3>
           <span className='col-span-2'>{response.organisation.StateProv}</span>
+          <h3 className='col-span-1'>Postal Code</h3>
+          <span className='col-span-2'>{response.organisation.PostalCode}</span>
           <h3 className='col-span-1'>Country</h3>
           <span className='col-span-2'>
             <Image
@@ -173,128 +175,83 @@ export function IpAddressWhoisReponse({ response }: { response: IPWhoisData }) {
           <span className='col-span-2'>{response.Updated}</span>
         </div>
       </div>
-      <div className='mt-4 grid grid-cols-9 gap-4'>
+      <div className='mt-4 grid grid-cols-6 gap-4'>
         {response.contactAbuse && (
-          <div className='col-span-9 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 dark:bg-white/5 md:col-span-3'>
-            <h2 className='col-span-3 text-xl text-black dark:text-white'>
-              Abuse Information
-            </h2>
-            <h3 className='col-span-1'>Handle</h3>
-            <span className='col-span-2 '>
-              <Link
-                className='underline'
-                href={response.contactAbuse?.OrgAbuseRef || '#'}
-              >
-                {response.contactAbuse?.OrgAbuseHandle}
-              </Link>
-            </span>
-            <h3 className='col-span-1'>Phone</h3>
-            <span className='col-span-2 '>
-              {response.contactAbuse?.OrgAbusePhone}
-            </span>
-            <h3 className='col-span-1'>Email</h3>
-            <span className='col-span-2 break-all '>
-              {response.contactAbuse?.OrgAbuseEmail}
-            </span>
-          </div>
+          <SmallSquare
+            title='Abuse Information'
+            link={response.contactAbuse?.Handle}
+            href={response.contactAbuse?.Ref}
+            phone={response.contactAbuse?.Phone}
+            email={response.contactAbuse?.Email}
+          />
         )}
         {response.contactTechnical && (
-          <div className='col-span-9 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 dark:bg-white/5 md:col-span-3'>
-            <h2 className='col-span-3 text-xl text-black dark:text-white'>
-              Technical Information
-            </h2>
-            <h3 className='col-span-1'>Handle</h3>
-            <span className='col-span-2 '>
-              <Link
-                className='underline'
-                href={response.contactTechnical?.OrgTechRef || '#'}
-              >
-                {response.contactTechnical?.OrgTechHandle}
-              </Link>
-            </span>
-            <h3 className='col-span-1'>Phone</h3>
-            <span className='col-span-2 '>
-              {response.contactTechnical?.OrgTechPhone}
-            </span>
-            <h3 className='col-span-1'>Email</h3>
-            <span className='col-span-2 break-all '>
-              {response.contactTechnical?.OrgTechEmail}
-            </span>
-          </div>
+          <SmallSquare
+            title='Technical Information'
+            link={response.contactTechnical?.Handle}
+            href={response.contactTechnical?.Ref}
+            phone={response.contactTechnical?.Phone}
+            email={response.contactTechnical?.Email}
+          />
         )}
-        {Object.keys(response.contactRouting).length > 0 && (
-          <div className='col-span-9 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 dark:bg-white/5 md:col-span-3'>
-            <h2 className='col-span-3 text-xl text-black dark:text-white'>
-              Routing Information
-            </h2>
-            <h3 className='col-span-1'>Handle</h3>
-            <span className='col-span-2 '>
-              <Link
-                className='underline'
-                href={response.contactRouting?.OrgRoutingRef || '#'}
-              >
-                {response.contactRouting?.OrgRoutingHandle}
-              </Link>
-            </span>
-            <h3 className='col-span-1'>Phone</h3>
-            <span className='col-span-2 '>
-              {response.contactRouting?.OrgRoutingPhone}
-            </span>
-            <h3 className='col-span-1'>Email</h3>
-            <span className='col-span-2 break-all '>
-              {response.contactRouting?.OrgRoutingEmail}
-            </span>
-          </div>
+        {response.contactRouting && Object.keys(response.contactRouting).length > 0 && (
+          <SmallSquare
+            title='Routing Information'
+            link={response.contactRouting?.Handle}
+            href={response.contactRouting?.Ref}
+            phone={response.contactRouting?.Phone}
+            email={response.contactRouting?.Email}
+          />
         )}
         {response.contactNoc && (
-          <div className='col-span-9 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 dark:bg-white/5 md:col-span-3'>
-            <h2 className='col-span-3 text-xl text-black dark:text-white'>
-              NOC Information
-            </h2>
-            <h3 className='col-span-1'>Handle</h3>
-            <span className='col-span-2 '>
-              <Link
-                className='underline'
-                href={response.contactNoc?.OrgNOCRef || '#'}
-              >
-                {response.contactNoc?.OrgNOCHandle}
-              </Link>
-            </span>
-            <h3 className='col-span-1'>Phone</h3>
-            <span className='col-span-2 '>
-              {response.contactNoc?.OrgNOCPhone}
-            </span>
-            <h3 className='col-span-1'>Email</h3>
-            <span className='col-span-2 break-all '>
-              {response.contactNoc?.OrgNOCEmail}
-            </span>
-          </div>
+          <SmallSquare
+            title='NOC Information'
+            link={response.contactNoc?.Handle}
+            href={response.contactNoc?.Ref}
+            phone={response.contactNoc?.Phone}
+            email={response.contactNoc?.Email}
+          />
         )}
-        {Object.keys(response.contactDNS).length > 0 && (
-          <div className='col-span-9 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 dark:bg-white/5 md:col-span-3'>
-            <h2 className='col-span-3 text-xl text-black dark:text-white'>
-              DNS Information
-            </h2>
-            <h3 className='col-span-1'>Handle</h3>
-            <span className='col-span-2 '>
-              <Link
-                className='underline'
-                href={response.contactDNS?.OrgDNSRef || '#'}
-              >
-                {response.contactDNS?.OrgDNSHandle}
-              </Link>
-            </span>
-            <h3 className='col-span-1'>Phone</h3>
-            <span className='col-span-2 '>
-              {response.contactDNS?.OrgDNSPhone}
-            </span>
-            <h3 className='col-span-1'>Email</h3>
-            <span className='col-span-2 break-all '>
-              {response.contactDNS?.OrgDNSEmail}
-            </span>
-          </div>
+        {response.contactDNS && Object.keys(response.contactDNS).length > 0 && (
+          <SmallSquare
+            title='DNS Information'
+            link={response.contactDNS?.Handle}
+            href={response.contactDNS?.Ref}
+            phone={response.contactDNS?.Phone}
+            email={response.contactDNS?.Email}
+          />
         )}
       </div>
+    </div>
+  );
+}
+
+function SmallSquare({
+  title,
+  link,
+  href,
+  phone,
+  email,
+}: {
+  title: string;
+  link: string;
+  href: string;
+  phone: string;
+  email: string;
+}) {
+  return (
+    <div className='col-span-9 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 dark:bg-white/5 md:col-span-3'>
+      <h2 className='col-span-3 text-xl text-black dark:text-white'>{title}</h2>
+      <h3 className='col-span-1'>Handle</h3>
+      <span className='col-span-2 '>
+        <Link className='underline' href={href || '#'}>
+          {link}
+        </Link>
+      </span>
+      <h3 className='col-span-1'>Phone</h3>
+      <span className='col-span-2 '>{phone}</span>
+      <h3 className='col-span-1'>Email</h3>
+      <span className='col-span-2 break-all '>{email}</span>
     </div>
   );
 }

@@ -49,3 +49,16 @@ test('Navigate to the DNS Record Lookup page.', async ({ page }) => {
   await page.waitForURL(expectedUrl);
   expect(page.url()).toEqual(expectedUrl);
 });
+
+test('Navigate to the Whois Lookup page.', async ({ page }) => {
+  const expectedUrl = 'http://localhost:3000/tools/whois';
+  await page.goto('http://localhost:3000/');
+  await page.getByRole('link', { name: 'Other Tools' }).click();
+  await page
+    .getByRole('link', {
+      name: 'WHOIS Lookup Check the WHOIS Information for a domain or IP Address.',
+    })
+    .click();
+  await page.waitForURL(expectedUrl);
+  expect(page.url()).toEqual(expectedUrl);
+});

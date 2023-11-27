@@ -40,9 +40,14 @@ export const bulkLengthCheck = (string: string): boolean => {
   return list.length <= 100;
 };
 
-export const isValidIpAddress = (ipAddress: string): boolean => {
+export const isValidIpAddressV4 = (ipAddress: string): boolean => {
   const ipRegex = /^([0-9]{1,3}\.){3}[0-9]{1,3}$/;
   return ipRegex.test(ipAddress);
+};
+
+export const isValidIpAddressV6 = (ipAddress: string): boolean => {
+  const ipRegexV6 = /^([0-9a-fA-F]{1,4}:){7}([0-9a-fA-F]{1,4})$/;
+  return ipRegexV6.test(ipAddress);
 };
 
 export const timeUnix = (): number => {
