@@ -15,7 +15,9 @@ export const getDnsData = async (
     );
 
     if (!response.ok) {
-      console.error(`Error! status=${response.status} provider=${dns_url} query=${query}`);
+      console.error(
+        `Error! status=${response.status} provider=${dns_url} query=${query}`
+      );
     }
 
     const data = await response.json();

@@ -11,8 +11,7 @@ const ToolsList = [
   },
   {
     name: 'Bulk DNS Record Lookup',
-    description:
-      'Bulk check DNS Record, for up to 100 IP Addresses/Domains.',
+    description: 'Bulk check DNS Record, for up to 100 IP Addresses/Domains.',
     link: '/tools/bulk-dns-lookup',
   },
   {
@@ -46,26 +45,29 @@ const ToolsList = [
 
 export const metadata: Metadata = {
   title: 'Other Tools | DnsBuddy',
-  description: 'This page contains a list of the various other DNS related tools we maintain today.',
+  description:
+    'This page contains a list of the various other DNS related tools we maintain today.',
   twitter: {
     card: 'summary',
     title: 'Other Tools',
-    description: 'This page contains a list of the various other DNS related tools we maintain today.',
+    description:
+      'This page contains a list of the various other DNS related tools we maintain today.',
   },
   openGraph: {
     title: 'Other Tools',
-    description: 'This page contains a list of the various other DNS related tools we maintain today.',
+    description:
+      'This page contains a list of the various other DNS related tools we maintain today.',
     url: 'https://DnsBuddy.co',
     siteName: 'DnsBuddy',
     locale: 'en_US',
     type: 'website',
-  }
+  },
 };
 
 export default function Tools() {
   return (
     <main className='relative isolate overflow-hidden'>
-      <div className='max-w-4xl mx-auto px-6 pt-56 text-center lg:px-8'>
+      <div className='mx-auto max-w-4xl px-6 pt-56 text-center lg:px-8'>
         <h1 className='text-3xl font-bold tracking-tight text-black dark:text-white sm:text-5xl'>
           Tools
         </h1>

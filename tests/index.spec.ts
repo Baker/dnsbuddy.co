@@ -7,10 +7,13 @@ const setup = async (page: Page) => {
   await page.goto('http://localhost:3000/');
   await page.getByPlaceholder('example.com').click();
   await page.getByPlaceholder('example.com').fill('example.com');
-  const optionToSelect = await page.locator('option', { hasText: 'TXT' }).textContent();
-  await page.locator('select').selectOption({ label: optionToSelect as string });
+  const optionToSelect = await page
+    .locator('option', { hasText: 'TXT' })
+    .textContent();
+  await page
+    .locator('select')
+    .selectOption({ label: optionToSelect as string });
 };
-
 
 test('has title', async ({ page }) => {
   await page.goto('http://localhost:3000');
@@ -34,8 +37,11 @@ test('can toggle light mode', async ({ page }) => {
 });
 
 test('can use DNS Search', async ({ page }) => {
-  await page.route('*/**/api/**', async route => {
-    await route.fulfill({ contentType: 'application/json', json: exampleResponseItem });
+  await page.route('*/**/api/**', async (route) => {
+    await route.fulfill({
+      contentType: 'application/json',
+      json: exampleResponseItem,
+    });
   });
 
   await setup(page);
@@ -61,13 +67,18 @@ test('verifies the page removes invalid record_types', async ({ page }) => {
 
 test.describe('verify the table loads', () => {
   test.beforeEach(async ({ page }) => {
-    await page.route('*/**/api/**', async route => {
-      await route.fulfill({ contentType: 'application/json', json: exampleResponseItem });
+    await page.route('*/**/api/**', async (route) => {
+      await route.fulfill({
+        contentType: 'application/json',
+        json: exampleResponseItem,
+      });
     });
 
     await setup(page);
     await page.getByRole('button', { name: 'Dig' }).click();
-    await page.waitForURL('http://localhost:3000/?query=example.com&record_type=TXT');
+    await page.waitForURL(
+      'http://localhost:3000/?query=example.com&record_type=TXT'
+    );
   });
 
   test('with proper header & additional options', async ({ page }) => {
@@ -79,9 +90,11 @@ test.describe('verify the table loads', () => {
   });
 
   test('with proper locations', async ({ page }) => {
-    const dnsProviders = Object.values(ProviderToLabelMapping)
+    const dnsProviders = Object.values(ProviderToLabelMapping);
     for (const dnsProvider in dnsProviders) {
-      expect(await page.getByText(dnsProviders[dnsProvider]).isVisible()).toBe(true);
+      expect(await page.getByText(dnsProviders[dnsProvider]).isVisible()).toBe(
+        true
+      );
     }
   });
 });

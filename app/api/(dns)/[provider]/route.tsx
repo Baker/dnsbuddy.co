@@ -10,7 +10,8 @@ export async function POST(
   if (provider) {
     try {
       const { record_type, query } = await request.json();
-      const dnsUrl = ProviderToUrlMapping[provider as keyof typeof ProviderToUrlMapping];
+      const dnsUrl =
+        ProviderToUrlMapping[provider as keyof typeof ProviderToUrlMapping];
       if (record_type === 'PTR' || record_type === 12) {
         // For PTR Lookups we need to reverse the IP Address.
         const ip = query.split('.').reverse().join('.');
@@ -18,7 +19,6 @@ export async function POST(
         const dnsData = await getDnsData(reverseIp, record_type, dnsUrl);
         const success = dnsData.Status === 0;
         return NextResponse.json({ success, data: dnsData });
-
       } else {
         const dnsData = await getDnsData(query, record_type, dnsUrl);
         const success = dnsData.Status === 0;
@@ -28,6 +28,6 @@ export async function POST(
       return NextResponse.json({ success: false, data: error });
     }
   } else {
-    return NextResponse.json({ success: false, data: 'Invalid Provider' })
+    return NextResponse.json({ success: false, data: 'Invalid Provider' });
   }
 }

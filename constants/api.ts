@@ -20,4 +20,4 @@ export const ProviderToLabelMapping = {
   san_jose: 'San Jose, US',
   frankfurt: 'Frankfurt, DE',
   hong_kong: 'Hong Kong, CN',
-}
+};
