@@ -52,5 +52,4 @@ export interface DomainWhoisData {
   createdDate: string;
   updatedDate: string;
   expiryDate: string;
-  raw: string[];
 }

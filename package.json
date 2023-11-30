@@ -14,7 +14,8 @@
     "test:e2e": "playwright test",
     "test:e2e:debug": "DEBUG=pw:browser playwright test",
     "test:ui": "playwright test --ui",
-    "test:ui:debug": "DEBUG=pw:browser playwright test --ui"
+    "test:ui:debug": "DEBUG=pw:browser playwright test --ui",
+    "postbuild": "next-sitemap"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -34,6 +35,7 @@
     "clsx": "^2.0.0",
     "lucide-react": "^0.292.0",
     "next": "14.0.3",
+    "next-sitemap": "^4.2.3",
     "next-themes": "^0.2.1",
     "react": "18.2.0",
     "react-csv": "^2.2.2",

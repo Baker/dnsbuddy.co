@@ -2,15 +2,15 @@ import { DnsLookUpForm } from '@/components/forms/forms';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'DnsBuddy | Index',
+  title: 'DnsBuddy | DNS Lookup',
   description: 'Your friendly neighborhood DNS lookup tool.',
   twitter: {
     card: 'summary',
-    title: 'Index',
+    title: 'DNS Lookup',
     description: 'Your friendly neighborhood DNS lookup tool.',
   },
   openGraph: {
-    title: 'Index',
+    title: 'DNS Lookup',
     description: 'Your friendly neighborhood DNS lookup tool.',
     url: 'https://DnsBuddy.co',
     siteName: 'DnsBuddy',
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
+export default function DnsLookup() {
   return (
     <main className='relative isolate overflow-hidden'>
       <div className='mx-auto px-6 pt-56 text-center lg:px-8'>
@@ -30,7 +30,7 @@ export default function Home() {
           Making DNS Lookups, cleaner, easier and faster in one place.
         </p>
         <div className='mt-10'>
-          <DnsLookUpForm path={'/'} />
+          <DnsLookUpForm path={'/tools/dns-lookup'} />
         </div>
       </div>
     </main>

@@ -77,32 +77,6 @@ export function DomainWhoisResponse({
           </span>
         </div>
       </div>
-      <details className='mt-4'>
-        <summary>Raw Whois</summary>
-        {Object.keys(response.raw).map((key: string, index: number) => {
-          // @ts-ignore
-          if (Array.isArray(response.raw[key])) {
-            return (
-              <>
-                <pre key={index.toString()}>{key}:</pre>
-                {/* @ts-ignore */}
-                {response.raw[key].map((item: string, innerIndex: number) => (
-                  <pre key={innerIndex} className='text-no-wrap'>
-                    {item}:
-                  </pre>
-                ))}
-              </>
-            );
-          } else {
-            return (
-              <pre key={index}>
-                {/* @ts-ignore */}
-                {key}: {response.raw[key]}
-              </pre>
-            );
-          }
-        })}
-      </details>
     </div>
   );
 }
@@ -121,7 +95,7 @@ export function IpAddressWhoisReponse({ response }: { response: IPWhoisData }) {
           <span className='col-span-2 '>{response.NetName}</span>
           <h3 className='col-span-1'>Range</h3>
           <span className='col-span-2'>
-            <Link className='underline break-all' href={response.Ref}>
+            <Link className='break-all underline' href={response.Ref}>
               {response.range}
             </Link>
           </span>
@@ -194,15 +168,16 @@ export function IpAddressWhoisReponse({ response }: { response: IPWhoisData }) {
             email={response.contactTechnical?.Email}
           />
         )}
-        {response.contactRouting && Object.keys(response.contactRouting).length > 0 && (
-          <SmallSquare
-            title='Routing Information'
-            link={response.contactRouting?.Handle}
-            href={response.contactRouting?.Ref}
-            phone={response.contactRouting?.Phone}
-            email={response.contactRouting?.Email}
-          />
-        )}
+        {response.contactRouting &&
+          Object.keys(response.contactRouting).length > 0 && (
+            <SmallSquare
+              title='Routing Information'
+              link={response.contactRouting?.Handle}
+              href={response.contactRouting?.Ref}
+              phone={response.contactRouting?.Phone}
+              email={response.contactRouting?.Email}
+            />
+          )}
         {response.contactNoc && (
           <SmallSquare
             title='NOC Information'

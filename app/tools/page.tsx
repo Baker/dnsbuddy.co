@@ -7,7 +7,7 @@ const ToolsList = [
     name: 'DNS Record Lookup',
     description:
       'This checks a record across multiple DNS Providers and locations.',
-    link: '/',
+    link: '/tools/dns-lookup',
   },
   {
     name: 'Bulk DNS Record Lookup',

@@ -57,7 +57,7 @@ import {
   IpAddressWhoisReponse,
 } from '@/components/forms/responses';
 
-export function DnsLookUpForm() {
+export function DnsLookUpForm({ path }: { path: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [response, setResponse] = useState<ResponseList[]>([]);
@@ -152,9 +152,12 @@ export function DnsLookUpForm() {
         }
       }
     });
-    router.push(`/?query=${values.query}&record_type=${values.record_type}`, {
-      scroll: false,
-    });
+    router.push(
+      `${path}?query=${values.query}&record_type=${values.record_type}`,
+      {
+        scroll: false,
+      }
+    );
   }
   return (
     <>
@@ -602,13 +605,11 @@ export function WhoisForm() {
   const [response, setResponse] = useState<DomainWhoisData | IPWhoisData>();
   const [domainType, setDomainType] = useState<Boolean>();
   const searchParams = useSearchParams();
-  const whoisType = searchParams.get('type')
+  const whoisType = searchParams.get('type');
 
   useEffect(() => {
     if (
-      !WhoIsTypes.hasOwnProperty(
-        whoisType as keyof typeof WhoIsTypes
-      ) &&
+      !WhoIsTypes.hasOwnProperty(whoisType as keyof typeof WhoIsTypes) &&
       whoisType != null
     ) {
       router.push(
@@ -621,7 +622,6 @@ export function WhoisForm() {
       );
     }
   }, []);
-
 
   const form = useForm<z.infer<typeof whoIsFormSchema>>({
     resolver: zodResolver(whoIsFormSchema),
@@ -730,16 +730,17 @@ export function WhoisForm() {
         </div>
       </div>
       {response !== undefined ? (
-          Object.keys(response).length === 0 ? (
-            <p className='mx-auto my-6 rounded-md border bg-black/5 p-8 dark:bg-white/5 text-gray-600 dark:text-gray-300 md:max-w-4xl'>No data available, this could be due to an invalid domain, or IP Address.</p>
-          ) : (
-            domainType ? (
-              <DomainWhoisResponse response={response as DomainWhoisData} />
-            ) : !domainType ? (
-              <IpAddressWhoisReponse response={response as IPWhoisData} />
-            ) : null
-          )
-        ) : null}
+        Object.keys(response).length === 0 ? (
+          <p className='mx-auto my-6 rounded-md border bg-black/5 p-8 text-gray-600 dark:bg-white/5 dark:text-gray-300 md:max-w-4xl'>
+            No data available, this could be due to an invalid domain, or IP
+            Address.
+          </p>
+        ) : domainType ? (
+          <DomainWhoisResponse response={response as DomainWhoisData} />
+        ) : !domainType ? (
+          <IpAddressWhoisReponse response={response as IPWhoisData} />
+        ) : null
+      ) : null}
     </>
   );
 }
