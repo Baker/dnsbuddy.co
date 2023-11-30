@@ -38,7 +38,7 @@ test('Navigate to the bulk DNS Record Lookup page.', async ({ page }) => {
 });
 
 test('Navigate to the DNS Record Lookup page.', async ({ page }) => {
-  const expectedUrl = 'http://localhost:3000/';
+  const expectedUrl = 'http://localhost:3000/tools/dns-lookup';
   await page.goto('http://localhost:3000/');
   await page.getByRole('link', { name: 'Other Tools' }).click();
   await page

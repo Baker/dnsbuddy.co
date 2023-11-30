@@ -72,7 +72,7 @@ export function DnsLookUpForm({ path }: { path: string }) {
       recordType != null
     ) {
       router.push(
-        `/${
+        `${path}/${
           searchParams.get('query') != null
             ? `?query=${searchParams.get('query')}`
             : ''
