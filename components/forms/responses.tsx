@@ -212,6 +212,8 @@ export function AsnWhoisResponse({ response }: { response: ASNWhoisData }) {
           <h2 className='col-span-3 text-xl text-black dark:text-white'>
             ASN Information
           </h2>
+          <h3 className='col-span-1'>Handle</h3>
+          <span className='col-span-2 '>{response.Handle}</span>
           <h3 className='col-span-1'>Number</h3>
           <span className='col-span-2 '>{response.Number}</span>
           <h3 className='col-span-1'>Name</h3>

@@ -1,5 +1,5 @@
 import { ResponseItem } from '@/lib/types/dns';
-import { DomainWhoisData, IPWhoisData } from '@/lib/types/whois';
+import { ASNWhoisData, DomainWhoisData, IPWhoisData } from '@/lib/types/whois';
 
 export const exampleDNSResponseItem: ResponseItem = {
   // This is a single api call mock for example.com
@@ -75,6 +75,28 @@ export const exampleIpAddressV6WhoisResponse: IPWhoisData = {
   RegDate: '2020-01-17',
   Updated: '2021-12-14',
   Ref: 'https://rdap.arin.net/registry/ip/2001:1FF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF',
+  organisation: {
+    OrgName: 'Example',
+    OrgId: 'MS-820',
+    Address: '123 Main st',
+    City: 'Columbia',
+    StateProv: 'MD',
+    PostalCode: '21046',
+    Country: 'US',
+    RegDate: '2015-12-09',
+    Updated: '2023-01-24',
+    Ref: 'https://rdap.arin.net/registry/entity/MS-111',
+  },
+  text: ['This is an example response.'],
+};
+
+export const exampleASNWhoisResponse: ASNWhoisData = {
+  Number: '111',
+  Name: 'Example',
+  Handle: 'AS111',
+  RegDate: '2018-04-16',
+  Updated: '2018-04-16',
+  Ref: 'https://rdap.arin.net/registry/autnum/23528',
   organisation: {
     OrgName: 'Example',
     OrgId: 'MS-820',

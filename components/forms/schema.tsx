@@ -87,7 +87,7 @@ export const whoIsFormSchema = z
     },
     {
       message:
-        'This input is not the expected IP Address format. Example of a valid submission: 127.0.0.1 OR 2001:0000:130F:0000:0000:09C0:876A:130B',
+        'This input is not the expected IP Address format. Example of a valid submission: 127.0.0.1 OR 2001:0000:130F:0000:0000:09C0:876A:130B.',
       path: ['query'],
     }
   )
@@ -106,7 +106,7 @@ export const whoIsFormSchema = z
     },
     {
       message:
-        'This input is not the expected Domain format. Example of a valid submission: google.com',
+        'This input is not the expected Domain format. Example of a valid submission: google.com.',
       path: ['query'],
     }
   )

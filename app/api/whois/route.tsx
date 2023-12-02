@@ -97,7 +97,7 @@ function parseAsn(data) {
   const asnData = {
     Number: data['ASNumber'],
     Name: data['ASName'],
-    Handle: data['AS23528'],
+    Handle: data['ASHandle'],
     RegDate: data['RegDate'],
     Updated: data['Updated'],
     Ref: data['Ref'],
