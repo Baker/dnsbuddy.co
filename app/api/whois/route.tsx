@@ -61,8 +61,8 @@ function parseIp(data) {
   const contactAbuse = createContactObject(data, 'Abuse');
   const contactNoc = createContactObject(data, 'Noc');
   const contactTechnical = createContactObject(data, 'Technical');
-  const contactRouting = createContactObject(data, 'OrgRouting');
-  const contactDNS = createContactObject(data, 'OrgDNS');
+  const contactRouting = createContactObject(data, 'Routing');
+  const contactDNS = createContactObject(data, 'DNS');
 
   const ipWhoisData: IPWhoisData = {
     range: data['range'],
@@ -88,11 +88,11 @@ function parseIp(data) {
 }
 
 function parseAsn(data) {
-  const contactAbuse = createContactObject(data, 'contactAbuse');
-  const contactNoc = createContactObject(data, 'contactNoc');
-  const contactTechnical = createContactObject(data, 'contactTechnical');
-  const contactRouting = createContactObject(data, 'OrgRouting');
-  const contactDNS = createContactObject(data, 'OrgDNS');
+  const contactAbuse = createContactObject(data, 'Abuse');
+  const contactNoc = createContactObject(data, 'Noc');
+  const contactTechnical = createContactObject(data, 'Technical');
+  const contactRouting = createContactObject(data, 'Routing');
+  const contactDNS = createContactObject(data, 'DNS');
 
   const asnData = {
     Number: data['ASNumber'],

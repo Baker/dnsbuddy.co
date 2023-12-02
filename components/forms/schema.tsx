@@ -1,6 +1,7 @@
 import * as z from 'zod';
 import {
   bulkLengthCheck,
+  isValidASN,
   isValidDomain,
   isValidIpAddressV4,
   isValidIpAddressV6,
@@ -85,7 +86,8 @@ export const whoIsFormSchema = z
       }
     },
     {
-      message: 'The IP Addresss is either an invalid IPv4 or IPv6.',
+      message:
+        'This input is not the expected IP Address format. Example of a valid submission: 127.0.0.1 OR 2001:0000:130F:0000:0000:09C0:876A:130B',
       path: ['query'],
     }
   )
@@ -104,7 +106,24 @@ export const whoIsFormSchema = z
     },
     {
       message:
-        'The Domain is either an IPv4 or IPv6, please select IP Address below.',
+        'This input is not the expected Domain format. Example of a valid submission: google.com',
+      path: ['query'],
+    }
+  )
+  .refine(
+    // Content this is checking if the Domain is a valid ASN based on the type selected.
+    (schema) => {
+      if (
+        WhoIsTypes[schema.type as keyof typeof WhoIsTypes] === WhoIsTypes.ASN
+      ) {
+        return isValidASN(schema.query.toUpperCase());
+      } else {
+        return true;
+      }
+    },
+    {
+      message:
+        'This input is not the expected ASN format, example of a valid ASN is AS123.',
       path: ['query'],
     }
   );

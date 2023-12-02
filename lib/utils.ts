@@ -50,6 +50,11 @@ export const isValidIpAddressV6 = (ipAddress: string): boolean => {
   return ipRegexV6.test(ipAddress);
 };
 
+export const isValidASN = (asn: string): boolean => {
+  const asnRegex = /^(^AS)?[0-9]+$/;
+  return asnRegex.test(asn);
+};
+
 export const timeUnix = (): number => {
   return parseInt((new Date().getTime() / 1000).toFixed(0));
 };
