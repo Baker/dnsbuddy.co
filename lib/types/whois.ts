@@ -53,3 +53,19 @@ export interface DomainWhoisData {
   updatedDate: string;
   expiryDate: string;
 }
+
+export interface ASNWhoisData {
+  Number: string;
+  Name: string;
+  Handle: string;
+  RegDate: string;
+  Updated: string;
+  Ref: string;
+  organisation: organisation;
+  contactNoc?: contact;
+  contactAbuse?: contact;
+  contactTechnical?: contact;
+  contactRouting?: contact;
+  contactDNS?: contact;
+  text: string[];
+}

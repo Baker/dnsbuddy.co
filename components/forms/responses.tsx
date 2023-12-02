@@ -1,4 +1,4 @@
-import { DomainWhoisData, IPWhoisData } from '@/lib/types/whois';
+import { ASNWhoisData, DomainWhoisData, IPWhoisData } from '@/lib/types/whois';
 import Link from 'next/link';
 import GenericToolTip from '@/components/tooltip';
 import Image from 'next/image';
@@ -103,7 +103,10 @@ export function IpAddressWhoisReponse({ response }: { response: IPWhoisData }) {
           <span className='col-span-2'>{response.route}</span>
           <h3 className='col-span-1'>ASN</h3>
           <span className='col-span-2'>
-            <Link className='underline' href={`/tools/asn/${response.asn}`}>
+            <Link
+              className='underline'
+              href={`/tools/whois?query=${response.asn}&type=ASN`}
+            >
               {response.asn}
             </Link>
           </span>
@@ -148,26 +151,26 @@ export function IpAddressWhoisReponse({ response }: { response: IPWhoisData }) {
           <h3 className='col-span-1'>Updated</h3>
           <span className='col-span-2'>{response.Updated}</span>
         </div>
-      </div>
-      <div className='mt-4 grid grid-cols-6 gap-4'>
-        {response.contactAbuse && (
-          <SmallSquare
-            title='Abuse Information'
-            link={response.contactAbuse?.Handle}
-            href={response.contactAbuse?.Ref}
-            phone={response.contactAbuse?.Phone}
-            email={response.contactAbuse?.Email}
-          />
-        )}
-        {response.contactTechnical && (
-          <SmallSquare
-            title='Technical Information'
-            link={response.contactTechnical?.Handle}
-            href={response.contactTechnical?.Ref}
-            phone={response.contactTechnical?.Phone}
-            email={response.contactTechnical?.Email}
-          />
-        )}
+        {response.contactAbuse &&
+          Object.keys(response.contactAbuse).length > 0 && (
+            <SmallSquare
+              title='Abuse Information'
+              link={response.contactAbuse?.Handle}
+              href={response.contactAbuse?.Ref}
+              phone={response.contactAbuse?.Phone}
+              email={response.contactAbuse?.Email}
+            />
+          )}
+        {response.contactTechnical &&
+          Object.keys(response.contactTechnical).length > 0 && (
+            <SmallSquare
+              title='Technical Information'
+              link={response.contactTechnical?.Handle}
+              href={response.contactTechnical?.Ref}
+              phone={response.contactTechnical?.Phone}
+              email={response.contactTechnical?.Email}
+            />
+          )}
         {response.contactRouting &&
           Object.keys(response.contactRouting).length > 0 && (
             <SmallSquare
@@ -178,7 +181,113 @@ export function IpAddressWhoisReponse({ response }: { response: IPWhoisData }) {
               email={response.contactRouting?.Email}
             />
           )}
-        {response.contactNoc && (
+        {response.contactNoc && Object.keys(response.contactNoc).length > 0 && (
+          <SmallSquare
+            title='NOC Information'
+            link={response.contactNoc?.Handle}
+            href={response.contactNoc?.Ref}
+            phone={response.contactNoc?.Phone}
+            email={response.contactNoc?.Email}
+          />
+        )}
+        {response.contactDNS && Object.keys(response.contactDNS).length > 0 && (
+          <SmallSquare
+            title='DNS Information'
+            link={response.contactDNS?.Handle}
+            href={response.contactDNS?.Ref}
+            phone={response.contactDNS?.Phone}
+            email={response.contactDNS?.Email}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function AsnWhoisResponse({ response }: { response: ASNWhoisData }) {
+  return (
+    <div className='mx-auto my-6 max-w-full px-4 text-left text-gray-600 dark:text-gray-300 md:max-w-4xl'>
+      <div className='grid grid-cols-6 gap-4'>
+        <div className='col-span-6 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 dark:bg-white/5 md:col-span-3'>
+          <h2 className='col-span-3 text-xl text-black dark:text-white'>
+            ASN Information
+          </h2>
+          <h3 className='col-span-1'>Number</h3>
+          <span className='col-span-2 '>{response.Number}</span>
+          <h3 className='col-span-1'>Name</h3>
+          <span className='col-span-2 '>{response.Name}</span>
+          <h3 className='col-span-1'>Registration</h3>
+          <span className='col-span-2'>{response.RegDate}</span>
+          <h3 className='col-span-1'>Updated</h3>
+          <span className='col-span-2'>{response.Updated}</span>
+        </div>
+        <div className='col-span-6 row-span-2 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 dark:bg-white/5 md:col-span-3'>
+          <h2 className='col-span-3 text-xl text-black dark:text-white'>
+            Organization Information
+          </h2>
+          <h3 className='col-span-1'>Organization</h3>
+          <span className='col-span-2 '>
+            <Link className='underline' href={response.organisation.Ref}>
+              {response.organisation.OrgName}
+            </Link>
+          </span>
+          <h3 className='col-span-1'>OrgID</h3>
+          <span className='col-span-2 '>{response.organisation.OrgId}</span>
+          <h3 className='col-span-1'>Address</h3>
+          <span className='col-span-2'>{response.organisation.Address}</span>
+          <h3 className='col-span-1'>City</h3>
+          <span className='col-span-2'>{response.organisation.City}</span>
+          <h3 className='col-span-1'>State/Providence</h3>
+          <span className='col-span-2'>{response.organisation.StateProv}</span>
+          <h3 className='col-span-1'>Postal Code</h3>
+          <span className='col-span-2'>{response.organisation.PostalCode}</span>
+          <h3 className='col-span-1'>Country</h3>
+          <span className='col-span-2'>
+            <Image
+              width={64}
+              height={64}
+              src={`https://flagsapi.com/${response.organisation.Country}/flat/64.png`}
+              alt={`${response.organisation.Country} flag`}
+              className='mr-1 inline-block h-4 w-4'
+            />
+            {response.organisation.Country}
+          </span>
+          <h3 className='col-span-1'>RegDate</h3>
+          <span className='col-span-2'>{response.RegDate}</span>
+          <h3 className='col-span-1'>Updated</h3>
+          <span className='col-span-2'>{response.Updated}</span>
+        </div>
+        {response.contactAbuse &&
+          Object.keys(response.contactAbuse).length > 0 && (
+            <SmallSquare
+              title='Abuse Information'
+              link={response.contactAbuse?.Handle}
+              href={response.contactAbuse?.Ref}
+              phone={response.contactAbuse?.Phone}
+              email={response.contactAbuse?.Email}
+            />
+          )}
+        {response.contactTechnical &&
+          Object.keys(response.contactTechnical).length > 0 && (
+            <SmallSquare
+              title='Technical Information'
+              link={response.contactTechnical?.Handle}
+              href={response.contactTechnical?.Ref}
+              phone={response.contactTechnical?.Phone}
+              email={response.contactTechnical?.Email}
+            />
+          )}
+        {response.contactRouting &&
+          Object.keys(response.contactRouting).length > 0 && (
+            <SmallSquare
+              title='Routing Information'
+              link={response.contactRouting?.Handle}
+              href={response.contactRouting?.Ref}
+              phone={response.contactRouting?.Phone}
+              email={response.contactRouting?.Email}
+            />
+          )}
+        {response.contactNoc && Object.keys(response.contactNoc).length > 0 && (
           <SmallSquare
             title='NOC Information'
             link={response.contactNoc?.Handle}
@@ -215,7 +324,7 @@ function SmallSquare({
   email: string;
 }) {
   return (
-    <div className='col-span-9 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 dark:bg-white/5 md:col-span-3'>
+    <div className='col-span-6 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 dark:bg-white/5 md:col-span-3'>
       <h2 className='col-span-3 text-xl text-black dark:text-white'>{title}</h2>
       <h3 className='col-span-1'>Handle</h3>
       <span className='col-span-2 '>

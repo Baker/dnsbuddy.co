@@ -3,13 +3,14 @@
 import whoiser from 'whoiser';
 import { NextResponse } from 'next/server';
 import { DomainWhoisData, IPWhoisData } from '@/lib/types/whois';
+import { WhoIsTypes } from '@/lib/constants/api';
 
 export async function POST(request: Request) {
   try {
-    const { query } = await request.json();
+    const { query, type } = await request.json();
     const data = await whoiser(query, { follow: 1 });
     // This means it was a domain lookup.
-    if (Object.values(data).length === 1) {
+    if (WhoIsTypes[type] === WhoIsTypes.DOMAIN) {
       const whoisData = data[Object.keys(data)[0]];
       const domainWhoisData: DomainWhoisData = {
         domainStatus: whoisData['Domain Status'],
@@ -23,107 +24,90 @@ export async function POST(request: Request) {
         expiryDate: whoisData['Expiry Date'],
       };
       return NextResponse.json(domainWhoisData);
-    } else {
-      let contactAbuse;
-      if (data['contactAbuse']) {
-        contactAbuse = {
-          Handle:
-            data['contactAbuse']['OrgAbuseHandle'] ||
-            data['contactAbuse']['RAbuseHandle'],
-          Name:
-            data['contactAbuse']['OrgAbuseName'] ||
-            data['contactAbuse']['RAbuseName'],
-          Phone:
-            data['contactAbuse']['OrgAbusePhone'] ||
-            data['contactAbuse']['RAbusePhone'],
-          Email:
-            data['contactAbuse']['OrgAbuseEmail'] ||
-            data['contactAbuse']['RAbuseEmail'],
-          Ref:
-            data['contactAbuse']['OrgAbuseRef'] ||
-            data['contactAbuse']['RAbuseRef'],
-        };
-      }
-      let contactNoc;
-      if (data['contactNoc']) {
-        contactNoc = {
-          Handle:
-            data['contactNoc']['OrgNOCHandle'] ||
-            data['contactNoc']['RNOCHandle'],
-          Name:
-            data['contactNoc']['OrgNOCName'] || data['contactNoc']['RNOCName'],
-          Phone:
-            data['contactNoc']['OrgNOCPhone'] ||
-            data['contactNoc']['RNOCPhone'],
-          Email:
-            data['contactNoc']['OrgNOCEmail'] ||
-            data['contactNoc']['RNOCEmail'],
-          Ref: data['contactNoc']['OrgNOCRef'] || data['contactNoc']['RNOCRef'],
-        };
-      }
-      let contactTechnical;
-      if (data['contactTechnical']) {
-        contactTechnical = {
-          Handle:
-            data['contactTechnical']['OrgTechHandle'] ||
-            data['contactTechnical']['RTechHandle'],
-          Name:
-            data['contactTechnical']['OrgTechName'] ||
-            data['contactTechnical']['RTechName'],
-          Phone:
-            data['contactTechnical']['OrgTechPhone'] ||
-            data['contactTechnical']['RTechPhone'],
-          Email:
-            data['contactTechnical']['OrgTechEmail'] ||
-            data['contactTechnical']['RTechEmail'],
-          Ref:
-            data['contactTechnical']['OrgTechRef'] ||
-            data['contactTechnical']['RTechRef'],
-        };
-      }
-      let contactRouting;
-      if (data['contactRouting']) {
-        contactRouting = {
-          Handle: data['OrgRoutingHandle'] || data['RRoutingHandle'],
-          Name: data['OrgRoutingName'] || data['RRoutingName'],
-          Phone: data['OrgRoutingPhone'] || data['RRoutingPhone'],
-          Email: data['OrgRoutingEmail'] || data['RRoutingEmail'],
-          Ref: data['OrgRoutingRef'] || data['RRoutingRef'],
-        };
-      }
-      let contactDNS;
-      if (data['contactDNS']) {
-        contactDNS = {
-          Handle: data['OrgDNSHandle'] || data['RDNSHandle'],
-          Name: data['OrgDNSName'] || data['RDNSName'],
-          Phone: data['OrgDNSPhone'] || data['RDNSPhone'],
-          Email: data['OrgDNSEmail'] || data['RDNSEmail'],
-          Ref: data['OrgDNSRef'] || data['RDNSRef'],
-        };
-      }
-      const ipWhoisData: IPWhoisData = {
-        range: data['range'],
-        route: data['route'],
-        NetName: data['NetName'],
-        Parent: data['Parent'],
-        asn: data['asn'],
-        Organization: data['Organization'],
-        RegDate: data['RegDate'],
-        Updated: data['Updated'],
-        Ref: data['Ref'],
-        ResourceLink: data['ResourceLink'],
-        ReferralServer: data['ReferralServer'],
-        organisation: data['organisation'],
-        contactNoc: contactNoc,
-        contactAbuse: contactAbuse,
-        contactTechnical: contactTechnical,
-        contactRouting: contactRouting,
-        contactDNS: contactDNS,
-        text: data['text'],
-      };
-      return NextResponse.json(ipWhoisData);
+    } else if (WhoIsTypes[type] === WhoIsTypes.IP_ADDRESS) {
+      return NextResponse.json(parseIp(data));
+    } else if (WhoIsTypes[type] === WhoIsTypes.ASN) {
+      return NextResponse.json(parseAsn(data));
     }
   } catch (error) {
     throw new Error(error);
   }
+}
+
+function createContactObject(data, prefix) {
+  if (data['contact' + prefix]) {
+    // Handle the different prefixes and the key value differences.
+    const key =
+      prefix === 'Technical' ? 'Tech' : prefix === 'Noc' ? 'NOC' : prefix;
+    const newData = data['contact' + prefix];
+    return {
+      Handle: newData['Org' + key + 'Handle'] || newData['R' + key + 'Handle'],
+      Name: newData['Org' + key + 'Name'] || newData['R' + key + 'Name'],
+      Phone: newData['Org' + key + 'Phone'] || newData['R' + key + 'Phone'],
+      Email: newData['Org' + key + 'Email'] || newData['R' + key + 'Email'],
+      Ref: newData['Org' + key + 'Ref'] || newData['R' + key + 'Ref'],
+    };
+  }
+  return {
+    Handle: data['Org' + prefix + 'Handle'] || data['R' + prefix + 'Handle'],
+    Name: data['Org' + prefix + 'Name'] || data['R' + prefix + 'Name'],
+    Phone: data['Org' + prefix + 'Phone'] || data['R' + prefix + 'Phone'],
+    Email: data['Org' + prefix + 'Email'] || data['R' + prefix + 'Email'],
+    Ref: data['Org' + prefix + 'Ref'] || data['R' + prefix + 'Ref'],
+  };
+}
+
+function parseIp(data) {
+  const contactAbuse = createContactObject(data, 'Abuse');
+  const contactNoc = createContactObject(data, 'Noc');
+  const contactTechnical = createContactObject(data, 'Technical');
+  const contactRouting = createContactObject(data, 'OrgRouting');
+  const contactDNS = createContactObject(data, 'OrgDNS');
+
+  const ipWhoisData: IPWhoisData = {
+    range: data['range'],
+    route: data['route'],
+    NetName: data['NetName'],
+    Parent: data['Parent'],
+    asn: data['asn'],
+    Organization: data['Organization'],
+    RegDate: data['RegDate'],
+    Updated: data['Updated'],
+    Ref: data['Ref'],
+    ResourceLink: data['ResourceLink'],
+    ReferralServer: data['ReferralServer'],
+    organisation: data['organisation'],
+    contactNoc: contactNoc,
+    contactAbuse: contactAbuse,
+    contactTechnical: contactTechnical,
+    contactRouting: contactRouting,
+    contactDNS: contactDNS,
+    text: data['text'],
+  };
+  return ipWhoisData;
+}
+
+function parseAsn(data) {
+  const contactAbuse = createContactObject(data, 'contactAbuse');
+  const contactNoc = createContactObject(data, 'contactNoc');
+  const contactTechnical = createContactObject(data, 'contactTechnical');
+  const contactRouting = createContactObject(data, 'OrgRouting');
+  const contactDNS = createContactObject(data, 'OrgDNS');
+
+  const asnData = {
+    Number: data['ASNumber'],
+    Name: data['ASName'],
+    Handle: data['AS23528'],
+    RegDate: data['RegDate'],
+    Updated: data['Updated'],
+    Ref: data['Ref'],
+    organisation: data['organisation'],
+    contactNoc: contactNoc,
+    contactAbuse: contactAbuse,
+    contactTechnical: contactTechnical,
+    contactRouting: contactRouting,
+    contactDNS: contactDNS,
+    text: data['text'],
+  };
+  return asnData;
 }

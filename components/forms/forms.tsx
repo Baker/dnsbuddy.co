@@ -51,8 +51,9 @@ import {
   BulkFCrDNSColumnDef,
   DnsLookupColumnDef,
 } from '@/components/tables/columns';
-import { DomainWhoisData, IPWhoisData } from '@/lib/types/whois';
+import { ASNWhoisData, DomainWhoisData, IPWhoisData } from '@/lib/types/whois';
 import {
+  AsnWhoisResponse,
   DomainWhoisResponse,
   IpAddressWhoisReponse,
 } from '@/components/forms/responses';
@@ -602,8 +603,10 @@ export function BulkDnsLookupForm() {
 export function WhoisForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [response, setResponse] = useState<DomainWhoisData | IPWhoisData>();
-  const [domainType, setDomainType] = useState<Boolean>();
+  const [response, setResponse] = useState<
+    DomainWhoisData | IPWhoisData | ASNWhoisData
+  >();
+  const [type, setType] = useState<string>('');
   const searchParams = useSearchParams();
   const whoisType = searchParams.get('type');
 
@@ -646,9 +649,7 @@ export function WhoisForm() {
         },
         body: JSON.stringify(values),
       });
-      setDomainType(
-        WhoIsTypes[values.type as keyof typeof WhoIsTypes] === WhoIsTypes.DOMAIN
-      );
+      setType(values.type);
       setResponse(await query.json());
     });
     router.push(`/tools/whois?query=${values.query}&type=${values.type}`, {
@@ -735,10 +736,13 @@ export function WhoisForm() {
             No data available, this could be due to an invalid domain, or IP
             Address.
           </p>
-        ) : domainType ? (
+        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] == WhoIsTypes.DOMAIN ? (
           <DomainWhoisResponse response={response as DomainWhoisData} />
-        ) : !domainType ? (
+        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] ==
+          WhoIsTypes.IP_ADDRESS ? (
           <IpAddressWhoisReponse response={response as IPWhoisData} />
+        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] == WhoIsTypes.ASN ? (
+          <AsnWhoisResponse response={response as ASNWhoisData} />
         ) : null
       ) : null}
     </>
