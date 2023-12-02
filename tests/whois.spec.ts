@@ -146,10 +146,10 @@ test.describe('ASN', () => {
       });
     });
 
-    await setup(page, 'AS111', 'IP Address');
+    await setup(page, 'AS111', 'ASN');
     await page.getByRole('button', { name: 'Dig' }).click();
     await page.waitForURL(
-      'http://localhost:3000/tools/whois?query=AS111&type=ASN'
+      'http://localhost:3000/tools/whois?query=as111&type=ASN'
     );
   });
 
@@ -200,8 +200,8 @@ test('domain input, ip address selected', async ({ page }) => {
   ).toBe(true);
 });
 
-test('domain input, as selected', async ({ page }) => {
-  await setup(page, 'example.com', 'Ip Address');
+test('domain input, asn selected', async ({ page }) => {
+  await setup(page, 'example.com', 'ASN');
   await page.getByRole('button', { name: 'Dig' }).click();
   expect(
     await page
