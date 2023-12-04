@@ -43,8 +43,9 @@ test('Navigate to the DNS Record Lookup page.', async ({ page }) => {
   await page.getByRole('link', { name: 'Other Tools' }).click();
   await page
     .getByRole('link', {
-      name: 'DNS Record Lookup This checks a record across multiple DNS Providers and locations.',
+      name: 'DNS Record Lookup',
     })
+    .first()
     .click();
   await page.waitForURL(expectedUrl);
   expect(page.url()).toEqual(expectedUrl);
@@ -56,7 +57,7 @@ test('Navigate to the Whois Lookup page.', async ({ page }) => {
   await page.getByRole('link', { name: 'Other Tools' }).click();
   await page
     .getByRole('link', {
-      name: 'WHOIS Lookup Check the WHOIS Information for a domain or IP Address.',
+      name: 'WHOIS Lookup',
     })
     .click();
   await page.waitForURL(expectedUrl);

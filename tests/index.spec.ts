@@ -1,6 +1,4 @@
-import { test, expect, type Page } from '@playwright/test';
-import { exampleDNSResponseItem } from '@/tests/mock/api';
-import { ProviderToLabelMapping } from '@/lib/constants/api';
+import { test, expect } from '@playwright/test';
 
 test('can toggle light mode', async ({ page }) => {
   await page.goto('http://localhost:3000');

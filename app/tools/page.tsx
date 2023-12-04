@@ -20,7 +20,7 @@ const ToolsList = [
     link: '/tools/whois',
   },
   {
-    name: 'Bulk FCrDNS',
+    name: 'Bulk FCrDNS Lookup',
     description:
       'Bulk check Forward-confirmed reverse DNS, up to 100 IP Addresses/Domains.',
     link: '/tools/bulk-fcrdns',

@@ -4,17 +4,17 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Bulk DNS Lookup | DnsBuddy',
   description:
-    'This tool allows users to check multiple domains or IP addresses for a specific record type against a chosen DNS provider or location.',
+    'Explore information across 100 domains or IP addresses (IPv4 or IPv6) using our versatile tool. We currently support a wide range of DNS record types, including TXT, CNAME, MX, NS, A, AAAA, PTR, SOA, and more. Select  to run the test against any of our nine DNS providers and locations. Plus, enjoy the convenience of exporting this data for your personalized use at any time.',
   twitter: {
     card: 'summary',
     title: 'Bulk DNS Lookup',
     description:
-      'This tool allows users to check multiple domains or IP addresses for a specific record type against a chosen DNS provider or location.',
+      'Explore information across 100 domains or IP addresses (IPv4 or IPv6) using our versatile tool. We currently support a wide range of DNS record types, including TXT, CNAME, MX, NS, A, AAAA, PTR, SOA, and more. Select  to run the test against any of our nine DNS providers and locations. Plus, enjoy the convenience of exporting this data for your personalized use at any time.',
   },
   openGraph: {
     title: 'Bulk DNS Lookup',
     description:
-      'This tool allows users to check multiple domains or IP addresses for a specific record type against a chosen DNS provider or location.',
+      'Explore information across 100 domains or IP addresses (IPv4 or IPv6) using our versatile tool. We currently support a wide range of DNS record types, including TXT, CNAME, MX, NS, A, AAAA, PTR, SOA, and more. Select  to run the test against any of our nine DNS providers and locations. Plus, enjoy the convenience of exporting this data for your personalized use at any time.',
     url: 'https://DnsBuddy.co/tools/bulk-dns-lookup',
     siteName: 'DnsBuddy',
     locale: 'en_US',
@@ -30,8 +30,10 @@ export default function BulkFCrDNS() {
           Bulk DNS Lookup
         </h1>
         <p className='mx-auto mt-6 text-lg leading-8 text-neutral-600 dark:text-neutral-400 md:w-3/4 lg:w-1/2'>
-          This tool allows users to check multiple domains or IP addresses for a
-          specific record type against a chosen DNS provider or location.
+          Empower yourself to effortlessly lookup multiple domains or IP
+          addresses for specific record types, tailored to your needs. Choose
+          your preferred DNS provider or location, ensuring accurate and
+          customized results with ease. You can also export your results to CSV.
         </p>
         <BulkDnsLookupForm />
       </div>
