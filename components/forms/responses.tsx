@@ -38,7 +38,7 @@ export function DomainWhoisResponse({
         </span>
       </div>
       <div className='mt-4 grid grid-cols-6 gap-4'>
-        <div className='col-span-6 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 leading-5 dark:bg-white/5 md:col-span-4'>
+        <div className='col-span-6 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 leading-5 dark:bg-white/5 md:col-span-3'>
           <h2 className='col-span-6 text-xl text-black dark:text-white md:col-span-4'>
             Registration Information
           </h2>
@@ -64,8 +64,8 @@ export function DomainWhoisResponse({
             />
           </span>
         </div>
-        <div className='col-span-6 grid grid-cols-2 gap-2 rounded-md border bg-black/5 p-8 leading-5 dark:bg-white/5 md:col-span-2'>
-          <h2 className='col-span-2 text-xl text-black dark:text-white'>
+        <div className='col-span-6 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 leading-5 dark:bg-white/5 md:col-span-3'>
+          <h2 className='col-span-3 text-xl text-black dark:text-white'>
             Nameservers
           </h2>
           <span>
