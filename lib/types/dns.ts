@@ -10,13 +10,12 @@ export interface ResponseItem {
     Answer: AnswerItem[];
   };
   success: boolean;
-};
+}
 
 export interface ProviderResponse {
   provider: string;
-  response: ResponseItem
+  response: ResponseItem;
 }
-
 
 interface QuestionItem {
   name: string;

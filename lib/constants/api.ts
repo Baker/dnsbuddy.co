@@ -20,4 +20,10 @@ export const ProviderToLabelMapping = {
   san_jose: 'San Jose, US',
   frankfurt: 'Frankfurt, DE',
   hong_kong: 'Hong Kong, CN',
-}
+};
+
+export const WhoIsTypes = {
+  IP_ADDRESS: 'IP Address',
+  DOMAIN: 'Domain',
+  ASN: 'ASN',
+};
