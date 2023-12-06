@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       return NextResponse.json(parseAsn(data));
     }
   } catch (error) {
-    throw new Error(error);
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }
 

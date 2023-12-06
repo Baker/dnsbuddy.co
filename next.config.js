@@ -12,6 +12,12 @@ const nextConfig = {
         port: '',
         pathname: '**',
       },
+      {
+        protocol: 'https',
+        hostname: 'queue.simpleanalyticscdn.com',
+        port: '',
+        pathname: '**',
+      },
     ],
   },
 };
