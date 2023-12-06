@@ -731,7 +731,8 @@ export function WhoisForm() {
         </div>
       </div>
       {response !== undefined ? (
-        Object.keys(response).length === 0 || response.error ? (
+        // @ts-ignore
+        response.error ? (
           <p className='mx-auto my-6 rounded-md border bg-black/5 p-8 text-gray-600 dark:bg-white/5 dark:text-gray-300 md:max-w-4xl'>
             No data available, this could be due to an invalid domain, or IP
             Address.
