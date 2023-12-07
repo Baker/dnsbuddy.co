@@ -2,7 +2,6 @@ import '@/css/global.css';
 
 import { ThemeProvider } from '@/components/theme-provider';
 import { Layout } from '@/components/layout';
-import Script from 'next/script';
 
 export default function RootLayout({
   children,
