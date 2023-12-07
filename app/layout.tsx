@@ -26,15 +26,6 @@ export default function RootLayout({
         >
           <Layout>{children}</Layout>
         </ThemeProvider>
-        <Script src='https://scripts.simpleanalyticscdn.com/latest.js' />
-        <noscript>
-          {/* eslint-disable @next/next/no-img-element */}
-          <img
-            src='https://queue.simpleanalyticscdn.com/noscript.gif'
-            alt=''
-            referrerPolicy='no-referrer-when-downgrade'
-          />
-        </noscript>
       </body>
     </html>
   );
