@@ -62,18 +62,12 @@ const nextConfig = {
 };
 
 const cspHeader = `
-    default-src 'self' vitals.vercel-insights.com vercel.live;
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' vercel.live static.cloudflareinsights.com;
-    connect-src cloudflareinsights.com sentry.io;
+    default-src 'self';
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' vercel.live *.cloudflareinsights.com *.sentry.io;
+    connect-src *;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data:;
+    img-src 'self' blob: data: flagsapi.com;
     font-src 'self';
-    object-src 'none';
-    base-uri 'self';
-    form-action 'self';
-    frame-ancestors 'none';
-    block-all-mixed-content;
-    upgrade-insecure-requests;
 `;
 
 const SentryWebpackPluginOptions = {
