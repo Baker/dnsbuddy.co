@@ -22,8 +22,8 @@ const nextConfig = {
 
 const SentryWebpackPluginOptions = {
   silent: true,
-  org: 'personal-a0d',
-  project: 'dnsbuddy',
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
   authToken: process.env.SENTRY_AUTH_TOKEN,
 };
 
