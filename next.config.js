@@ -47,7 +47,6 @@ const nextConfig = {
             key: 'X-Frame-Options',
             value: 'DENY',
           },
-          { key: 'Access-Control-Allow-Origin', value: '*' },
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff',
@@ -65,7 +64,7 @@ const nextConfig = {
 const cspHeader = `
     default-src 'self' vitals.vercel-insights.com vercel.live;
     script-src 'self' 'unsafe-eval' 'unsafe-inline' vercel.live static.cloudflareinsights.com;
-    connect-src cloudflareinsights.com;
+    connect-src cloudflareinsights.com sentry.io;
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
     font-src 'self';
