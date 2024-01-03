@@ -1,4 +1,4 @@
-# 🌐 DnsBuddy
+# <img href="/public/images/dnsbuddy.png"> DnsBuddy
 
 [![CI](https://github.com/Baker/dnsbuddy.co/actions/workflows/ci.yml/badge.svg)](https://github.com/Baker/dnsbuddy.co/actions/workflows/ci.yml)
 

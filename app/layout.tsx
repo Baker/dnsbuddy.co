@@ -11,9 +11,12 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <head>
+        <link rel='icon' href='/images/dnsbuddy.ico' sizes='any' />
         <link
-          rel='icon'
-          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>"
+          rel='apple-touch-icon'
+          href='/images/dnsbuddy.png'
+          type='image/png'
+          sizes='32x32'
         />
       </head>
       <body className=''>

@@ -2,6 +2,7 @@
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
+const { withSentryConfig } = require('@sentry/nextjs');
 
 const nextConfig = {
   images: {
@@ -12,14 +13,21 @@ const nextConfig = {
         port: '',
         pathname: '**',
       },
-      {
-        protocol: 'https',
-        hostname: 'queue.simpleanalyticscdn.com',
-        port: '',
-        pathname: '**',
-      },
     ],
+  },
+  sentry: {
+    hideSourceMaps: true,
   },
 };
 
-module.exports = withBundleAnalyzer(nextConfig);
+const SentryWebpackPluginOptions = {
+  silent: true,
+  org: 'personal-a0d',
+  project: 'dnsbuddy',
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+};
+
+module.exports = withSentryConfig(
+  withBundleAnalyzer(nextConfig),
+  SentryWebpackPluginOptions
+);
