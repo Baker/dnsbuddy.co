@@ -18,6 +18,17 @@ const nextConfig = {
   sentry: {
     hideSourceMaps: true,
   },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'Access-Control-Allow-Headers', value: 'sentry-trace' },
+          { key: 'Access-Control-Allow-Headers', value: 'baggage' },
+        ],
+      },
+    ];
+  },
 };
 
 const SentryWebpackPluginOptions = {
