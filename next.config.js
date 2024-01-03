@@ -55,6 +55,7 @@ const nextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=31536000; includeSubDomains; preload',
           },
+          { key: 'Access-Control-Allow-Origin', value: '*' },
         ],
       },
     ];
@@ -62,11 +63,11 @@ const nextConfig = {
 };
 
 const cspHeader = `
-    default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' vercel.live *.cloudflareinsights.com *.sentry.io;
-    connect-src *;
+    default-src 'self' vercel.live;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' *.cloudflareinsights.com *.sentry.io cdn.vercel-insights.com vercel.live va.vercel-scripts.com;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data: flagsapi.com;
+    img-src * blob: data: flagsapi.com;
+    connect-src *;
     font-src 'self';
 `;
 
