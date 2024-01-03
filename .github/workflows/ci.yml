@@ -116,7 +116,7 @@ jobs:
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
         id: deploy
-        run: echo url="$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_ENV
+        run: echo url="$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
       - name: Find Comment
         uses: peter-evans/find-comment@v2
         id: fc
@@ -125,7 +125,7 @@ jobs:
           comment-author: 'github-actions[bot]'
           body-includes: Deployment URL
       - name: Set current date as env variable
-        run: echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+        run: echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_OUTPUT
       - name: Render template
         id: template
         uses: chuhlomin/render-template@v1.4
@@ -133,8 +133,8 @@ jobs:
           template: .github/comment-template.md
           vars: |
             author: ${{ github.actor }}
-            url: ${{ env.url }}
-            time: ${{ env.NOW }}
+            url: ${{ steps.deploy.outputs.url }}
+            time: ${{ steps.fc.outputs.NOW }}
       - name: Create or update comment
         uses: peter-evans/create-or-update-comment@v3
         with:
@@ -142,6 +142,7 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: ${{ steps.template.outputs.result }}
           edit-mode: replace
+          token: ${{ secrets.GH_PAT }}
 
   vercel-production:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
