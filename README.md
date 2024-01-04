@@ -1,4 +1,4 @@
-# <img href="/public/images/dnsbuddy.png"> DnsBuddy
+# <img src='./public/images/dnsbuddy.png' alt="logo" width='32' heigh='32' /> DnsBuddy
 
 [![CI](https://github.com/Baker/dnsbuddy.co/actions/workflows/ci.yml/badge.svg)](https://github.com/Baker/dnsbuddy.co/actions/workflows/ci.yml)
 
