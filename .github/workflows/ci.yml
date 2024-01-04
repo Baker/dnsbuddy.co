@@ -122,6 +122,7 @@ jobs:
         id: fc
         with:
           issue-number: ${{ github.event.pull_request.number }}
+          token: ${{ secrets.GH_PAT }}
           comment-author: 'Baker'
           body-includes: Deployment URL
       - name: Set current date as env variable
