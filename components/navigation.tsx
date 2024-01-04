@@ -1,6 +1,6 @@
 import ThemeToggle from '@/components/theme-toggle';
-import { GlobeIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Navigation() {
   return (
@@ -8,7 +8,12 @@ export default function Navigation() {
       <nav className='flex items-center justify-between p-6 lg:px-8'>
         <div className='flex flex-1'>
           <Link className='-m-1.5 inline-flex p-1.5' href='/'>
-            <GlobeIcon className='h-8 w-auto' />{' '}
+            <Image
+              src={`/images/dnsbuddy.png`}
+              alt='DnsBuddy Logo'
+              width={32}
+              height={32}
+            />
             <span className='pl-3 text-2xl font-semibold'>
               DNS<span className='font-bold'>Buddy</span>
             </span>

@@ -8,76 +8,83 @@ export function DomainWhoisResponse({
 }: {
   response: DomainWhoisData;
 }) {
-  return (
-    <div className='mx-auto my-6 max-w-full px-4 text-left text-gray-600 dark:text-gray-300 md:max-w-4xl'>
-      <div className='grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 dark:bg-white/5'>
-        <h2 className='col-span-3 text-xl text-black dark:text-white'>
-          Registar Information
-        </h2>
-        <h3 className='col-span-1'>Registar</h3>
-        <span className='col-span-2 '>{response.registar}</span>
-        <h3 className='col-span-1'>Referral URL</h3>
-        <span className='col-span-2'>
-          <Link className='underline' href={response.registarURL}>
-            {response.registarURL}
-          </Link>
-        </span>
-        <h3 className='col-span-1'>WHOIS Server</h3>
-        <span className='col-span-2'>{response.registarWHOISServer}</span>
-        <h3 className='col-span-1'>Status</h3>
-        <span className='col-span-2'>
-          {Array.isArray(response.domainStatus) ? (
-            response.domainStatus.map((item, index) => (
-              <pre key={index} className='whitespace-pre-line'>
-                {item}
-              </pre>
-            ))
-          ) : (
-            <pre className='whitespace-pre-line'>{response.domainStatus}</pre>
-          )}
-        </span>
-      </div>
-      <div className='mt-4 grid grid-cols-6 gap-4'>
-        <div className='col-span-6 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 leading-5 dark:bg-white/5 md:col-span-3'>
-          <h2 className='col-span-6 text-xl text-black dark:text-white md:col-span-4'>
-            Registration Information
-          </h2>
-          <h3 className='col-span-1'>Registration Date</h3>
-          <span className='col-span-5 md:col-span-3'>
-            {new Date(response.createdDate).toLocaleString()}
-            <GenericToolTip
-              text={`Here is the original timestamp in UTC: ${response.createdDate}`}
-            />
-          </span>
-          <h3 className='col-span-1'>Updated date</h3>
-          <span className='col-span-5 md:col-span-3'>
-            {new Date(response.updatedDate).toLocaleString()}
-            <GenericToolTip
-              text={`Here is the original timestamp in UTC: ${response.updatedDate}`}
-            />
-          </span>
-          <h3 className='col-span-1'>Expiration date</h3>
-          <span className='col-span-5 md:col-span-3'>
-            {new Date(response.expiryDate).toLocaleString()}
-            <GenericToolTip
-              text={`Here is the original timestamp in UTC: ${response.expiryDate}`}
-            />
-          </span>
-        </div>
-        <div className='col-span-6 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 leading-5 dark:bg-white/5 md:col-span-3'>
+  if (response.domainStatus.length > 0) {
+    return (
+      <div className='mx-auto my-6 max-w-full px-4 text-left text-gray-600 dark:text-gray-300 md:max-w-4xl'>
+        <div className='grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 dark:bg-white/5'>
           <h2 className='col-span-3 text-xl text-black dark:text-white'>
-            Nameservers
+            Registar Information
           </h2>
-          <span>
-            {response.nameServer.map((item, index) => (
-              <pre key={index} className=''>
-                {item}
-              </pre>
-            ))}
+          <h3 className='col-span-1'>Registar</h3>
+          <span className='col-span-2 '>{response.registar}</span>
+          <h3 className='col-span-1'>Referral URL</h3>
+          <span className='col-span-2'>
+            <Link className='underline' href={response.registarURL}>
+              {response.registarURL}
+            </Link>
+          </span>
+          <h3 className='col-span-1'>WHOIS Server</h3>
+          <span className='col-span-2'>{response.registarWHOISServer}</span>
+          <h3 className='col-span-1'>Status</h3>
+          <span className='col-span-2'>
+            {Array.isArray(response.domainStatus) ? (
+              response.domainStatus.map((item, index) => (
+                <pre key={index} className='whitespace-pre-line'>
+                  {item}
+                </pre>
+              ))
+            ) : (
+              <pre className='whitespace-pre-line'>{response.domainStatus}</pre>
+            )}
           </span>
         </div>
+        <div className='mt-4 grid grid-cols-6 gap-4'>
+          <div className='col-span-6 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 leading-5 dark:bg-white/5 md:col-span-3'>
+            <h2 className='col-span-6 text-xl text-black dark:text-white md:col-span-4'>
+              Registration Information
+            </h2>
+            <h3 className='col-span-1'>Registration Date</h3>
+            <span className='col-span-5 md:col-span-3'>
+              {new Date(response.createdDate).toLocaleString()}
+              <GenericToolTip
+                text={`Here is the original timestamp in UTC: ${response.createdDate}`}
+              />
+            </span>
+            <h3 className='col-span-1'>Updated date</h3>
+            <span className='col-span-5 md:col-span-3'>
+              {new Date(response.updatedDate).toLocaleString()}
+              <GenericToolTip
+                text={`Here is the original timestamp in UTC: ${response.updatedDate}`}
+              />
+            </span>
+            <h3 className='col-span-1'>Expiration date</h3>
+            <span className='col-span-5 md:col-span-3'>
+              {new Date(response.expiryDate).toLocaleString()}
+              <GenericToolTip
+                text={`Here is the original timestamp in UTC: ${response.expiryDate}`}
+              />
+            </span>
+          </div>
+          <div className='col-span-6 grid grid-cols-3 gap-2 rounded-md border bg-black/5 p-8 leading-5 dark:bg-white/5 md:col-span-3'>
+            <h2 className='col-span-3 text-xl text-black dark:text-white'>
+              Nameservers
+            </h2>
+            <span>
+              {response.nameServer.map((item, index) => (
+                <pre key={index} className=''>
+                  {item}
+                </pre>
+              ))}
+            </span>
+          </div>
+        </div>
       </div>
-    </div>
+    );
+  }
+  return (
+    <p className='mx-auto my-6 rounded-md border bg-black/5 p-8 text-gray-600 dark:bg-white/5 dark:text-gray-300 md:max-w-4xl'>
+      No data available, this could be due to an invalid domain, or IP Address.
+    </p>
   );
 }
 
