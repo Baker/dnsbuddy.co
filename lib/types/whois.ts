@@ -48,7 +48,7 @@ export interface DomainWhoisData {
   domainName: string;
   registar: string;
   registarWHOISServer: string;
-  registarURL: string;
+  registarURL?: string;
   createdDate: string;
   updatedDate: string;
   expiryDate: string;

@@ -1,7 +1,7 @@
-import '@/css/global.css';
+import "@/css/global.css";
 
-import { ThemeProvider } from '@/components/theme-provider';
-import { Layout } from '@/components/layout';
+import { Layout } from "@/components/layout";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export default function RootLayout({
   children,
@@ -9,20 +9,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel='icon' href='/images/dnsbuddy.ico' sizes='any' />
+        <link rel="icon" href="/images/dnsbuddy.ico" sizes="any" />
         <link
-          rel='apple-touch-icon'
-          href='/images/dnsbuddy.png'
-          type='image/png'
-          sizes='32x32'
+          rel="apple-touch-icon"
+          href="/images/dnsbuddy.png"
+          type="image/png"
+          sizes="32x32"
         />
       </head>
-      <body className=''>
+      <body className="">
         <ThemeProvider
-          attribute='class'
-          defaultTheme='system'
+          attribute="class"
+          defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >

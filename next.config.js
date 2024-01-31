@@ -1,17 +1,17 @@
 /** @type {import('next').NextConfig} */
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
 });
-const { withSentryConfig } = require('@sentry/nextjs');
+const { withSentryConfig } = require("@sentry/nextjs");
 
 const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'flagsapi.com',
-        port: '',
-        pathname: '**',
+        protocol: "https",
+        hostname: "flagsapi.com",
+        port: "",
+        pathname: "**",
       },
     ],
   },
@@ -29,5 +29,5 @@ const SentryWebpackPluginOptions = {
 
 module.exports = withSentryConfig(
   withBundleAnalyzer(nextConfig),
-  SentryWebpackPluginOptions
+  SentryWebpackPluginOptions,
 );
