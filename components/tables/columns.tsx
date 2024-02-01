@@ -25,11 +25,10 @@ export const DnsLookupColumnDef: ExtendedColumnDef<ResponseList>[] = [
         return (
           <CheckCircledIcon className="ml-4 h-[18px] w-[18px] animate-pulse text-green-600" />
         );
-      } else {
-        return (
-          <CrossCircledIcon className="ml-4 h-[18px] w-[18px] animate-pulse text-red-600" />
-        );
       }
+      return (
+        <CrossCircledIcon className="ml-4 h-[18px] w-[18px] animate-pulse text-red-600" />
+      );
     },
     header: ({ column }) => {
       return <DataTableColumnHeader column={column} title="Status" />;
@@ -55,11 +54,10 @@ export const BulkFCrDNSColumnDef: ExtendedColumnDef<BulkFCrDNSResponseList>[] =
           return (
             <CheckCircledIcon className="ml-4 h-[18px] w-[18px] animate-pulse text-green-600" />
           );
-        } else {
-          return (
-            <CrossCircledIcon className="ml-4 h-[18px] w-[18px] animate-pulse text-red-600" />
-          );
         }
+        return (
+          <CrossCircledIcon className="ml-4 h-[18px] w-[18px] animate-pulse text-red-600" />
+        );
       },
       header: ({ column }) => {
         return <DataTableColumnHeader column={column} title="Status" />;
@@ -78,11 +76,10 @@ export const BulkDnsLookupColumnDef: ExtendedColumnDef<BulkResponseList>[] = [
         return (
           <CheckCircledIcon className="ml-4 h-[18px] w-[18px] animate-pulse text-green-600" />
         );
-      } else {
-        return (
-          <CrossCircledIcon className="ml-4 h-[18px] w-[18px] animate-pulse text-red-600" />
-        );
       }
+      return (
+        <CrossCircledIcon className="ml-4 h-[18px] w-[18px] animate-pulse text-red-600" />
+      );
     },
     header: ({ column }) => {
       return <DataTableColumnHeader column={column} title="Status" />;

@@ -17,48 +17,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  eslint:
-    timeout-minutes: 60
+  biome:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        name: Checkout Code
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
         with:
-          version: 8
-          run_install: true
-      - uses: actions/setup-node@v3
-        name: Setup Node
-        with:
-          node-version: 18
-          cache: 'pnpm'
-      - name: Run Eslint
-        run: pnpm run lint
+          version: latest
+      - name: Run Biome
+        run: biome ci .
 
-  prettier:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        name: Checkout Code
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        with:
-          version: 8
-          run_install: true
-      - uses: actions/setup-node@v3
-        name: Setup Node
-        with:
-          node-version: 18
-          cache: 'pnpm'
-      - name: Run Prettier
-        run: pnpm exec prettier --check .
 
   playwright:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    needs: [prettier, eslint]
+    needs: [biome]
     steps:
       - uses: actions/checkout@v3
         name: Checkout Code
@@ -87,7 +62,7 @@ jobs:
     if: github.event_name == 'pull_request'
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    needs: [prettier, eslint, playwright]
+    needs: [biome, playwright]
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
@@ -149,7 +124,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    needs: [prettier, eslint, playwright]
+    needs: [biome, playwright]
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

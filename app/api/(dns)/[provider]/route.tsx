@@ -19,11 +19,10 @@ export async function POST(
         const dnsData = await getDnsData(reverseIp, record_type, dnsUrl);
         const success = dnsData.Status === 0;
         return NextResponse.json({ success, data: dnsData });
-      } else {
-        const dnsData = await getDnsData(query, record_type, dnsUrl);
-        const success = dnsData.Status === 0;
-        return NextResponse.json({ success, data: dnsData });
       }
+      const dnsData = await getDnsData(query, record_type, dnsUrl);
+      const success = dnsData.Status === 0;
+      return NextResponse.json({ success, data: dnsData });
     } catch (error) {
       return NextResponse.json({ success: false, data: error });
     }

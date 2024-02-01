@@ -34,8 +34,8 @@ export function DomainWhoisResponse({
           <h3 className="col-span-1">Status</h3>
           <span className="col-span-2">
             {Array.isArray(response.domainStatus) ? (
-              response.domainStatus.map((item, index) => (
-                <pre key={index} className="whitespace-pre-line">
+              response.domainStatus.map((item) => (
+                <pre key={item} className="whitespace-pre-line">
                   {item}
                 </pre>
               ))

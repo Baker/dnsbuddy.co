@@ -9,7 +9,7 @@ export default function Navigation() {
         <div className="flex flex-1">
           <Link className="-m-1.5 inline-flex p-1.5" href="/">
             <Image
-              src={`/images/dnsbuddy.png`}
+              src={"/images/dnsbuddy.png"}
               alt="DnsBuddy Logo"
               width={32}
               height={32}
@@ -21,7 +21,7 @@ export default function Navigation() {
         </div>
         <div className="flex justify-end lg:flex-1">
           <div className="flex items-center ">
-            <Link href={`/tools`} className="pr-4">
+            <Link href={"/tools"} className="pr-4">
               Other Tools
             </Link>
           </div>

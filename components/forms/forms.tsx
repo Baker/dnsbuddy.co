@@ -85,7 +85,7 @@ export function DnsLookUpForm({ path }: { path: string }) {
         { scroll: false },
       );
     }
-  }, []);
+  }, [recordType]);
 
   let recordValue;
   if (recordType != null) {
@@ -132,29 +132,28 @@ export function DnsLookUpForm({ path }: { path: string }) {
           throw new Error(
             `Error: DnsLookupForm status=${query.status} provider=${provider}`,
           );
-        } else {
-          const queryData: ResponseItem = await query.json();
-          const answers: string[] = [];
-          for (const item in queryData.data.Answer) {
-            const resp = queryData.data.Answer[item];
-            if (resp.type == 16 && !resp.data.startsWith('"')) {
-              answers.push(`"${resp.data}"`);
-            } else if (resp.type != 46) {
-              answers.push(resp.data);
-            }
-          }
-          setResponse((prevResponse) => [
-            ...prevResponse,
-            {
-              status: queryData.success,
-              provider:
-                ProviderToLabelMapping[
-                  provider as keyof typeof ProviderToLabelMapping
-                ],
-              response: answers,
-            },
-          ]);
         }
+        const queryData: ResponseItem = await query.json();
+        const answers: string[] = [];
+        for (const item in queryData.data.Answer) {
+          const resp = queryData.data.Answer[item];
+          if (resp.type === 16 && !resp.data.startsWith('"')) {
+            answers.push(`"${resp.data}"`);
+          } else if (resp.type !== 46) {
+            answers.push(resp.data);
+          }
+        }
+        setResponse((prevResponse) => [
+          ...prevResponse,
+          {
+            status: queryData.success,
+            provider:
+              ProviderToLabelMapping[
+                provider as keyof typeof ProviderToLabelMapping
+              ],
+            response: answers,
+          },
+        ]);
       }
     });
     router.push(
@@ -299,7 +298,7 @@ export function BulkFCrDNSForm() {
           setResponse((prevResponse) => [
             ...prevResponse,
             {
-              status: aRecord?.data?.Answer?.[0].data == ip,
+              status: aRecord?.data?.Answer?.[0].data === ip,
               aRecord: ip,
               ptrRecord: ptrRecord?.data?.Answer?.[0].data,
             },
@@ -448,31 +447,30 @@ export function BulkDnsLookupForm() {
           throw new Error(
             `Error: DnsLookupForm status=${query.status} provider=${values.dns_provider}`,
           );
-        } else {
-          const responseData: ResponseItem = await query.json();
-          const answers: string[] = [];
-          for (const item in responseData.data.Answer) {
-            const resp = responseData.data.Answer[item];
-            if (resp.type == 16 && !resp.data.startsWith('"')) {
-              answers.push(`"${resp.data}"`);
-            } else if (resp.type != 46) {
-              answers.push(resp.data);
-            }
-          }
-          setResponse((prevResponse) => [
-            ...prevResponse,
-            {
-              status: responseData.success,
-              provider:
-                ProviderToLabelMapping[
-                  values.dns_provider as keyof typeof ProviderToLabelMapping
-                ],
-              query: domainList[domain],
-              record_type: values.record_type,
-              response: answers,
-            },
-          ]);
         }
+        const responseData: ResponseItem = await query.json();
+        const answers: string[] = [];
+        for (const item in responseData.data.Answer) {
+          const resp = responseData.data.Answer[item];
+          if (resp.type === 16 && !resp.data.startsWith('"')) {
+            answers.push(`"${resp.data}"`);
+          } else if (resp.type !== 46) {
+            answers.push(resp.data);
+          }
+        }
+        setResponse((prevResponse) => [
+          ...prevResponse,
+          {
+            status: responseData.success,
+            provider:
+              ProviderToLabelMapping[
+                values.dns_provider as keyof typeof ProviderToLabelMapping
+              ],
+            query: domainList[domain],
+            record_type: values.record_type,
+            response: answers,
+          },
+        ]);
       }
     });
   }
@@ -628,7 +626,7 @@ export function WhoisForm() {
         { scroll: false },
       );
     }
-  }, []);
+  }, [whoisType]);
 
   const form = useForm<z.infer<typeof whoIsFormSchema>>({
     resolver: zodResolver(whoIsFormSchema),
@@ -646,7 +644,7 @@ export function WhoisForm() {
     }
 
     startTransition(async () => {
-      const query = await fetch(`/api/whois`, {
+      const query = await fetch("/api/whois", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -741,12 +739,13 @@ export function WhoisForm() {
             No data available, this could be due to an invalid domain, or IP
             Address.
           </p>
-        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] == WhoIsTypes.DOMAIN ? (
+        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] ===
+          WhoIsTypes.DOMAIN ? (
           <DomainWhoisResponse response={response as DomainWhoisData} />
-        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] ==
+        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] ===
           WhoIsTypes.IP_ADDRESS ? (
           <IpAddressWhoisReponse response={response as IPWhoisData} />
-        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] == WhoIsTypes.ASN ? (
+        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] === WhoIsTypes.ASN ? (
           <AsnWhoisResponse response={response as ASNWhoisData} />
         ) : null
       ) : null}

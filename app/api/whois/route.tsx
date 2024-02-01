@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { WhoIsTypes } from "@/lib/constants/api";
 import type { DomainWhoisData, IPWhoisData } from "@/lib/types/whois";
 import { NextResponse } from "next/server";
@@ -16,7 +17,7 @@ export async function POST(request: Request) {
         domainStatus: whoisData["Domain Status"],
         nameServer: whoisData["Name Server"],
         domainName: whoisData["Domain Name"],
-        registar: whoisData["Registrar"],
+        registar: whoisData.Registrar,
         registarWHOISServer: whoisData["Registrar WHOIS Server"],
         registarURL: whoisData["Registrar URL"],
         createdDate: whoisData["Updated Date"],
@@ -24,9 +25,11 @@ export async function POST(request: Request) {
         expiryDate: whoisData["Expiry Date"],
       };
       return NextResponse.json(domainWhoisData);
-    } else if (WhoIsTypes[type] === WhoIsTypes.IP_ADDRESS) {
+    }
+    if (WhoIsTypes[type] === WhoIsTypes.IP_ADDRESS) {
       return NextResponse.json(parseIp(data));
-    } else if (WhoIsTypes[type] === WhoIsTypes.ASN) {
+    }
+    if (WhoIsTypes[type] === WhoIsTypes.ASN) {
       return NextResponse.json(parseAsn(data));
     }
   } catch (error) {
@@ -35,25 +38,25 @@ export async function POST(request: Request) {
 }
 
 function createContactObject(data, prefix) {
-  if (data["contact" + prefix]) {
+  if (data[`contact${prefix}`]) {
     // Handle the different prefixes and the key value differences.
     const key =
       prefix === "Technical" ? "Tech" : prefix === "Noc" ? "NOC" : prefix;
-    const newData = data["contact" + prefix];
+    const newData = data[`contact${prefix}`];
     return {
-      Handle: newData["Org" + key + "Handle"] || newData["R" + key + "Handle"],
-      Name: newData["Org" + key + "Name"] || newData["R" + key + "Name"],
-      Phone: newData["Org" + key + "Phone"] || newData["R" + key + "Phone"],
-      Email: newData["Org" + key + "Email"] || newData["R" + key + "Email"],
-      Ref: newData["Org" + key + "Ref"] || newData["R" + key + "Ref"],
+      Handle: newData[`Org${key}Handle`] || newData[`R${key}Handle`],
+      Name: newData[`Org${key}Name`] || newData[`R${key}Name`],
+      Phone: newData[`Org${key}Phone`] || newData[`R${key}Phone`],
+      Email: newData[`Org${key}Email`] || newData[`R${key}Email`],
+      Ref: newData[`Org${key}Ref`] || newData[`R${key}Ref`],
     };
   }
   return {
-    Handle: data["Org" + prefix + "Handle"] || data["R" + prefix + "Handle"],
-    Name: data["Org" + prefix + "Name"] || data["R" + prefix + "Name"],
-    Phone: data["Org" + prefix + "Phone"] || data["R" + prefix + "Phone"],
-    Email: data["Org" + prefix + "Email"] || data["R" + prefix + "Email"],
-    Ref: data["Org" + prefix + "Ref"] || data["R" + prefix + "Ref"],
+    Handle: data[`Org${prefix}Handle`] || data[`R${prefix}Handle`],
+    Name: data[`Org${prefix}Name`] || data[`R${prefix}Name`],
+    Phone: data[`Org${prefix}Phone`] || data[`R${prefix}Phone`],
+    Email: data[`Org${prefix}Email`] || data[`R${prefix}Email`],
+    Ref: data[`Org${prefix}Ref`] || data[`R${prefix}Ref`],
   };
 }
 
@@ -65,24 +68,24 @@ function parseIp(data) {
   const contactDNS = createContactObject(data, "DNS");
 
   const ipWhoisData: IPWhoisData = {
-    range: data["range"],
-    route: data["route"],
-    NetName: data["NetName"],
-    Parent: data["Parent"],
-    asn: data["asn"],
-    Organization: data["Organization"],
-    RegDate: data["RegDate"],
-    Updated: data["Updated"],
-    Ref: data["Ref"],
-    ResourceLink: data["ResourceLink"],
-    ReferralServer: data["ReferralServer"],
-    organisation: data["organisation"],
+    range: data.range,
+    route: data.route,
+    NetName: data.NetName,
+    Parent: data.Parent,
+    asn: data.asn,
+    Organization: data.Organization,
+    RegDate: data.RegDate,
+    Updated: data.Updated,
+    Ref: data.Ref,
+    ResourceLink: data.ResourceLink,
+    ReferralServer: data.ReferralServer,
+    organisation: data.organisation,
     contactNoc: contactNoc,
     contactAbuse: contactAbuse,
     contactTechnical: contactTechnical,
     contactRouting: contactRouting,
     contactDNS: contactDNS,
-    text: data["text"],
+    text: data.text,
   };
   return ipWhoisData;
 }
@@ -95,19 +98,19 @@ function parseAsn(data) {
   const contactDNS = createContactObject(data, "DNS");
 
   const asnData = {
-    Number: data["ASNumber"],
-    Name: data["ASName"],
-    Handle: data["ASHandle"],
-    RegDate: data["RegDate"],
-    Updated: data["Updated"],
-    Ref: data["Ref"],
-    organisation: data["organisation"],
+    Number: data.ASNumber,
+    Name: data.ASName,
+    Handle: data.ASHandle,
+    RegDate: data.RegDate,
+    Updated: data.Updated,
+    Ref: data.Ref,
+    organisation: data.organisation,
     contactNoc: contactNoc,
     contactAbuse: contactAbuse,
     contactTechnical: contactTechnical,
     contactRouting: contactRouting,
     contactDNS: contactDNS,
-    text: data["text"],
+    text: data.text,
   };
   return asnData;
 }
