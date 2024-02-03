@@ -4,10 +4,10 @@ import { type Page, expect, test } from "@playwright/test";
 
 // Reusable setup code
 const setup = async (page: Page) => {
-    await page.goto("http://localhost:3000/tools/dns-lookup");
-    await page.getByPlaceholder("example.com").click();
-    await page.getByPlaceholder("example.com").fill("example.com");
-    await page.selectOption("select", "TXT");
+  await page.goto("http://localhost:3000/tools/dns-lookup");
+  await page.getByPlaceholder("example.com").click();
+  await page.getByPlaceholder("example.com").fill("example.com");
+  await page.selectOption("select", "TXT");
 };
 
 test("has main here", async ({ page }) => {
@@ -34,11 +34,10 @@ test("can use DNS Search", async ({ page }) => {
     });
   });
 
-  await setup(page)
+  await setup(page);
   const digButton = await page.getByRole("button", { name: "Dig" });
   await digButton.click();
   expect(await digButton.isDisabled()).toBe(true);
-
 });
 
 test("can autofill form with URL params", async ({ page }) => {
@@ -56,10 +55,13 @@ test.describe("verify the table loads", () => {
       });
     });
 
-    await setup(page)
+    await setup(page);
     const digButton = await page.getByRole("button", { name: "Dig" });
     await digButton.click();
-    await page.waitForURL("http://localhost:3000/tools/dns-lookup/TXT/example.com", { waitUntil: "load" });
+    await page.waitForURL(
+      "http://localhost:3000/tools/dns-lookup/TXT/example.com",
+      { waitUntil: "load" },
+    );
   });
 
   test("with proper header & additional options", async ({ page }) => {

@@ -51,7 +51,9 @@ test.describe("IPv4 Address", () => {
     await page.getByPlaceholder("example.com").fill("127.0.0.1");
     await page.selectOption("select", "IP Address");
     await page.getByRole("button", { name: "Dig" }).click();
-    await page.waitForURL("http://localhost:3000/tools/whois/IP/127.0.0.1", { waitUntil: "load" });
+    await page.waitForURL("http://localhost:3000/tools/whois/IP/127.0.0.1", {
+      waitUntil: "load",
+    });
   });
 
   test("Check for sections, and example text", async ({ page }) => {
@@ -78,10 +80,15 @@ test.describe("IPv6 Address", () => {
 
     await page.goto("http://localhost:3000/tools/whois");
     await page.getByPlaceholder("example.com").click();
-    await page.getByPlaceholder("example.com").fill("2001:0000:130F:0000:0000:09C0:876A:130B");
+    await page
+      .getByPlaceholder("example.com")
+      .fill("2001:0000:130F:0000:0000:09C0:876A:130B");
     await page.selectOption("select", "IP Address");
     await page.getByRole("button", { name: "Dig" }).click();
-    await page.waitForURL("http://localhost:3000/tools/whois/IP/2001:0000:130f:0000:0000:09c0:876a:130b", { waitUntil: "load" });
+    await page.waitForURL(
+      "http://localhost:3000/tools/whois/IP/2001:0000:130f:0000:0000:09c0:876a:130b",
+      { waitUntil: "load" },
+    );
   });
 
   test("Check for sections, and example text", async ({ page }) => {
@@ -111,7 +118,9 @@ test.describe("ASN", () => {
     await page.getByPlaceholder("example.com").fill("AS123");
     await page.selectOption("select", "ASN");
     await page.getByRole("button", { name: "Dig" }).click();
-    await page.waitForURL("http://localhost:3000/tools/whois/ASN/as123", { waitUntil: "load" });
+    await page.waitForURL("http://localhost:3000/tools/whois/ASN/as123", {
+      waitUntil: "load",
+    });
   });
 
   test("Check for sections, and example text", async ({ page }) => {
