@@ -53,11 +53,7 @@ import type {
 } from "@/types/data";
 import type { ResponseItem } from "@/types/dns";
 import { CommonRecordTypes } from "@/types/record-types";
-import type {
-  ASNWhoisData,
-  DomainWhoisData,
-  IPWhoisData,
-} from "@/types/whois";
+import type { ASNWhoisData, DomainWhoisData, IPWhoisData } from "@/types/whois";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";

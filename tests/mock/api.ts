@@ -1,9 +1,5 @@
 import type { ResponseItem } from "@/types/dns";
-import type {
-  ASNWhoisData,
-  DomainWhoisData,
-  IPWhoisData,
-} from "@/types/whois";
+import type { ASNWhoisData, DomainWhoisData, IPWhoisData } from "@/types/whois";
 
 export const exampleDNSResponseItem: ResponseItem = {
   // This is a single api call mock for example.com

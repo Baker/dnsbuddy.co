@@ -1,9 +1,5 @@
 import GenericToolTip from "@/components/tooltip";
-import type {
-  ASNWhoisData,
-  DomainWhoisData,
-  IPWhoisData,
-} from "@/types/whois";
+import type { ASNWhoisData, DomainWhoisData, IPWhoisData } from "@/types/whois";
 import Image from "next/image";
 import Link from "next/link";
 
