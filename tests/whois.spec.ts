@@ -4,7 +4,7 @@ import {
   exampleIpAddressV4WhoisResponse,
   exampleIpAddressV6WhoisResponse,
 } from "@/tests/mock/api";
-import { type Page, expect, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test("can autofill form with URL params", async ({ page }) => {
   await page.goto("http://localhost:3000/tools/whois/DOMAIN/test.com");
@@ -46,8 +46,12 @@ test.describe("IPv4 Address", () => {
       });
     });
 
-    await page.goto("http://localhost:3000/tools/whois/IP/127.0.0.1");
-    await page.waitForURL("http://localhost:3000/tools/whois/IP/127.0.0.1");
+    await page.goto("http://localhost:3000/tools/whois");
+    await page.getByPlaceholder("example.com").click();
+    await page.getByPlaceholder("example.com").fill("127.0.0.1");
+    await page.selectOption("select", "IP Address");
+    await page.getByRole("button", { name: "Dig" }).click();
+    await page.waitForURL("http://localhost:3000/tools/whois/IP/127.0.0.1", { waitUntil: "load" });
   });
 
   test("Check for sections, and example text", async ({ page }) => {
@@ -72,9 +76,12 @@ test.describe("IPv6 Address", () => {
       });
     });
 
-    await page.goto(
-      "http://localhost:3000/tools/whois/IP/2001:0000:130F:0000:0000:09C0:876A:130B",
-    );
+    await page.goto("http://localhost:3000/tools/whois");
+    await page.getByPlaceholder("example.com").click();
+    await page.getByPlaceholder("example.com").fill("2001:0000:130F:0000:0000:09C0:876A:130B");
+    await page.selectOption("select", "IP Address");
+    await page.getByRole("button", { name: "Dig" }).click();
+    await page.waitForURL("http://localhost:3000/tools/whois/IP/2001:0000:130f:0000:0000:09c0:876a:130b", { waitUntil: "load" });
   });
 
   test("Check for sections, and example text", async ({ page }) => {
@@ -99,9 +106,12 @@ test.describe("ASN", () => {
       });
     });
 
-    await page.goto("http://localhost:3000/tools/whois/ASN/as111");
+    await page.goto("http://localhost:3000/tools/whois");
+    await page.getByPlaceholder("example.com").click();
+    await page.getByPlaceholder("example.com").fill("AS123");
+    await page.selectOption("select", "ASN");
     await page.getByRole("button", { name: "Dig" }).click();
-    await page.waitForURL("http://localhost:3000/tools/whois/ASN/as111");
+    await page.waitForURL("http://localhost:3000/tools/whois/ASN/as123", { waitUntil: "load" });
   });
 
   test("Check for sections, and example text", async ({ page }) => {
@@ -128,7 +138,10 @@ test("verify required type field", async ({ page }) => {
 });
 
 test("ip address input, domain selected", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois/domain/127.0.0.1");
+  await page.goto("http://localhost:3000/tools/whois");
+  await page.getByPlaceholder("example.com").click();
+  await page.getByPlaceholder("example.com").fill("127.0.0.1");
+  await page.selectOption("select", "Domain");
   await page.getByRole("button", { name: "Dig" }).click();
   expect(
     await page
@@ -140,7 +153,10 @@ test("ip address input, domain selected", async ({ page }) => {
 });
 
 test("domain input, ip address selected", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois/ip/example.com");
+  await page.goto("http://localhost:3000/tools/whois");
+  await page.getByPlaceholder("example.com").click();
+  await page.getByPlaceholder("example.com").fill("example.com");
+  await page.selectOption("select", "IP Address");
   await page.getByRole("button", { name: "Dig" }).click();
   expect(
     await page
@@ -152,7 +168,10 @@ test("domain input, ip address selected", async ({ page }) => {
 });
 
 test("domain input, asn selected", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois/asn/example.com");
+  await page.goto("http://localhost:3000/tools/whois");
+  await page.getByPlaceholder("example.com").click();
+  await page.getByPlaceholder("example.com").fill("example.com");
+  await page.selectOption("select", "ASN");
   await page.getByRole("button", { name: "Dig" }).click();
   expect(
     await page
