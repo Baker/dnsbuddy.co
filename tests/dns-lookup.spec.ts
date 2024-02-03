@@ -47,13 +47,10 @@ test("can use DNS Search", async ({ page }) => {
 });
 
 test("can autofill form with URL params", async ({ page }) => {
-  await page.goto(
-    "http://localhost:3000/tools/dns-lookup/TXT/test.com",
-  );
+  await page.goto("http://localhost:3000/tools/dns-lookup/TXT/test.com");
   const queryInput = await page.getByPlaceholder("example.com");
   expect(await queryInput.inputValue()).toEqual("test.com");
 });
-
 
 test.describe("verify the table loads", () => {
   test.beforeEach(async ({ page }) => {

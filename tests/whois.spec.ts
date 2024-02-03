@@ -34,9 +34,7 @@ test("can use WHOIS lookup", async ({ page }) => {
 });
 
 test("can autofill form with URL params", async ({ page }) => {
-  await page.goto(
-    "http://localhost:3000/tools/whois/DOMAIN/test.com",
-  );
+  await page.goto("http://localhost:3000/tools/whois/DOMAIN/test.com");
   const queryInput = await page.getByPlaceholder("example.com");
   expect(await queryInput.inputValue()).toEqual("test.com");
 });
@@ -81,9 +79,7 @@ test.describe("IPv4 Address", () => {
 
     await setup(page, "127.0.0.1", "IP Address");
     await page.getByRole("button", { name: "Dig" }).click();
-    await page.waitForURL(
-      "http://localhost:3000/tools/whois/IP/127.0.0.1",
-    );
+    await page.waitForURL("http://localhost:3000/tools/whois/IP/127.0.0.1");
   });
 
   test("Check for sections, and example text", async ({ page }) => {
@@ -139,9 +135,7 @@ test.describe("ASN", () => {
 
     await setup(page, "AS111", "ASN");
     await page.getByRole("button", { name: "Dig" }).click();
-    await page.waitForURL(
-      "http://localhost:3000/tools/whois/ASN/as111",
-    );
+    await page.waitForURL("http://localhost:3000/tools/whois/ASN/as111");
   });
 
   test("Check for sections, and example text", async ({ page }) => {
