@@ -114,7 +114,7 @@ export function IpAddressWhoisReponse({ response }: { response: IPWhoisData }) {
           <span className="col-span-2">
             <Link
               className="underline"
-              href={`/tools/whois?query=${response.asn}&type=ASN`}
+              href={`/tools/whois/ASN/${response.asn}/`}
             >
               {response.asn}
             </Link>

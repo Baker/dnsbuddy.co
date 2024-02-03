@@ -622,7 +622,7 @@ export function WhoisForm({
     whoisType && (whoisType.toUpperCase() as keyof typeof WhoIsTypes)
       ? whoisType.toUpperCase()
       : undefined;
-  query = query ? decodeURIComponent(query) : undefined;
+  query = query ? decodeURIComponent(query.toLowerCase()) : undefined;
 
   useEffect(() => {
     if (
