@@ -21,7 +21,7 @@ test.describe("domain", () => {
       });
     });
 
-    await page.goto("http://localhost:3000/tools/whois/domain/example.com",);
+    await page.goto("http://localhost:3000/tools/whois/domain/example.com");
   });
 
   test("Check for sections, and example text", async ({ page }) => {
@@ -46,7 +46,7 @@ test.describe("IPv4 Address", () => {
       });
     });
 
-    await page.goto("http://localhost:3000/tools/whois/IP/127.0.0.1",);
+    await page.goto("http://localhost:3000/tools/whois/IP/127.0.0.1");
     await page.waitForURL("http://localhost:3000/tools/whois/IP/127.0.0.1");
   });
 
@@ -72,7 +72,9 @@ test.describe("IPv6 Address", () => {
       });
     });
 
-    await page.goto("http://localhost:3000/tools/whois/IP/2001:0000:130F:0000:0000:09C0:876A:130B");
+    await page.goto(
+      "http://localhost:3000/tools/whois/IP/2001:0000:130F:0000:0000:09C0:876A:130B",
+    );
   });
 
   test("Check for sections, and example text", async ({ page }) => {
@@ -97,7 +99,7 @@ test.describe("ASN", () => {
       });
     });
 
-    await page.goto("http://localhost:3000/tools/whois/ASN/as111")
+    await page.goto("http://localhost:3000/tools/whois/ASN/as111");
     await page.getByRole("button", { name: "Dig" }).click();
     await page.waitForURL("http://localhost:3000/tools/whois/ASN/as111");
   });
@@ -150,7 +152,7 @@ test("domain input, ip address selected", async ({ page }) => {
 });
 
 test("domain input, asn selected", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois/asn/example.com")
+  await page.goto("http://localhost:3000/tools/whois/asn/example.com");
   await page.getByRole("button", { name: "Dig" }).click();
   expect(
     await page

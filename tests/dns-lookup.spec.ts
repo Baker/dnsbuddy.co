@@ -4,7 +4,7 @@ import { type Page, expect, test } from "@playwright/test";
 
 // Reusable setup code
 const setup = async (page: Page) => {
-  await page.goto(`http://localhost:3000/tools/dns-lookup/txt/example.com`);
+  await page.goto("http://localhost:3000/tools/dns-lookup/txt/example.com");
 };
 
 test("has main here", async ({ page }) => {
