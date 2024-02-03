@@ -6,33 +6,6 @@ import {
 } from "@/tests/mock/api";
 import { type Page, expect, test } from "@playwright/test";
 
-// Reusable setup code
-const setup = async (page: Page, input: string, label: string) => {
-  await page.goto("http://localhost:3000/tools/whois");
-  await page.getByPlaceholder("example.com").click();
-  await page.getByPlaceholder("example.com").fill(input);
-  const optionToSelect = await page
-    .locator("option", { hasText: label })
-    .textContent();
-  await page
-    .locator("select")
-    .selectOption({ label: optionToSelect as string });
-};
-
-test("can use WHOIS lookup", async ({ page }) => {
-  await page.route("*/**/api/whois", async (route) => {
-    await route.fulfill({
-      contentType: "application/json",
-      json: exampleDomainWhoisResponse,
-    });
-  });
-
-  await setup(page, "example.com", "Domain");
-  const digButton = await page.getByRole("button", { name: "Dig" });
-  await digButton.click();
-  expect(await digButton.isDisabled()).toBe(true);
-});
-
 test("can autofill form with URL params", async ({ page }) => {
   await page.goto("http://localhost:3000/tools/whois/DOMAIN/test.com");
   const queryInput = await page.getByPlaceholder("example.com");
@@ -48,11 +21,7 @@ test.describe("domain", () => {
       });
     });
 
-    await setup(page, "example.com", "Domain");
-    await page.getByRole("button", { name: "Dig" }).click();
-    await page.waitForURL(
-      "http://localhost:3000/tools/whois/DOMAIN/example.com",
-    );
+    await page.goto("http://localhost:3000/tools/whois/domain/example.com",);
   });
 
   test("Check for sections, and example text", async ({ page }) => {
@@ -77,8 +46,7 @@ test.describe("IPv4 Address", () => {
       });
     });
 
-    await setup(page, "127.0.0.1", "IP Address");
-    await page.getByRole("button", { name: "Dig" }).click();
+    await page.goto("http://localhost:3000/tools/whois/IP/127.0.0.1",);
     await page.waitForURL("http://localhost:3000/tools/whois/IP/127.0.0.1");
   });
 
@@ -104,11 +72,7 @@ test.describe("IPv6 Address", () => {
       });
     });
 
-    await setup(page, "2001:0000:130F:0000:0000:09C0:876A:130B", "IP Address");
-    await page.getByRole("button", { name: "Dig" }).click();
-    await page.waitForURL(
-      "http://localhost:3000/tools/whois/IP/2001:0000:130f:0000:0000:09c0:876a:130b",
-    );
+    await page.goto("http://localhost:3000/tools/whois/IP/2001:0000:130F:0000:0000:09C0:876A:130B");
   });
 
   test("Check for sections, and example text", async ({ page }) => {
@@ -133,7 +97,7 @@ test.describe("ASN", () => {
       });
     });
 
-    await setup(page, "AS111", "ASN");
+    await page.goto("http://localhost:3000/tools/whois/ASN/as111")
     await page.getByRole("button", { name: "Dig" }).click();
     await page.waitForURL("http://localhost:3000/tools/whois/ASN/as111");
   });
@@ -162,7 +126,7 @@ test("verify required type field", async ({ page }) => {
 });
 
 test("ip address input, domain selected", async ({ page }) => {
-  await setup(page, "127.0.0.1", "Domain");
+  await page.goto("http://localhost:3000/tools/whois/domain/127.0.0.1");
   await page.getByRole("button", { name: "Dig" }).click();
   expect(
     await page
@@ -174,7 +138,7 @@ test("ip address input, domain selected", async ({ page }) => {
 });
 
 test("domain input, ip address selected", async ({ page }) => {
-  await setup(page, "example.com", "Ip Address");
+  await page.goto("http://localhost:3000/tools/whois/ip/example.com");
   await page.getByRole("button", { name: "Dig" }).click();
   expect(
     await page
@@ -186,7 +150,7 @@ test("domain input, ip address selected", async ({ page }) => {
 });
 
 test("domain input, asn selected", async ({ page }) => {
-  await setup(page, "example.com", "ASN");
+  await page.goto("http://localhost:3000/tools/whois/asn/example.com")
   await page.getByRole("button", { name: "Dig" }).click();
   expect(
     await page

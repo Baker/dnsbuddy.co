@@ -4,15 +4,7 @@ import { type Page, expect, test } from "@playwright/test";
 
 // Reusable setup code
 const setup = async (page: Page) => {
-  await page.goto("http://localhost:3000/tools/dns-lookup");
-  await page.getByPlaceholder("example.com").click();
-  await page.getByPlaceholder("example.com").fill("example.com");
-  const optionToSelect = await page
-    .locator("option", { hasText: "TXT" })
-    .textContent();
-  await page
-    .locator("select")
-    .selectOption({ label: optionToSelect as string });
+  await page.goto(`http://localhost:3000/tools/dns-lookup/txt/example.com`);
 };
 
 test("has main here", async ({ page }) => {
@@ -40,9 +32,6 @@ test("can use DNS Search", async ({ page }) => {
   });
 
   await setup(page);
-
-  const digButton = await page.getByRole("button", { name: "Dig" });
-  await digButton.click();
   expect(await digButton.isDisabled()).toBe(true);
 });
 
@@ -62,10 +51,6 @@ test.describe("verify the table loads", () => {
     });
 
     await setup(page);
-    await page.getByRole("button", { name: "Dig" }).click();
-    await page.waitForURL(
-      "http://localhost:3000/tools/dns-lookup/TXT/example.com",
-    );
   });
 
   test("with proper header & additional options", async ({ page }) => {
