@@ -2,7 +2,7 @@ import { DnsLookUpForm } from "@/components/forms/forms";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "DnsBuddy | DNS Lookup",
+  title: `DnsBuddy ${DnsLookup.toString()} | DNS Lookup`,
   description: "Your friendly neighborhood DNS lookup tool.",
   twitter: {
     card: "summary",

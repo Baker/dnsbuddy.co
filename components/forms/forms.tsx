@@ -59,109 +59,109 @@ import type {
   IPWhoisData,
 } from "@/lib/types/whois";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 
-export function DnsLookUpForm({ path }: { path: string }) {
+export function DnsLookUpForm({
+  recordType,
+  query,
+}: { recordType?: string; query?: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [response, setResponse] = useState<ResponseList[]>([]);
-  const searchParams = useSearchParams();
-  const recordType = searchParams.get("record_type");
+  const recordTypes = Object.keys(CommonRecordTypes);
+  const [lastSubmitted, setLastSubmitted] = useState<{
+    query: string | undefined;
+    record_type: string | undefined;
+  } | null>(null);
+
+  const recordValue =
+    recordType &&
+    // biome-ignore lint: This isn't an issue.
+    CommonRecordTypes.hasOwnProperty(
+      recordType.toUpperCase() as keyof typeof CommonRecordTypes,
+    )
+      ? recordType.toUpperCase()
+      : undefined;
 
   useEffect(() => {
     if (
-      !CommonRecordTypes.hasOwnProperty(
-        recordType as keyof typeof CommonRecordTypes,
-      ) &&
-      recordType != null
+      query &&
+      recordValue &&
+      (!lastSubmitted ||
+        lastSubmitted.query !== query ||
+        lastSubmitted.record_type !== recordValue)
     ) {
-      router.push(
-        `${path}/${
-          searchParams.get("query") != null
-            ? `?query=${searchParams.get("query")}`
-            : ""
-        }`,
-        { scroll: false },
-      );
+      onSubmit({ query: query, record_type: recordValue });
+      setLastSubmitted({ query: query, record_type: recordValue });
     }
-  }, [recordType]);
-
-  let recordValue;
-  if (recordType != null) {
-    if (
-      CommonRecordTypes.hasOwnProperty(
-        recordType as keyof typeof CommonRecordTypes,
-      )
-    ) {
-      recordValue = recordType;
-    } else {
-      recordValue = undefined;
-    }
-  } else {
-    recordValue = undefined;
-  }
-  const recordTypes = Object.keys(CommonRecordTypes);
+  }, [query, recordValue, lastSubmitted]);
 
   const form = useForm<z.infer<typeof dnsLookupFormSchema>>({
     resolver: zodResolver(dnsLookupFormSchema),
     defaultValues: {
-      query: searchParams.get("query") || "",
-      record_type: recordValue,
+      query: query || "",
+      record_type: recordValue || "",
     },
     mode: "onChange",
   });
 
+  async function fetchProviderData(
+    provider: string,
+    values: z.infer<typeof dnsLookupFormSchema>,
+  ) {
+    const query = await fetch(`/api/${provider}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+
+    if (!query.ok) {
+      throw new Error(
+        `Error: DnsLookupForm status=${query.status} provider=${provider}`,
+      );
+    }
+
+    const queryData: ResponseItem = await query.json();
+    // biome-ignore lint: This is handled later
+    const answers = queryData.data.Answer.map((resp: any) => {
+      if (resp.type === 16 && !resp.data.startsWith('"')) {
+        return `"${resp.data}"`;
+      }
+      if (resp.type !== 46) {
+        return resp.data;
+      }
+    });
+
+    return {
+      status: queryData.success,
+      provider:
+        ProviderToLabelMapping[provider as keyof typeof ProviderToLabelMapping],
+      response: answers,
+    };
+  }
+
   async function onSubmit(values: z.infer<typeof dnsLookupFormSchema>) {
     if (response.length > 0) {
-      // Handle Multiple queries easier, by resetting state.
       setResponse([]);
     }
 
     startTransition(async () => {
-      for (const provider of Object.keys(ProviderToUrlMapping)) {
-        const query = await fetch(`/api/${provider}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        });
+      if (
+        values.query.toLowerCase() !== query?.toLowerCase() ||
+        values.record_type.toLowerCase() !== recordValue?.toLowerCase()
+      ) {
+        router.push(`/tools/dns-lookup/${values.record_type}/${values.query}`);
+        return;
+      }
 
-        if (!query.ok) {
-          throw new Error(
-            `Error: DnsLookupForm status=${query.status} provider=${provider}`,
-          );
-        }
-        const queryData: ResponseItem = await query.json();
-        const answers: string[] = [];
-        for (const item in queryData.data.Answer) {
-          const resp = queryData.data.Answer[item];
-          if (resp.type === 16 && !resp.data.startsWith('"')) {
-            answers.push(`"${resp.data}"`);
-          } else if (resp.type !== 46) {
-            answers.push(resp.data);
-          }
-        }
-        setResponse((prevResponse) => [
-          ...prevResponse,
-          {
-            status: queryData.success,
-            provider:
-              ProviderToLabelMapping[
-                provider as keyof typeof ProviderToLabelMapping
-              ],
-            response: answers,
-          },
-        ]);
+      for (const provider of Object.keys(ProviderToUrlMapping)) {
+        const providerData = await fetchProviderData(provider, values);
+        setResponse((prevResponse) => [...prevResponse, providerData]);
       }
     });
-    router.push(
-      `${path}?query=${values.query}&record_type=${values.record_type}`,
-      {
-        scroll: false,
-      },
-    );
   }
   return (
     <>
@@ -602,40 +602,58 @@ export function BulkDnsLookupForm() {
   );
 }
 
-export function WhoisForm() {
+export function WhoisForm({
+  whoisType,
+  query,
+}: { whoisType?: string; query?: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [response, setResponse] = useState<
     DomainWhoisData | IPWhoisData | ASNWhoisData
   >();
-  const [type, setType] = useState<string>("");
-  const searchParams = useSearchParams();
-  const whoisType = searchParams.get("type");
+  const [lastSubmitted, setLastSubmitted] = useState<{
+    query: string | undefined;
+    whoisType: string | undefined;
+  } | null>(null);
+
+  const whoisValue =
+    whoisType && (whoisType.toUpperCase() as keyof typeof CommonRecordTypes)
+      ? whoisType.toUpperCase()
+      : undefined;
+  query = query ? decodeURIComponent(query) : undefined;
 
   useEffect(() => {
     if (
-      !WhoIsTypes.hasOwnProperty(whoisType as keyof typeof WhoIsTypes) &&
-      whoisType != null
+      query &&
+      whoisValue &&
+      (!lastSubmitted ||
+        lastSubmitted.query !== query ||
+        lastSubmitted.whoisType !== whoisValue)
     ) {
-      router.push(
-        `/tools/whois${
-          searchParams.get("query") != null
-            ? `?query=${searchParams.get("query")}`
-            : ""
-        }`,
-        { scroll: false },
-      );
+      onSubmit({ query: query, type: whoisValue });
+      setLastSubmitted({ query: query, whoisType: whoisValue });
     }
-  }, [whoisType]);
+  }, [query, whoisValue, lastSubmitted]);
 
   const form = useForm<z.infer<typeof whoIsFormSchema>>({
     resolver: zodResolver(whoIsFormSchema),
     defaultValues: {
-      query: searchParams.get("query") || "",
-      type: searchParams.get("type") || "",
+      query: query || "",
+      type: whoisValue || "",
     },
     mode: "onChange",
   });
+
+  async function fetchWhoIsData(values: z.infer<typeof whoIsFormSchema>) {
+    const query = await fetch("/api/whois", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+    setResponse(await query.json());
+  }
 
   async function onSubmit(values: z.infer<typeof whoIsFormSchema>) {
     if (response !== undefined) {
@@ -644,18 +662,14 @@ export function WhoisForm() {
     }
 
     startTransition(async () => {
-      const query = await fetch("/api/whois", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-      setType(values.type);
-      setResponse(await query.json());
-    });
-    router.push(`/tools/whois?query=${values.query}&type=${values.type}`, {
-      scroll: false,
+      if (
+        values.type.toLowerCase() !== whoisValue?.toLowerCase() ||
+        values.query.toLowerCase() !== query?.toLowerCase()
+      ) {
+        router.push(`/tools/whois/${values.type}/${values.query}`);
+        return;
+      }
+      await fetchWhoIsData(values);
     });
   }
   return (
@@ -739,13 +753,14 @@ export function WhoisForm() {
             No data available, this could be due to an invalid domain, or IP
             Address.
           </p>
-        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] ===
+        ) : WhoIsTypes[whoisValue as keyof typeof WhoIsTypes] ===
           WhoIsTypes.DOMAIN ? (
           <DomainWhoisResponse response={response as DomainWhoisData} />
-        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] ===
-          WhoIsTypes.IP_ADDRESS ? (
+        ) : WhoIsTypes[whoisValue as keyof typeof WhoIsTypes] ===
+          WhoIsTypes.IP ? (
           <IpAddressWhoisReponse response={response as IPWhoisData} />
-        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] === WhoIsTypes.ASN ? (
+        ) : WhoIsTypes[whoisValue as keyof typeof WhoIsTypes] ===
+          WhoIsTypes.ASN ? (
           <AsnWhoisResponse response={response as ASNWhoisData} />
         ) : null
       ) : null}

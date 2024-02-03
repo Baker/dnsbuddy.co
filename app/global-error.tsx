@@ -16,6 +16,7 @@ export default function GlobalError({
   return (
     <html lang="en">
       <body>
+        {/* biome-ignore lint: Skip for now, since you can't omit the statusCode */}
         <NextError statusCode={undefined as any} />
       </body>
     </html>

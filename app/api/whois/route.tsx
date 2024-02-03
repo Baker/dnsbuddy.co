@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       };
       return NextResponse.json(domainWhoisData);
     }
-    if (WhoIsTypes[type] === WhoIsTypes.IP_ADDRESS) {
+    if (WhoIsTypes[type] === WhoIsTypes.IP) {
       return NextResponse.json(parseIp(data));
     }
     if (WhoIsTypes[type] === WhoIsTypes.ASN) {

@@ -66,7 +66,7 @@ export const whoIsFormSchema = z
       }),
     type: z
       .string()
-      .min(3, { message: "Please select a valid type." })
+      .min(2, { message: "Please select a valid type." })
       .refine((val) => Object.keys(WhoIsTypes).includes(val), {
         message: "The type is not a valid WhoIs type.",
       }),
@@ -75,8 +75,7 @@ export const whoIsFormSchema = z
     // Content this is checking if the IP is a valid IPv4 or IPv6 based on the type selected.
     (schema) => {
       if (
-        WhoIsTypes[schema.type as keyof typeof WhoIsTypes] ===
-        WhoIsTypes.IP_ADDRESS
+        WhoIsTypes[schema.type as keyof typeof WhoIsTypes] === WhoIsTypes.IP
       ) {
         return (
           isValidIpAddressV4(schema.query) || isValidIpAddressV6(schema.query)

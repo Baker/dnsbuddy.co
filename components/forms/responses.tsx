@@ -76,8 +76,8 @@ export function DomainWhoisResponse({
               Nameservers
             </h2>
             <span>
-              {response.nameServer.map((item, index) => (
-                <pre key={index} className="">
+              {response.nameServer.map((item) => (
+                <pre key={item} className="">
                   {item}
                 </pre>
               ))}

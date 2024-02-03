@@ -23,7 +23,7 @@ export const ProviderToLabelMapping = {
 };
 
 export const WhoIsTypes = {
-  IP_ADDRESS: "IP Address",
+  IP: "IP Address",
   DOMAIN: "Domain",
   ASN: "ASN",
 };
