@@ -1,5 +1,7 @@
 import { DnsLookUpForm } from "@/components/forms/forms";
+import { CommonRecordTypes } from "@/types/record-types";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "DnsBuddy | DNS Lookup",
@@ -22,11 +24,20 @@ export const metadata: Metadata = {
 export default function DnsLookup({
   params,
 }: { params: { recordType?: string; query?: string } }) {
+  if (
+    params.recordType &&
+    // biome-ignore lint: This isn't an issue.
+    !CommonRecordTypes.hasOwnProperty(
+      params.recordType.toUpperCase() as keyof typeof CommonRecordTypes,
+    )
+  ) {
+    redirect("/tools/dns-lookup");
+  }
   return (
     <main className="relative isolate overflow-hidden">
       <div className="mx-auto px-6 pt-56 text-center lg:px-8">
         <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white sm:text-5xl">
-          DNS Lookups, made easy.
+          Lookup a {params.recordType?.toUpperCase()} record..
         </h1>
         <p className="mt-6 text-lg leading-8 text-neutral-600 dark:text-neutral-400">
           Making DNS Lookups, cleaner, easier and faster in one place.

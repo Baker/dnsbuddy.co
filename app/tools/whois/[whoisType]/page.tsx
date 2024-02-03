@@ -1,6 +1,8 @@
 import { WhoisForm } from "@/components/forms/forms";
+import { WhoIsTypes } from "@/types/whois";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "DnsBuddy | WHOIS Lookup",
@@ -23,11 +25,26 @@ export const metadata: Metadata = {
 export default function WHOISPage({
   params,
 }: { params: { whoisType?: string; query?: string } }) {
+  if (
+    params.whoisType &&
+    // biome-ignore lint: This isn't an issue.
+    !WhoIsTypes.hasOwnProperty(
+      params.whoisType.toUpperCase() as keyof typeof WhoIsTypes,
+    )
+  ) {
+    redirect("/tools/whois");
+  }
   return (
     <main className="relative isolate overflow-hidden">
       <div className="mx-auto pt-56 text-center">
         <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white sm:text-5xl">
-          WHOIS Lookups
+          Lookup{" "}
+          {
+            WhoIsTypes[
+              params.whoisType?.toUpperCase() as keyof typeof WhoIsTypes
+            ]
+          }{" "}
+          whois..
         </h1>
         <p className="mt-6 text-lg leading-8 text-neutral-600 dark:text-neutral-400">
           Perform WHOIS lookups with ease.

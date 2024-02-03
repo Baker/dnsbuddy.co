@@ -69,3 +69,9 @@ export interface ASNWhoisData {
   contactDNS?: contact;
   text: string[];
 }
+
+export const WhoIsTypes = {
+  IP: "IP Address",
+  DOMAIN: "Domain",
+  ASN: "ASN",
+};

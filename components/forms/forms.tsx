@@ -41,11 +41,7 @@ import {
   DnsLookupColumnDef,
 } from "@/components/tables/columns";
 import { DataTable } from "@/components/tables/data-table";
-import {
-  ProviderToLabelMapping,
-  ProviderToUrlMapping,
-  WhoIsTypes,
-} from "@/constants/api";
+import { ProviderToLabelMapping, ProviderToUrlMapping } from "@/constants/api";
 import type {
   BulkFCrDNSResponseList,
   BulkResponseList,
@@ -54,8 +50,9 @@ import type {
 import type { ResponseItem } from "@/types/dns";
 import { CommonRecordTypes } from "@/types/record-types";
 import type { ASNWhoisData, DomainWhoisData, IPWhoisData } from "@/types/whois";
+import { WhoIsTypes } from "@/types/whois";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 
 export function DnsLookUpForm({
@@ -88,8 +85,17 @@ export function DnsLookUpForm({
         lastSubmitted.query !== query ||
         lastSubmitted.record_type !== recordValue)
     ) {
-      onSubmit({ query: query, record_type: recordValue });
-      setLastSubmitted({ query: query, record_type: recordValue });
+      // Checks if the form is valid and if not redirects to the dns-lookup homepage.
+      const result = dnsLookupFormSchema.safeParse({
+        query: query,
+        record_type: recordValue,
+      });
+
+      if (!result.success) {
+        redirect("/tools/dns-lookup");
+      }
+      onSubmit(result.data);
+      setLastSubmitted(result.data);
     }
   }, [query, recordValue, lastSubmitted]);
 
@@ -609,11 +615,11 @@ export function WhoisForm({
   >();
   const [lastSubmitted, setLastSubmitted] = useState<{
     query: string | undefined;
-    whoisType: string | undefined;
+    type: string | undefined;
   } | null>(null);
 
   const whoisValue =
-    whoisType && (whoisType.toUpperCase() as keyof typeof CommonRecordTypes)
+    whoisType && (whoisType.toUpperCase() as keyof typeof WhoIsTypes)
       ? whoisType.toUpperCase()
       : undefined;
   query = query ? decodeURIComponent(query) : undefined;
@@ -624,10 +630,19 @@ export function WhoisForm({
       whoisValue &&
       (!lastSubmitted ||
         lastSubmitted.query !== query ||
-        lastSubmitted.whoisType !== whoisValue)
+        lastSubmitted.type !== whoisValue)
     ) {
-      onSubmit({ query: query, type: whoisValue });
-      setLastSubmitted({ query: query, whoisType: whoisValue });
+      // Checks if the form is valid and if not redirects to the whois homepage.
+      const result = whoIsFormSchema.safeParse({
+        query: query,
+        type: whoisValue,
+      });
+
+      if (!result.success) {
+        redirect("/tools/whois");
+      }
+      onSubmit(result.data);
+      setLastSubmitted(result.data);
     }
   }, [query, whoisValue, lastSubmitted]);
 

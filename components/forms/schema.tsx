@@ -9,7 +9,7 @@ import {
 } from "@/lib/utils";
 import * as z from "zod";
 
-import { WhoIsTypes } from "@/constants/api";
+import { WhoIsTypes } from "@/types/whois";
 
 export const dnsLookupFormSchema = z.object({
   query: z
