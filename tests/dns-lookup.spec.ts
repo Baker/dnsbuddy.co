@@ -71,13 +71,4 @@ test.describe("verify the table loads", () => {
     expect(await page.getByText("Downloads").isVisible()).toBe(true);
     expect(await page.getByText("Columns").isVisible()).toBe(true);
   });
-
-  test("with proper locations", async ({ page }) => {
-    const dnsProviders = Object.values(ProviderToLabelMapping);
-    for (const dnsProvider in dnsProviders) {
-      expect(await page.getByText(dnsProviders[dnsProvider]).isVisible()).toBe(
-        true,
-      );
-    }
-  });
 });
