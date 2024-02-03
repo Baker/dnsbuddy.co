@@ -35,19 +35,10 @@ test("can use WHOIS lookup", async ({ page }) => {
 
 test("can autofill form with URL params", async ({ page }) => {
   await page.goto(
-    "http://localhost:3000/tools/whois?query=test.com&type=DOMAIN",
+    "http://localhost:3000/tools/whois/DOMAIN/test.com",
   );
   const queryInput = await page.getByPlaceholder("example.com");
   expect(await queryInput.inputValue()).toEqual("test.com");
-});
-
-test("verifies the page removes invalid type", async ({ page }) => {
-  const initialUrl =
-    "http://localhost:3000/tools/whois?query=test.com&type=DDD";
-  const expectedUrl = "http://localhost:3000/tools/whois?query=test.com";
-  await page.goto(initialUrl);
-  await page.waitForURL(expectedUrl);
-  expect(page.url()).toEqual(expectedUrl);
 });
 
 test.describe("domain", () => {
@@ -62,7 +53,7 @@ test.describe("domain", () => {
     await setup(page, "example.com", "Domain");
     await page.getByRole("button", { name: "Dig" }).click();
     await page.waitForURL(
-      "http://localhost:3000/tools/whois?query=example.com&type=DOMAIN",
+      "http://localhost:3000/tools/whois/DOMAIN/example.com",
     );
   });
 
@@ -91,7 +82,7 @@ test.describe("IPv4 Address", () => {
     await setup(page, "127.0.0.1", "IP Address");
     await page.getByRole("button", { name: "Dig" }).click();
     await page.waitForURL(
-      "http://localhost:3000/tools/whois?query=127.0.0.1&type=IP_ADDRESS",
+      "http://localhost:3000/tools/whois/IP/127.0.0.1",
     );
   });
 
@@ -120,7 +111,7 @@ test.describe("IPv6 Address", () => {
     await setup(page, "2001:0000:130F:0000:0000:09C0:876A:130B", "IP Address");
     await page.getByRole("button", { name: "Dig" }).click();
     await page.waitForURL(
-      "http://localhost:3000/tools/whois?query=2001:0000:130f:0000:0000:09c0:876a:130b&type=IP_ADDRESS",
+      "http://localhost:3000/tools/whois/IP/2001:0000:130f:0000:0000:09c0:876a:130b",
     );
   });
 
@@ -149,7 +140,7 @@ test.describe("ASN", () => {
     await setup(page, "AS111", "ASN");
     await page.getByRole("button", { name: "Dig" }).click();
     await page.waitForURL(
-      "http://localhost:3000/tools/whois?query=as111&type=ASN",
+      "http://localhost:3000/tools/whois/ASN/as111",
     );
   });
 

@@ -48,20 +48,12 @@ test("can use DNS Search", async ({ page }) => {
 
 test("can autofill form with URL params", async ({ page }) => {
   await page.goto(
-    "http://localhost:3000/tools/dns-lookup?query=test.com&record_type=TXT",
+    "http://localhost:3000/tools/dns-lookup/TXT/test.com",
   );
   const queryInput = await page.getByPlaceholder("example.com");
   expect(await queryInput.inputValue()).toEqual("test.com");
 });
 
-test("verifies the page removes invalid record_types", async ({ page }) => {
-  const initialUrl =
-    "http://localhost:3000/tools/dns-lookup?query=test.com&record_type=DDD";
-  const expectedUrl = "http://localhost:3000/tools/dns-lookup?query=test.com";
-  await page.goto(initialUrl);
-  await page.waitForURL(expectedUrl);
-  expect(page.url()).toEqual(expectedUrl);
-});
 
 test.describe("verify the table loads", () => {
   test.beforeEach(async ({ page }) => {
@@ -75,7 +67,7 @@ test.describe("verify the table loads", () => {
     await setup(page);
     await page.getByRole("button", { name: "Dig" }).click();
     await page.waitForURL(
-      "http://localhost:3000/tools/dns-lookup?query=example.com&record_type=TXT",
+      "http://localhost:3000/tools/dns-lookup/TXT/example.com",
     );
   });
 
