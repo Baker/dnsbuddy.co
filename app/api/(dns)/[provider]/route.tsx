@@ -1,4 +1,4 @@
-import { ProviderToUrlMapping } from "@/lib/constants/api";
+import { ProviderToUrlMapping } from "@/constants/api";
 import { getDnsData } from "@/lib/dns";
 import { NextResponse } from "next/server";
 

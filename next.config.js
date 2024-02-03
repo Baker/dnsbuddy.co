@@ -5,6 +5,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 const { withSentryConfig } = require("@sentry/nextjs");
 
 const nextConfig = {
+  trailingSlash: true,
   images: {
     remotePatterns: [
       {

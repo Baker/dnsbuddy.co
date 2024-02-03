@@ -1,4 +1,4 @@
-import { ProviderToLabelMapping } from "@/lib/constants/api";
+import { ProviderToLabelMapping } from "@/constants/api";
 import { exampleDNSResponseItem } from "@/tests/mock/api";
 import { type Page, expect, test } from "@playwright/test";
 

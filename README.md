@@ -1,4 +1,5 @@
-# <img src='./public/images/dnsbuddy.png' alt="logo" width='32' heigh='32' /> DnsBuddy
+
+# ![DnsBuddy](/public/icon.png =32x32) DnsBuddy
 
 [![CI](https://github.com/Baker/dnsbuddy.co/actions/workflows/ci.yml/badge.svg)](https://github.com/Baker/dnsbuddy.co/actions/workflows/ci.yml)
 
@@ -39,7 +40,6 @@ Below are the two primary commands to run for tests:
 As of right now we only use a few things to keep this repo formatted nicely, etc.
 
 - [Playwright](https://playwright.dev/) - E2E Tests.
-- [Prettier](https://prettier.io/) - Code Formatter.
-- [Eslint](https://eslint.org/) - Linter.
+- [BiomeJS](https://biomejs.dev/) - Linter & Code Formatter.
 
 The above is all handled by our CI, Github actions.

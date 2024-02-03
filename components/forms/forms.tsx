@@ -45,19 +45,19 @@ import {
   ProviderToLabelMapping,
   ProviderToUrlMapping,
   WhoIsTypes,
-} from "@/lib/constants/api";
+} from "@/constants/api";
 import type {
   BulkFCrDNSResponseList,
   BulkResponseList,
   ResponseList,
-} from "@/lib/types/data";
-import type { ResponseItem } from "@/lib/types/dns";
-import { CommonRecordTypes } from "@/lib/types/record-types";
+} from "@/types/data";
+import type { ResponseItem } from "@/types/dns";
+import { CommonRecordTypes } from "@/types/record-types";
 import type {
   ASNWhoisData,
   DomainWhoisData,
   IPWhoisData,
-} from "@/lib/types/whois";
+} from "@/types/whois";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";

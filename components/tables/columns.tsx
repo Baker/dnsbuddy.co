@@ -5,7 +5,7 @@ import type {
   BulkFCrDNSResponseList,
   BulkResponseList,
   ResponseList,
-} from "@/lib/types/data";
+} from "@/types/data";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 import type { ColumnDef, RowData } from "@tanstack/react-table";
 

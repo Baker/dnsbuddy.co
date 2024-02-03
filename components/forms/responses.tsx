@@ -3,7 +3,7 @@ import type {
   ASNWhoisData,
   DomainWhoisData,
   IPWhoisData,
-} from "@/lib/types/whois";
+} from "@/types/whois";
 import Image from "next/image";
 import Link from "next/link";
 

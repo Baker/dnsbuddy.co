@@ -9,7 +9,7 @@ export default function Navigation() {
         <div className="flex flex-1">
           <Link className="-m-1.5 inline-flex p-1.5" href="/">
             <Image
-              src={"/images/dnsbuddy.png"}
+              src={"/icon.png"}
               alt="DnsBuddy Logo"
               width={32}
               height={32}

@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { WhoIsTypes } from "@/lib/constants/api";
-import type { DomainWhoisData, IPWhoisData } from "@/lib/types/whois";
+import { WhoIsTypes } from "@/constants/api";
+import type { DomainWhoisData, IPWhoisData } from "@/types/whois";
 import { NextResponse } from "next/server";
 // TODO: Fix the checks
 // @ts-nocheck
