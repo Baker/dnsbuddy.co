@@ -119,36 +119,20 @@ test("IPv6 Address - Checker Headers", async ({ page }) => {
   ).toBeVisible();
 });
 
-test.describe("ASN", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.route("/api/whois", async (route) => {
-      await route.fulfill({
-        contentType: "application/json",
-        json: exampleASNWhoisResponse,
-      });
-    });
-
-    await page.goto("http://localhost:3000/tools/whois/");
-    await page.getByPlaceholder("example.com").click();
-    await page.getByPlaceholder("example.com").fill("AS123");
-    await page.selectOption("select", "ASN");
-    await page.getByRole("button", { name: "Dig" }).click();
-    await page.waitForURL("http://localhost:3000/tools/whois/ASN/as123/", {
-      waitUntil: "load",
-    });
-  });
-
-  test("Check for sections, and example text", async ({ page }) => {
-    expect(await page.getByText("ASN Information").isVisible()).toBe(true);
-    expect(await page.getByText("Organization Information").isVisible()).toBe(
-      true,
-    );
-    expect(await page.getByText("Abuse Information").isVisible()).toBe(false);
-    expect(await page.getByText("Technical Information").isVisible()).toBe(
-      false,
-    );
-    expect(await page.getByText("Routing Information").isVisible()).toBe(false);
-  });
+test("ASN - Checker Headers", async ({ page }) => {
+  await page.goto("http://localhost:3000/tools/whois/ASN/as123/");
+  await expect(
+    page.getByRole("heading", { name: "ASN Information" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Organization Information" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Technical Information" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Abuse Information" }),
+  ).toBeVisible();
 });
 
 test("verify required type field", async ({ page }) => {
