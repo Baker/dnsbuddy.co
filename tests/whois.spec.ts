@@ -73,7 +73,7 @@ test("has Domain header without object", async ({ page }) => {
 });
 
 test("Domain - Checker Headers", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois/IP/167.89.0.12");
+  await page.goto("http://localhost:3000/tools/whois/domain/example.com");
   await expect(
     page.getByRole("heading", { name: "Registar Information" }),
   ).toBeVisible();
