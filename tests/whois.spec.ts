@@ -7,9 +7,64 @@ import {
 import { expect, test } from "@playwright/test";
 
 test("can autofill form with URL params", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois/DOMAIN/test.com");
+  await page.goto("http://localhost:3000/tools/whois/DOMAIN/test.com/");
   const queryInput = await page.getByPlaceholder("example.com");
   expect(await queryInput.inputValue()).toEqual("test.com");
+});
+
+test("has main header", async ({ page }) => {
+  await page.goto("http://localhost:3000/tools/whois/", { waitUntil: "load" });
+  const textElement = await page.getByRole("heading", { name: "WHOIS Lookup" });
+  expect(textElement).not.toBeNull();
+});
+
+test("has IP header without object", async ({ page }) => {
+  await page.goto("http://localhost:3000/tools/whois/IP/", {
+    waitUntil: "load",
+  });
+  const textElement = await page.getByRole("heading", {
+    name: "Lookup IP Address whois..",
+  });
+  expect(textElement).not.toBeNull();
+});
+
+test("has IP header with IPv6 object", async ({ page }) => {
+  await page.goto(
+    "http://localhost:3000/tools/whois/IP/2001:0000:130F:0000:0000:09C0:876A:130B/",
+    { waitUntil: "load" },
+  );
+  const textElement = await page.getByRole("heading", {
+    name: "Lookup IP Address whois..",
+  });
+  expect(textElement).not.toBeNull();
+});
+
+test("has IP header with IPv4 object", async ({ page }) => {
+  await page.goto("http://localhost:3000/tools/whois/IP/167.89.0.12", {
+    waitUntil: "load",
+  });
+  const textElement = await page.getByRole("heading", {
+    name: "Lookup IP Address whois for 167.89.0.12..",
+  });
+  expect(textElement).not.toBeNull();
+});
+
+test("has Domain header with object", async ({ page }) => {
+  await page.goto("http://localhost:3000/tools/whois/DOMAIN/example.com", {
+    waitUntil: "load",
+  });
+  const textElement = await page.getByRole("heading", {
+    name: "Lookup Domain whois for example.com..",
+  });
+  expect(textElement).not.toBeNull();
+});
+
+test("has Domain header without object", async ({ page }) => {
+  await page.goto("http://localhost:3000/tools/whois/DOMAIN/example.com", {
+    waitUntil: "load",
+  });
+  const textElement = await page.$(`text="Lookup Domain whois.."`);
+  expect(textElement).not.toBeNull();
 });
 
 test.describe("domain", () => {
@@ -21,7 +76,7 @@ test.describe("domain", () => {
       });
     });
 
-    await page.goto("http://localhost:3000/tools/whois/domain/example.com");
+    await page.goto("http://localhost:3000/tools/whois/domain/example.com/");
   });
 
   test("Check for sections, and example text", async ({ page }) => {
@@ -46,12 +101,12 @@ test.describe("IPv4 Address", () => {
       });
     });
 
-    await page.goto("http://localhost:3000/tools/whois");
+    await page.goto("http://localhost:3000/tools/whois/");
     await page.getByPlaceholder("example.com").click();
-    await page.getByPlaceholder("example.com").fill("127.0.0.1");
+    await page.getByPlaceholder("example.com").fill("133.13.31.23");
     await page.selectOption("select", "IP Address");
     await page.getByRole("button", { name: "Dig" }).click();
-    await page.waitForURL("http://localhost:3000/tools/whois/IP/127.0.0.1", {
+    await page.waitForURL("http://localhost:3000/tools/whois/IP/133.13.31.23", {
       waitUntil: "load",
     });
   });
@@ -78,7 +133,7 @@ test.describe("IPv6 Address", () => {
       });
     });
 
-    await page.goto("http://localhost:3000/tools/whois");
+    await page.goto("http://localhost:3000/tools/whois/");
     await page.getByPlaceholder("example.com").click();
     await page
       .getByPlaceholder("example.com")
@@ -86,7 +141,7 @@ test.describe("IPv6 Address", () => {
     await page.selectOption("select", "IP Address");
     await page.getByRole("button", { name: "Dig" }).click();
     await page.waitForURL(
-      "http://localhost:3000/tools/whois/IP/2001:0000:130f:0000:0000:09c0:876a:130b",
+      "http://localhost:3000/tools/whois/IP/2001:0000:130f:0000:0000:09c0:876a:130b/",
       { waitUntil: "load" },
     );
   });
@@ -113,12 +168,12 @@ test.describe("ASN", () => {
       });
     });
 
-    await page.goto("http://localhost:3000/tools/whois");
+    await page.goto("http://localhost:3000/tools/whois/");
     await page.getByPlaceholder("example.com").click();
     await page.getByPlaceholder("example.com").fill("AS123");
     await page.selectOption("select", "ASN");
     await page.getByRole("button", { name: "Dig" }).click();
-    await page.waitForURL("http://localhost:3000/tools/whois/ASN/as123", {
+    await page.waitForURL("http://localhost:3000/tools/whois/ASN/as123/", {
       waitUntil: "load",
     });
   });
@@ -137,7 +192,7 @@ test.describe("ASN", () => {
 });
 
 test("verify required type field", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois");
+  await page.goto("http://localhost:3000/tools/whois/");
   await page.getByPlaceholder("example.com").click();
   await page.getByPlaceholder("example.com").fill("example.com");
   await page.getByRole("button", { name: "Dig" }).click();
@@ -147,7 +202,7 @@ test("verify required type field", async ({ page }) => {
 });
 
 test("ip address input, domain selected", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois");
+  await page.goto("http://localhost:3000/tools/whois/");
   await page.getByPlaceholder("example.com").click();
   await page.getByPlaceholder("example.com").fill("127.0.0.1");
   await page.selectOption("select", "Domain");
@@ -162,7 +217,7 @@ test("ip address input, domain selected", async ({ page }) => {
 });
 
 test("domain input, ip address selected", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois");
+  await page.goto("http://localhost:3000/tools/whois/");
   await page.getByPlaceholder("example.com").click();
   await page.getByPlaceholder("example.com").fill("example.com");
   await page.selectOption("select", "IP Address");
@@ -177,7 +232,7 @@ test("domain input, ip address selected", async ({ page }) => {
 });
 
 test("domain input, asn selected", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois");
+  await page.goto("http://localhost:3000/tools/whois/");
   await page.getByPlaceholder("example.com").click();
   await page.getByPlaceholder("example.com").fill("example.com");
   await page.selectOption("select", "ASN");

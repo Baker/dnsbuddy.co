@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("has main here", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools");
+  await page.goto("http://localhost:3000/tools/");
   const textElement = await page.$(`text="Tools"`);
   expect(textElement).not.toBeNull();
 });
@@ -9,7 +9,7 @@ test("has main here", async ({ page }) => {
 test("Feedback box exists.", async ({ page }) => {
   await page.goto("http://localhost:3000/");
   await page.getByRole("link", { name: "Other Tools" }).click();
-  await page.waitForURL("http://localhost:3000/tools");
+  await page.waitForURL("http://localhost:3000/tools/");
   expect(
     await page
       .getByText(
@@ -20,7 +20,7 @@ test("Feedback box exists.", async ({ page }) => {
 });
 
 test("Navigate to the bulk FCrDNS page.", async ({ page }) => {
-  const expectedUrl = "http://localhost:3000/tools/bulk-fcrdns";
+  const expectedUrl = "http://localhost:3000/tools/bulk-fcrdns/";
   await page.goto("http://localhost:3000/");
   await page.getByRole("link", { name: "Other Tools" }).click();
   await page.getByRole("link", { name: "Bulk FCrDNS" }).click();
@@ -29,7 +29,7 @@ test("Navigate to the bulk FCrDNS page.", async ({ page }) => {
 });
 
 test("Navigate to the bulk DNS Record Lookup page.", async ({ page }) => {
-  const expectedUrl = "http://localhost:3000/tools/bulk-dns-lookup";
+  const expectedUrl = "http://localhost:3000/tools/bulk-dns-lookup/";
   await page.goto("http://localhost:3000/");
   await page.getByRole("link", { name: "Other Tools" }).click();
   await page.getByRole("link", { name: "Bulk DNS Record Lookup" }).click();
@@ -38,7 +38,7 @@ test("Navigate to the bulk DNS Record Lookup page.", async ({ page }) => {
 });
 
 test("Navigate to the DNS Record Lookup page.", async ({ page }) => {
-  const expectedUrl = "http://localhost:3000/tools/dns-lookup";
+  const expectedUrl = "http://localhost:3000/tools/dns-lookup/";
   await page.goto("http://localhost:3000/");
   await page.getByRole("link", { name: "Other Tools" }).click();
   await page
@@ -52,7 +52,7 @@ test("Navigate to the DNS Record Lookup page.", async ({ page }) => {
 });
 
 test("Navigate to the Whois Lookup page.", async ({ page }) => {
-  const expectedUrl = "http://localhost:3000/tools/whois";
+  const expectedUrl = "http://localhost:3000/tools/whois/";
   await page.goto("http://localhost:3000/");
   await page.getByRole("link", { name: "Other Tools" }).click();
   await page

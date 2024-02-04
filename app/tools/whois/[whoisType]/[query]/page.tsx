@@ -34,6 +34,8 @@ export default function WHOISPage({
   ) {
     redirect("/tools/whois");
   }
+  const query = params.query && params.query.length < 26 ? params.query : null;
+
   return (
     <main className="relative isolate overflow-hidden">
       <div className="mx-auto pt-56 text-center">
@@ -44,7 +46,14 @@ export default function WHOISPage({
               params.whoisType?.toUpperCase() as keyof typeof WhoIsTypes
             ]
           }{" "}
-          whois for <span className="underline">{params.query}</span>..
+          whois
+          {query ? (
+            <>
+              {" for "}
+              <span className="underline">{query}</span>
+            </>
+          ) : null}
+          ..
         </h1>
         <p className="mt-6 text-lg leading-8 text-neutral-600 dark:text-neutral-400">
           Perform WHOIS lookups with ease.
