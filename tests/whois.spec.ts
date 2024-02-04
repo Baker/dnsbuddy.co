@@ -139,7 +139,7 @@ test.describe("IPv6 Address", () => {
     await page.getByPlaceholder("example.com").click();
     await page
       .getByPlaceholder("example.com")
-      .fill("2001:0000:130F:0000:0000:09C0:876A:130B");
+      .fill("2001:0000:130f:0000:0000:09c0:876a:130b");
     await page.selectOption("select", "IP Address");
     await page.getByRole("button", { name: "Dig" }).click();
     await page.waitForURL(
