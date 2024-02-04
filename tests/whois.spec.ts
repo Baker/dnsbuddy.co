@@ -60,105 +60,63 @@ test("has Domain header with object", async ({ page }) => {
 });
 
 test("has Domain header without object", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois/DOMAIN/example.com", {
-    waitUntil: "load",
-  });
+  await page.goto(
+    "await expect(page.getByRole('heading', { name: 'Abuse Information' })).toBeVisible();",
+    {
+      waitUntil: "load",
+    },
+  );
   const textElement = await page.getByRole("heading", {
     name: "Lookup Domain whois..",
   });
   expect(textElement).not.toBeNull();
 });
 
-test.describe("domain", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.route("/api/whois", async (route) => {
-      await route.fulfill({
-        contentType: "application/json",
-        json: exampleDomainWhoisResponse,
-      });
-    });
-
-    await page.goto("http://localhost:3000/tools/whois/domain/example.com/");
-  });
-
-  test("Check for sections, and example text", async ({ page }) => {
-    expect(await page.getByText("Registar Information").isVisible()).toBe(true);
-    expect(await page.getByText("Registration Information").isVisible()).toBe(
-      true,
-    );
-    expect(await page.getByText("Abuse Information").isVisible()).toBe(false);
-    expect(await page.getByText("Technical Information").isVisible()).toBe(
-      false,
-    );
-    expect(await page.getByText("Routing Information").isVisible()).toBe(false);
-  });
+test("Domain - Checker Headers", async ({ page }) => {
+  await page.goto("http://localhost:3000/tools/whois/IP/167.89.0.12");
+  await expect(
+    page.getByRole("heading", { name: "Registar Information" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Nameservers" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Registration Information" }),
+  ).toBeVisible();
 });
 
-test.describe("IPv4 Address", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.route("/api/whois", async (route) => {
-      await route.fulfill({
-        contentType: "application/json",
-        json: exampleIpAddressV4WhoisResponse,
-      });
-    });
-
-    await page.goto("http://localhost:3000/tools/whois/");
-    await page.getByPlaceholder("example.com").click();
-    await page.getByPlaceholder("example.com").fill("133.13.31.23");
-    await page.selectOption("select", "IP Address");
-    await page.getByRole("button", { name: "Dig" }).click();
-    await page.waitForURL("http://localhost:3000/tools/whois/IP/133.13.31.23", {
-      waitUntil: "load",
-    });
-  });
-
-  test("Check for sections, and example text", async ({ page }) => {
-    expect(await page.getByText("Range Information").isVisible()).toBe(true);
-    expect(await page.getByText("Organization Information").isVisible()).toBe(
-      true,
-    );
-    expect(await page.getByText("Abuse Information").isVisible()).toBe(false);
-    expect(await page.getByText("Technical Information").isVisible()).toBe(
-      false,
-    );
-    expect(await page.getByText("Routing Information").isVisible()).toBe(false);
-  });
+test("IPv4 Address - Checker Headers", async ({ page }) => {
+  await page.goto("http://localhost:3000/tools/whois/IP/167.89.0.12");
+  await expect(
+    page.getByRole("heading", { name: "Organization Information" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Range Information" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Technical Information" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Abuse Information" }),
+  ).toBeVisible();
 });
 
-test.describe("IPv6 Address", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.route("/api/whois", async (route) => {
-      await route.fulfill({
-        contentType: "application/json",
-        json: exampleIpAddressV6WhoisResponse,
-      });
-    });
-
-    await page.goto("http://localhost:3000/tools/whois/");
-    await page.getByPlaceholder("example.com").click();
-    await page
-      .getByPlaceholder("example.com")
-      .fill("2001:0000:130f:0000:0000:09c0:876a:130b");
-    await page.selectOption("select", "IP Address");
-    await page.getByRole("button", { name: "Dig" }).click();
-    await page.waitForURL(
-      "http://localhost:3000/tools/whois/IP/2001:0000:130f:0000:0000:09c0:876a:130b/",
-      { waitUntil: "load" },
-    );
-  });
-
-  test("Check for sections, and example text", async ({ page }) => {
-    expect(await page.getByText("Range Information").isVisible()).toBe(true);
-    expect(await page.getByText("Organization Information").isVisible()).toBe(
-      true,
-    );
-    expect(await page.getByText("Abuse Information").isVisible()).toBe(false);
-    expect(await page.getByText("Technical Information").isVisible()).toBe(
-      false,
-    );
-    expect(await page.getByText("Routing Information").isVisible()).toBe(false);
-  });
+test("IPv6 Address - Checker Headers", async ({ page }) => {
+  await page.goto(
+    "http://localhost:3000/tools/whois/IP/2001:0000:130f:0000:0000:09c0:876a:130b/",
+  );
+  await expect(
+    page.getByRole("heading", { name: "Range Information" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Organization Information" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Technical Information" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Abuse Information" }),
+  ).toBeVisible();
 });
 
 test.describe("ASN", () => {
