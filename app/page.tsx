@@ -28,8 +28,7 @@ export default function Home() {
         <p className="mt-6 text-lg leading-8 text-neutral-600 dark:text-neutral-400">
           Making DNS Lookups, cleaner, easier and faster in one place.
         </p>
-        <div className="mt-10">
-        </div>
+        <div className="mt-10"></div>
       </div>
     </main>
   );
