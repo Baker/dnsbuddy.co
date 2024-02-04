@@ -1,4 +1,3 @@
-import { DnsLookUpForm } from "@/components/forms/forms";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -30,7 +29,6 @@ export default function Home() {
           Making DNS Lookups, cleaner, easier and faster in one place.
         </p>
         <div className="mt-10">
-          <DnsLookUpForm path={"/"} />
         </div>
       </div>
     </main>
