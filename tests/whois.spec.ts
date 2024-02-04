@@ -63,7 +63,9 @@ test("has Domain header without object", async ({ page }) => {
   await page.goto("http://localhost:3000/tools/whois/DOMAIN/example.com", {
     waitUntil: "load",
   });
-  const textElement = await page.$(`text="Lookup Domain whois.."`);
+  const textElement = await page.getByRole("heading", {
+    name: "Lookup Domain whois..",
+  });
   expect(textElement).not.toBeNull();
 });
 

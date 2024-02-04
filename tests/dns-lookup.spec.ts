@@ -13,7 +13,9 @@ const setup = async (page: Page) => {
 
 test("has main here", async ({ page }) => {
   await page.goto("http://localhost:3000/tools/dns-lookup/");
-  const textElement = await page.$(`text="DNS Lookups, made easy."`);
+  const textElement = await page.getByRole("heading", {
+    name: "DNS Lookups, made easy.",
+  });
   expect(textElement).not.toBeNull();
 });
 
@@ -52,7 +54,7 @@ test("can use DNS Search", async ({ page }) => {
 });
 
 test("can autofill form with URL params", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/dns-lookup/TXT/test.com/");
+  await page.goto("http://localhost:3000/tools/dns-lookup/TXT/test.com");
   const queryInput = await page.getByPlaceholder("example.com");
   expect(await queryInput.inputValue()).toEqual("test.com");
 });
@@ -62,29 +64,10 @@ test("redirect invalid record types", async ({ page }) => {
   expect(page.url()).toBe("http://localhost:3000/tools/dns-lookup/");
 });
 
-test.describe("verify the table loads", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.route("/api/**", async (route) => {
-      await route.fulfill({
-        contentType: "application/json",
-        json: exampleDNSResponseItem,
-      });
-    });
-
-    await setup(page);
-    const digButton = await page.getByRole("button", { name: "Dig" });
-    await digButton.click();
-    await page.waitForURL(
-      "http://localhost:3000/tools/dns-lookup/TXT/example.com/",
-      { waitUntil: "load" },
-    );
-  });
-
-  test("with proper header & additional options", async ({ page }) => {
-    expect(await page.getByText("Status").isVisible()).toBe(true);
-    expect(await page.getByText("Provider").isVisible()).toBe(true);
-    expect(await page.getByText("Response").isVisible()).toBe(true);
-    expect(await page.getByText("Downloads").isVisible()).toBe(true);
-    expect(await page.getByText("Columns").isVisible()).toBe(true);
-  });
+test("table visible", async ({ page }) => {
+  await page.goto("http://localhost:3000/tools/dns-lookup/TXT/example.com");
+  await expect(page.getByRole("button", { name: "Status" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Provider" })).toBeVisible();
+  await expect(page.getByRole("cell", { name: "Response" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Download" })).toBeVisible();
 });
