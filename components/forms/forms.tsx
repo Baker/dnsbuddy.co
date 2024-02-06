@@ -103,7 +103,7 @@ export function DnsLookUpForm({
     resolver: zodResolver(dnsLookupFormSchema),
     defaultValues: {
       query: query || "",
-      record_type: recordValue || "",
+      record_type: recordValue,
     },
     mode: "onChange",
   });
@@ -127,18 +127,19 @@ export function DnsLookUpForm({
     }
 
     const queryData: ResponseItem = await query.json();
-    // biome-ignore lint: This is handled later
-    const answers = queryData.data.Answer.map((resp: any) => {
-      if (resp.type === 16 && !resp.data.startsWith('"')) {
-        return `"${resp.data}"`;
-      }
-      if (resp.type !== 46) {
-        return resp.data;
-      }
-    });
+    const answers =
+      // biome-ignore lint: This is handled later
+      queryData.data?.Answer?.map((resp: any) => {
+        if (resp.type === 16 && !resp.data.startsWith('"')) {
+          return `"${resp.data}"`;
+        }
+        if (resp.type !== 46) {
+          return resp.data;
+        }
+      }) || [];
 
     return {
-      status: queryData.success,
+      status: answers.length > 0 ? queryData.success : false,
       provider:
         ProviderToLabelMapping[provider as keyof typeof ProviderToLabelMapping],
       response: answers,

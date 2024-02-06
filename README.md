@@ -1,5 +1,7 @@
 
-# ![DnsBuddy](/public/icon.png =32x32) DnsBuddy
+![logo](/public/android-chrome-192x192.png)
+
+# DnsBuddy - An opensourced DNS Swiss Army Knife
 
 [![CI](https://github.com/Baker/dnsbuddy.co/actions/workflows/ci.yml/badge.svg)](https://github.com/Baker/dnsbuddy.co/actions/workflows/ci.yml)
 
@@ -11,6 +13,7 @@ This is an open sourced website that you can use to pull up various DNS related 
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Shadcn UI](https://ui.shadcn.com)
 - [React Hook Form](https://www.react-hook-form.com/)
+- [Zod](https://zod.dev/)
 
 ## Development
 

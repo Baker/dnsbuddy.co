@@ -18,6 +18,10 @@ export default function RootLayout({
           type="image/png"
           sizes="32x32"
         />
+        <meta
+          name="format-detection"
+          content="telephone=no, date=no, email=no, address=no"
+        />
       </head>
       <body className="">
         <ThemeProvider
