@@ -4,8 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Dnsbuddy.co",
     short_name: "Dnsbuddy.co",
-    description:
-      "Dnsbuddy.co – Making DNS Lookups, cleaner, easier and faster in one place.",
+    description: "Dnsbuddy.co – An opensourced DNS Swiss Army Knife.",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",

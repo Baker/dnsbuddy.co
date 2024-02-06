@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "DnsBuddy | Index",
-  description: "Your friendly neighborhood DNS lookup tool.",
+  description: "An opensourced DNS Swiss Army Knife.",
   twitter: {
     card: "summary",
     title: "Index",
-    description: "Your friendly neighborhood DNS lookup tool.",
+    description: "An opensourced DNS Swiss Army Knife.",
   },
   openGraph: {
     title: "Index",
-    description: "Your friendly neighborhood DNS lookup tool.",
+    description: "An opensourced DNS Swiss Army Knife.",
     url: "https://DnsBuddy.co",
     siteName: "DnsBuddy",
     locale: "en_US",
