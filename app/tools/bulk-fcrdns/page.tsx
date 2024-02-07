@@ -32,7 +32,7 @@ export default function BulkFCrDNS() {
         <p className="mx-auto mt-6 text-lg leading-8 text-neutral-600 dark:text-neutral-400 md:w-3/4 lg:w-1/2">
           Effortlessly validate up to 100 IP addresses with this tool, ensuring
           they successfully perform Forward Confirmation reverse DNS (FCrDNS).
-          Verify and enhance the integrity of your IP addresses effortlessly
+          Verify and enhance the integrity of your IP addresses effortlessly.
         </p>
         <BulkFCrDNSForm />
       </div>

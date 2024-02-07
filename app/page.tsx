@@ -19,5 +19,5 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <main className="relative isolate overflow-hidden"></main>;
+  return <main className="relative isolate overflow-hidden">Test</main>;
 }
