@@ -103,21 +103,21 @@ export function IpAddressWhoisReponse({ response }: { response: IPWhoisData }) {
           <h3 className="col-span-1">NetName</h3>
           <span className="col-span-2 ">{response.NetName}</span>
           <h3 className="col-span-1">Range</h3>
-          <span className="col-span-2">
-            <Link className="break-all underline" href={response.Ref}>
-              {response.range}
-            </Link>
-          </span>
+          <span className="col-span-2">{response.range}</span>
           <h3 className="col-span-1">Route</h3>
           <span className="col-span-2">{response.route}</span>
           <h3 className="col-span-1">ASN</h3>
           <span className="col-span-2">
-            <Link
-              className="underline"
-              href={`/tools/whois/ASN/${response.asn}/`}
-            >
-              {response.asn}
-            </Link>
+            {response.asn ? (
+              <Link
+                className="underline"
+                href={`/tools/whois/ASN/${response.asn}/`}
+              >
+                {response.asn}
+              </Link>
+            ) : (
+              response.asn
+            )}
           </span>
           <h3 className="col-span-1">Registration</h3>
           <span className="col-span-2">{response.RegDate}</span>
@@ -129,11 +129,7 @@ export function IpAddressWhoisReponse({ response }: { response: IPWhoisData }) {
             Organization Information
           </h2>
           <h3 className="col-span-1">Organization</h3>
-          <span className="col-span-2 ">
-            <Link className="underline" href={response.organisation.Ref}>
-              {response.organisation.OrgName}
-            </Link>
-          </span>
+          <span className="col-span-2 ">{response.organisation.OrgName}</span>
           <h3 className="col-span-1">OrgID</h3>
           <span className="col-span-2 ">{response.organisation.OrgId}</span>
           <h3 className="col-span-1">Address</h3>
@@ -237,11 +233,7 @@ export function AsnWhoisResponse({ response }: { response: ASNWhoisData }) {
             Organization Information
           </h2>
           <h3 className="col-span-1">Organization</h3>
-          <span className="col-span-2 ">
-            <Link className="underline" href={response.organisation.Ref}>
-              {response.organisation.OrgName}
-            </Link>
-          </span>
+          <span className="col-span-2 ">{response.organisation.OrgName}</span>
           <h3 className="col-span-1">OrgID</h3>
           <span className="col-span-2 ">{response.organisation.OrgId}</span>
           <h3 className="col-span-1">Address</h3>

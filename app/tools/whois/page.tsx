@@ -1,24 +1,14 @@
 import { WhoisForm } from "@/components/forms/forms";
-import type { Metadata } from "next";
-import Link from "next/link";
+import { buildMetadata } from "@/components/metadata";
 
-export const metadata: Metadata = {
-  title: "DnsBuddy | WHOIS Lookup",
-  description: "Perform WHOIS lookups with ease.",
-  twitter: {
-    card: "summary",
-    title: "WHOIS Lookup",
-    description: "Perform WHOIS lookups with ease.",
-  },
-  openGraph: {
-    title: "WHOIS Lookup",
-    description: "Perform WHOIS lookups with ease.",
-    url: "https://DnsBuddy.co/tools/whois",
-    siteName: "DnsBuddy",
-    locale: "en_US",
-    type: "website",
-  },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: "WHOIS Lookup | DNSBuddy.co",
+    description:
+      "The WHOIS lookup tool allows you to query the WHOIS database for information about a domain name, IP address, or ASN.",
+    url: "https://DnsBuddy.co/tools/whois/",
+  });
+}
 
 export default function WHOISPage({
   params,

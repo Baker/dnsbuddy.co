@@ -64,6 +64,17 @@ export const metadata: Metadata = {
   },
 };
 
+import { buildMetadata } from "@/components/metadata";
+
+export async function generateMetadata() {
+  return buildMetadata({
+    title: "Tools | DnsBuddy",
+    description:
+      "This page contains a list of the various other DNS related tools we maintain today.",
+    url: "https://DnsBuddy.co/tools/",
+  });
+}
+
 export default function Tools() {
   return (
     <main className="relative isolate overflow-hidden">

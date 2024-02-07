@@ -1,26 +1,19 @@
 import { WhoisForm } from "@/components/forms/forms";
+import { buildMetadata } from "@/components/metadata";
 import { WhoIsTypes } from "@/types/whois";
-import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "DnsBuddy | WHOIS Lookup",
-  description: "Perform WHOIS lookups with ease.",
-  twitter: {
-    card: "summary",
-    title: "WHOIS Lookup",
-    description: "Perform WHOIS lookups with ease.",
-  },
-  openGraph: {
-    title: "WHOIS Lookup",
-    description: "Perform WHOIS lookups with ease.",
-    url: "https://DnsBuddy.co/tools/whois",
-    siteName: "DnsBuddy",
-    locale: "en_US",
-    type: "website",
-  },
-};
+export async function generateMetadata({
+  params,
+}: { params: { whoisType?: string; query?: string } }) {
+  return buildMetadata({
+    title: `Lookup ${params.whoisType?.toLowerCase()} whois for ${
+      params.query
+    } | DNSBuddy.co`,
+    description: `The WHOIS Information for ${params.query} is available here.`,
+    url: "https://DnsBuddy.co/tools/whois/",
+  });
+}
 
 export default function WHOISPage({
   params,
