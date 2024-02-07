@@ -1,5 +1,5 @@
+import { buildMetadata } from "@/components/metadata";
 import { Separator } from "@/components/ui/separator";
-import type { Metadata } from "next";
 import Link from "next/link";
 
 const ToolsList = [
@@ -42,29 +42,6 @@ const ToolsList = [
     link: "https://github.com/Baker/dnsbuddy.co/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=%5BFB%5D",
   },
 ];
-
-export const metadata: Metadata = {
-  title: "Tools | DnsBuddy",
-  description:
-    "This page contains a list of the various other DNS related tools we maintain today.",
-  twitter: {
-    card: "summary",
-    title: "Tools",
-    description:
-      "This page contains a list of the various other DNS related tools we maintain today.",
-  },
-  openGraph: {
-    title: "Tools",
-    description:
-      "This page contains a list of the various other DNS related tools we maintain today.",
-    url: "https://DnsBuddy.co/tools",
-    siteName: "DnsBuddy",
-    locale: "en_US",
-    type: "website",
-  },
-};
-
-import { buildMetadata } from "@/components/metadata";
 
 export async function generateMetadata() {
   return buildMetadata({
