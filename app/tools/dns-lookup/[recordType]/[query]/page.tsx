@@ -1,25 +1,18 @@
 import { DnsLookUpForm } from "@/components/forms/forms";
+import { buildMetadata } from "@/components/metadata";
 import { CommonRecordTypes } from "@/types/record-types";
-import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "DnsBuddy | DNS Lookup",
-  description: "Your friendly neighborhood DNS lookup tool.",
-  twitter: {
-    card: "summary",
-    title: "DNS Lookup",
-    description: "Your friendly neighborhood DNS lookup tool.",
-  },
-  openGraph: {
-    title: "DNS Lookup",
-    description: "Your friendly neighborhood DNS lookup tool.",
-    url: "https://DnsBuddy.co",
-    siteName: "DnsBuddy",
-    locale: "en_US",
-    type: "website",
-  },
-};
+export async function generateMetadata({
+  params,
+}: { params: { recordType?: string; query?: string } }) {
+  return buildMetadata({
+    title: "WHOIS Lookup | DNSBuddy.co",
+    description:
+      "The WHOIS lookup tool allows you to query the WHOIS database for information about a domain name, IP address, or ASN.",
+    url: `https://DnsBuddy.co/tools/dns-lookup/${params.recordType}/${params.query}`,
+  });
+}
 
 export default function DnsLookup({
   params,

@@ -11,7 +11,7 @@ export async function generateMetadata({
       params.query
     } | DNSBuddy.co`,
     description: `The WHOIS Information for ${params.query} is available here.`,
-    url: "https://DnsBuddy.co/tools/whois/",
+    url: `https://DnsBuddy.co/tools/whois/${params.whoisType}/${params.query}`,
   });
 }
 

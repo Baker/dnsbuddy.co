@@ -9,7 +9,7 @@ export async function generateMetadata({
   return buildMetadata({
     title: `Lookup ${params.whoisType?.toLowerCase()} whois | DNSBuddy.co`,
     description: `You can lookup ${params.whoisType?.toLowerCase()} whois here.`,
-    url: "https://DnsBuddy.co/tools/whois/",
+    url: `https://DnsBuddy.co/tools/whois/${params.whoisType}/`,
   });
 }
 
