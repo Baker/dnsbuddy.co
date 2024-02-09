@@ -1,9 +1,3 @@
-import {
-  exampleASNWhoisResponse,
-  exampleDomainWhoisResponse,
-  exampleIpAddressV4WhoisResponse,
-  exampleIpAddressV6WhoisResponse,
-} from "@/tests/mock/api";
 import { expect, test } from "@playwright/test";
 
 test("can autofill form with URL params", async ({ page }) => {
@@ -57,82 +51,6 @@ test("has Domain header with object", async ({ page }) => {
     name: "Lookup Domain whois for example.com..",
   });
   expect(textElement).not.toBeNull();
-});
-
-test("has Domain header without object", async ({ page }) => {
-  await page.goto(
-    "await expect(page.getByRole('heading', { name: 'Abuse Information' })).toBeVisible();",
-    {
-      waitUntil: "load",
-    },
-  );
-  const textElement = await page.getByRole("heading", {
-    name: "Lookup Domain whois..",
-  });
-  expect(textElement).not.toBeNull();
-});
-
-test("Domain - Checker Headers", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois/domain/example.com");
-  await expect(
-    page.getByRole("heading", { name: "Registar Information" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Nameservers" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Registration Information" }),
-  ).toBeVisible();
-});
-
-test("IPv4 Address - Checker Headers", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois/IP/167.89.0.12");
-  await expect(
-    page.getByRole("heading", { name: "Organization Information" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Range Information" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Technical Information" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Abuse Information" }),
-  ).toBeVisible();
-});
-
-test("IPv6 Address - Checker Headers", async ({ page }) => {
-  await page.goto(
-    "http://localhost:3000/tools/whois/IP/2001:0000:130f:0000:0000:09c0:876a:130b/",
-  );
-  await expect(
-    page.getByRole("heading", { name: "Range Information" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Organization Information" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Technical Information" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Abuse Information" }),
-  ).toBeVisible();
-});
-
-test("ASN - Checker Headers", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois/ASN/as123/");
-  await expect(
-    page.getByRole("heading", { name: "ASN Information" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Organization Information" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Technical Information" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Abuse Information" }),
-  ).toBeVisible();
 });
 
 test("verify required type field", async ({ page }) => {

@@ -8,6 +8,9 @@ dependencies:
   '@hookform/resolvers':
     specifier: ^3.3.4
     version: 3.3.4(react-hook-form@7.50.0)
+  '@ocku/whois':
+    specifier: ^1.1.5
+    version: 1.1.5
   '@radix-ui/react-accordion':
     specifier: ^1.1.2
     version: 1.1.2(@types/react-dom@18.2.18)(@types/react@18.2.52)(react-dom@18.2.0)(react@18.2.0)
@@ -89,9 +92,6 @@ dependencies:
   typescript:
     specifier: 5.3.3
     version: 5.3.3
-  whoiser:
-    specifier: ^1.17.1
-    version: 1.17.1
   zod:
     specifier: ^3.22.4
     version: 3.22.4
@@ -422,6 +422,18 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.0
+
+  /@ocku/whois-servers@1.0.6:
+    resolution: {integrity: sha512-yDNsoVR7uLDTiKGlm+8bO/d97dh1QWoWX95co7wuSLR98ejQnRAab8SK9J0n33hC7qdxUtuDD/YMimB4a1Xs3g==}
+    dev: false
+
+  /@ocku/whois@1.1.5:
+    resolution: {integrity: sha512-BHGsG15b0nbVZMqU9qb26F2tOX96tLO9qVDvDR5CVsSQv4XapCtiNs897F9upxkuz+Wmyw8RBX7Jah0YNFvVZQ==}
+    engines: {node: '>=20.1.0'}
+    dependencies:
+      '@ocku/whois-servers': 1.0.6
+      socks: 2.7.1
+    dev: false
 
   /@pkgjs/parseargs@0.11.0:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -1890,6 +1902,10 @@ packages:
       loose-envify: 1.4.0
     dev: false
 
+  /ip@2.0.0:
+    resolution: {integrity: sha512-WKa+XuLG1A1R0UWhl2+1XQSi+fZWMsYKffMZTTYsiZaUD8k2yDAj5atimTUD2TZkyCkNEeYE5NhFZmupOGtjYQ==}
+    dev: false
+
   /is-binary-path@2.1.0:
     resolution: {integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==}
     engines: {node: '>=8'}
@@ -2322,11 +2338,6 @@ packages:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
     dev: false
 
-  /punycode@2.3.1:
-    resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
-    engines: {node: '>=6'}
-    dev: false
-
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
@@ -2491,6 +2502,19 @@ packages:
       mrmime: 2.0.0
       totalist: 3.0.1
     dev: true
+
+  /smart-buffer@4.2.0:
+    resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
+    engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
+    dev: false
+
+  /socks@2.7.1:
+    resolution: {integrity: sha512-7maUZy1N7uo6+WVEX6psASxtNlKaNVMlGQKkG/63nEDdLOWNbiUMoLK7X4uYoLhQstau72mLgfEWcXcwsaHbYQ==}
+    engines: {node: '>= 10.13.0', npm: '>= 3.0.0'}
+    dependencies:
+      ip: 2.0.0
+      smart-buffer: 4.2.0
+    dev: false
 
   /source-map-js@1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
@@ -2767,13 +2791,6 @@ packages:
     hasBin: true
     dependencies:
       isexe: 2.0.0
-    dev: false
-
-  /whoiser@1.17.1:
-    resolution: {integrity: sha512-dyIwadr1nYHPbz/rqoUTJvIarA2ZzBozi34etDff4Z3o5aj9Z3HPG9AULBRk3D0Vz/xtVAZwez6QaRoeV9GJPg==}
-    engines: {node: '>=15.0.0'}
-    dependencies:
-      punycode: 2.3.1
     dev: false
 
   /wrap-ansi@7.0.0:

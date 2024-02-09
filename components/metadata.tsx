@@ -41,5 +41,9 @@ export function buildMetadata({
       locale: "en_US",
       type: "website",
     },
+    robots: {
+      follow: true,
+      index: true,
+    },
   };
 }

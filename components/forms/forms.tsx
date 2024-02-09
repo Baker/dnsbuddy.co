@@ -4,6 +4,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type * as z from "zod";
 
+import {
+  bulkDnsLookup,
+  bulkFCrDNSFormSchema,
+  dnsLookupFormSchema,
+  whoIsFormSchema,
+} from "@/components/forms/schema";
+import {
+  BulkDnsLookupColumnDef,
+  BulkFCrDNSColumnDef,
+  DnsLookupColumnDef,
+} from "@/components/tables/columns";
+import { DataTable } from "@/components/tables/data-table";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,24 +35,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-
-import {
-  AsnWhoisResponse,
-  DomainWhoisResponse,
-  IpAddressWhoisReponse,
-} from "@/components/forms/responses";
-import {
-  bulkDnsLookup,
-  bulkFCrDNSFormSchema,
-  dnsLookupFormSchema,
-  whoIsFormSchema,
-} from "@/components/forms/schema";
-import {
-  BulkDnsLookupColumnDef,
-  BulkFCrDNSColumnDef,
-  DnsLookupColumnDef,
-} from "@/components/tables/columns";
-import { DataTable } from "@/components/tables/data-table";
 import { ProviderToLabelMapping, ProviderToUrlMapping } from "@/constants/api";
 import type {
   BulkFCrDNSResponseList,
@@ -49,7 +43,6 @@ import type {
 } from "@/types/data";
 import type { ResponseItem } from "@/types/dns";
 import { CommonRecordTypes } from "@/types/record-types";
-import type { ASNWhoisData, DomainWhoisData, IPWhoisData } from "@/types/whois";
 import { WhoIsTypes } from "@/types/whois";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { redirect, useRouter } from "next/navigation";
@@ -611,9 +604,7 @@ export function WhoisForm({
 }: { whoisType?: string; query?: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [response, setResponse] = useState<
-    DomainWhoisData | IPWhoisData | ASNWhoisData
-  >();
+  const [response, setResponse] = useState<string, string>();
   const [lastSubmitted, setLastSubmitted] = useState<{
     query: string | undefined;
     type: string | undefined;
@@ -759,22 +750,16 @@ export function WhoisForm({
         </div>
       </div>
       {response !== undefined ? (
-        // @ts-ignore
-        response.error ? (
-          <p className="mx-auto my-6 rounded-md border bg-black/5 p-8 text-gray-600 dark:bg-white/5 dark:text-gray-300 md:max-w-4xl">
-            No data available, this could be due to an invalid domain, or IP
-            Address.
-          </p>
-        ) : WhoIsTypes[whoisValue as keyof typeof WhoIsTypes] ===
-          WhoIsTypes.DOMAIN ? (
-          <DomainWhoisResponse response={response as DomainWhoisData} />
-        ) : WhoIsTypes[whoisValue as keyof typeof WhoIsTypes] ===
-          WhoIsTypes.IP ? (
-          <IpAddressWhoisReponse response={response as IPWhoisData} />
-        ) : WhoIsTypes[whoisValue as keyof typeof WhoIsTypes] ===
-          WhoIsTypes.ASN ? (
-          <AsnWhoisResponse response={response as ASNWhoisData} />
-        ) : null
+        <div className="mx-auto flex max-w-2xl items-center justify-center pt-4">
+          <code className="text-left">
+            {Object.keys(response).map((resp: string) => (
+              <div key={resp}>
+                {resp}: {response[resp]}
+                <br />
+              </div>
+            ))}
+          </code>
+        </div>
       ) : null}
     </>
   );
