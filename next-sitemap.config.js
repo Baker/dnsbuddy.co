@@ -15,7 +15,6 @@ const CommonRecordTypes = {
 const WhoIsTypes = {
   IP: "IP Address",
   DOMAIN: "Domain",
-  ASN: "ASN",
 };
 
 module.exports = {

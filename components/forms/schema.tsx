@@ -106,20 +106,4 @@ export const whoIsFormSchema = z
         "This input is not the expected Domain format. Example of a valid submission: google.com.",
       path: ["query"],
     },
-  )
-  .refine(
-    // Content this is checking if the Domain is a valid ASN based on the type selected.
-    (schema) => {
-      if (
-        WhoIsTypes[schema.type as keyof typeof WhoIsTypes] === WhoIsTypes.ASN
-      ) {
-        return isValidASN(schema.query.toUpperCase());
-      }
-      return true;
-    },
-    {
-      message:
-        "This input is not the expected ASN format, example of a valid ASN is AS123.",
-      path: ["query"],
-    },
   );

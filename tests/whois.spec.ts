@@ -92,18 +92,3 @@ test("domain input, ip address selected", async ({ page }) => {
       .isVisible(),
   ).toBe(true);
 });
-
-test("domain input, asn selected", async ({ page }) => {
-  await page.goto("http://localhost:3000/tools/whois/");
-  await page.getByPlaceholder("example.com").click();
-  await page.getByPlaceholder("example.com").fill("example.com");
-  await page.selectOption("select", "ASN");
-  await page.getByRole("button", { name: "Dig" }).click();
-  expect(
-    await page
-      .getByText(
-        "This input is not the expected ASN format, example of a valid ASN is AS123.",
-      )
-      .isVisible(),
-  ).toBe(true);
-});
