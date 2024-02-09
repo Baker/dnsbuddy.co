@@ -6,10 +6,9 @@ export async function generateMetadata() {
     title: "WHOIS Lookup | DNSBuddy.co",
     description:
       "The WHOIS lookup tool allows you to query the WHOIS database for information about a domain name, IP address, or ASN.",
-    url: "https://DnsBuddy.co/tools/dns-lookup/"  ,
+    url: "https://DnsBuddy.co/tools/dns-lookup/",
   });
 }
-
 
 export default function DnsLookup({
   params,
