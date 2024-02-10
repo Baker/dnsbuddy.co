@@ -59,7 +59,7 @@ export default function Tools() {
         <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white sm:text-5xl">
           Tools
         </h1>
-        <p className="m-auto max-w-2xl pt-2 text-neutral-600 dark:text-neutral-400">
+        <p className="m-auto max-w-2xl mt-4 leading-6 text-neutral-600 dark:text-neutral-400">
           Here are some other DNS related tools that we offer to the community.
           These have mostly been created by request or out of necessity.
         </p>

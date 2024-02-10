@@ -604,7 +604,7 @@ export function WhoisForm({
 }: { whoisType?: string; query?: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [response, setResponse] = useState<string, string>();
+  const [response, setResponse] = useState<[]>();
   const [lastSubmitted, setLastSubmitted] = useState<{
     query: string | undefined;
     type: string | undefined;
@@ -752,7 +752,7 @@ export function WhoisForm({
       {response !== undefined ? (
         <div className="mx-auto flex max-w-2xl items-center justify-center pt-4">
           <code className="text-left">
-            {Object.keys(response).map((resp: string) => (
+            {(Object.keys(response) as string[]).map((resp: string) => (
               <div key={resp}>
                 {resp}: {response[resp]}
                 <br />

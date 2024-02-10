@@ -15,7 +15,10 @@ module.exports = {
       screens: {
         "2xl": "1400px",
       },
-      fontfamily: {},
+      fontfamily: {
+        sans: ["var(--font-open-sans)", ...fontFamily.sans],
+        serif: ["var(--font-domine)", ...fontFamily.serif],
+      },
     },
     extend: {
       colors: {

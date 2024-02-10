@@ -29,11 +29,11 @@ export default function DnsLookup({
   return (
     <main className="relative isolate overflow-hidden">
       <div className="mx-auto px-6 pt-56 text-center lg:px-8">
-        <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white sm:text-5xl">
+        <h1 className="text-4xl font-bold tracking-tight text-black dark:text-white">
           Lookup a {params.recordType?.toUpperCase()} record for{" "}
           <span className="underline">{params.query}</span>..
         </h1>
-        <p className="mt-6 text-lg leading-8 text-neutral-600 dark:text-neutral-400">
+        <p className="mt-4 leading-6 text-neutral-600 dark:text-neutral-400">
           Making DNS Lookups, cleaner, easier and faster in one place.
         </p>
         <div className="mt-10">

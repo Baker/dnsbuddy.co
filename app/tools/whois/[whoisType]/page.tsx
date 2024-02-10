@@ -28,7 +28,7 @@ export default function WHOISPage({
   return (
     <main className="relative isolate overflow-hidden">
       <div className="mx-auto pt-56 text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white sm:text-5xl">
+        <h1 className="text-4xl font-bold tracking-tight text-black dark:text-white">
           Lookup{" "}
           {
             WhoIsTypes[
@@ -37,7 +37,7 @@ export default function WHOISPage({
           }{" "}
           whois..
         </h1>
-        <p className="mt-6 text-lg leading-8 text-neutral-600 dark:text-neutral-400">
+        <p className="mt-4 leading-6 text-neutral-600 dark:text-neutral-400">
           Perform WHOIS lookups with ease.
         </p>
         <div className="mt-10">
