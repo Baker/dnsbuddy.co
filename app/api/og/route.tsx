@@ -1,46 +1,32 @@
 import { ImageResponse } from "next/og";
 
-export function ImageMetadata({ slogan }: { slogan: string }) {
-  return new ImageResponse(
-    <div
-      style={{
-        display: "flex",
-        height: "100%",
-        width: "100%",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        background: "white",
-        backgroundImage:
-          "linear-gradient(55deg, rgba(0,219,222,0.25) 0%, rgba(252,0,255,0.25) 100%)",
-        fontSize: 60,
-        letterSpacing: -2,
-        fontWeight: 700,
-        textAlign: "center",
-      }}
-    >
+export const runtime = "edge";
+
+export async function GET(request: Request) {
+  const domine = fetch(
+    new URL("../../../public/assets/domine.ttf", import.meta.url),
+  ).then((res) => res.arrayBuffer());
+  const openSans = fetch(
+    new URL("../../../public/assets/OpenSans-Regular.ttf", import.meta.url),
+  ).then((res) => res.arrayBuffer());
+  const openSansBold = fetch(
+    new URL("../../../public/assets/OpenSans-Bold.ttf", import.meta.url),
+  ).then((res) => res.arrayBuffer());
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const hasSlogan = searchParams.has("slogan");
+    const slogan = hasSlogan
+      ? searchParams.get("slogan")?.slice(0, 100)
+      : "DNS Swissy Army Tool";
+    return new ImageResponse(
       <div
+        tw="flex flex-col items-center justify-center w-full h-full p-8 bg-[#0c0a09]"
         style={{
-          height: "100%",
-          width: "100%",
-          display: "flex",
-          textAlign: "center",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          flexWrap: "nowrap",
-          backgroundImage:
-            "radial-gradient(circle at 25px 25px, white 2%, transparent 0%), radial-gradient(circle at 75px 75px, white 2%, transparent 0%), ",
-          backgroundSize: "100px 100px",
+          fontFamily: "domine",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        <div tw="absolute left-20 top-20 flex items-center">
           <svg
             role="img"
             aria-label="DnsBuddy.co logo"
@@ -63,33 +49,52 @@ export function ImageMetadata({ slogan }: { slogan: string }) {
               fill-rule="evenodd"
             />
           </svg>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 32,
-              fontStyle: "normal",
-              color: "black",
-              lineHeight: 1.8,
-              whiteSpace: "pre-wrap",
-            }}
+          <span
+            tw="ml-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-white"
+            style={{ fontFamily: "openSans" }}
           >
-            <b>DNSBuddy.co</b>
-          </div>
+            DNS<span style={{ fontFamily: "openSansBold" }}>Buddy</span>
+          </span>
         </div>
         <div
+          tw="flex flex-wrap justify-center p-5 md:p-10 m-0 md:m-10 text-2xl w-auto min-w-3/4 text-center bg-white/5 text-white leading-6 rounded-md"
           style={{
-            display: "flex",
-            fontSize: 42,
-            fontStyle: "normal",
-            color: "black",
-            marginTop: 2,
-            lineHeight: 1.8,
-            whiteSpace: "pre-wrap",
+            fontFamily: "domine",
           }}
         >
-          <b>{slogan}</b>
+          {slogan}
         </div>
-      </div>
-    </div>,
-  );
+      </div>,
+
+      {
+        width: 1200,
+        height: 630,
+        fonts: [
+          {
+            name: "domine",
+            data: await domine,
+            style: "normal",
+            weight: 700,
+          },
+          {
+            name: "openSans",
+            data: await openSans,
+            style: "normal",
+            weight: 400,
+          },
+          {
+            name: "openSansBold",
+            data: await openSansBold,
+            style: "normal",
+            weight: 700,
+          },
+        ],
+      },
+    );
+  } catch (e) {
+    console.log(`${e}`);
+    return new Response("Failed to generate the image", {
+      status: 500,
+    });
+  }
 }

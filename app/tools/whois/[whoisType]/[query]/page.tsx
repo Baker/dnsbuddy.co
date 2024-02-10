@@ -12,6 +12,9 @@ export async function generateMetadata({
     } | DNSBuddy.co`,
     description: `The WHOIS Information for ${params.query} is available here.`,
     url: `https://DnsBuddy.co/tools/whois/${params.whoisType}/${params.query}`,
+    slogan: `Lookup ${params.whoisType?.toLowerCase()} whois for ${
+      params.query
+    }..`,
   });
 }
 

@@ -1,26 +1,16 @@
 import { BulkFCrDNSForm } from "@/components/forms/forms";
-import type { Metadata } from "next";
+import { buildMetadata } from "@/components/metadata";
 
-export const metadata: Metadata = {
-  title: "Bulk Forward Confirmation reverse DNS (FCrDNS) Lookup | DnsBuddy",
-  description:
-    "This tool allows you to look up to 100 different IP Addresses and check to make sure they perform a forward confirmation reverse DNS (FCrDNS).",
-  twitter: {
-    card: "summary",
-    title: "Bulk Forward Confirmation reverse DNS (FCrDNS) Lookup",
-    description:
-      "This tool allows you to look up to 100 different IP Addresses and check to make sure they perform a forward confirmation reverse DNS (FCrDNS).",
-  },
-  openGraph: {
-    title: "Bulk Forward Confirmation reverse DNS (FCrDNS) Lookup",
+export async function generateMetadata() {
+  return buildMetadata({
+    title:
+      "Bulk Forward Confirmation reverse DNS (FCrDNS) Lookup | DNSBuddy.co",
     description:
       "This tool allows you to look up to 100 different IP Addresses and check to make sure they perform a forward confirmation reverse DNS (FCrDNS).",
     url: "https://DnsBuddy.co/tools/bulk-fcrdns",
-    siteName: "DnsBuddy",
-    locale: "en_US",
-    type: "website",
-  },
-};
+    slogan: "Bulk FCrDNS (Forward-confirmed reverse DNS) Record lookup.",
+  });
+}
 
 export default function BulkFCrDNS() {
   return (

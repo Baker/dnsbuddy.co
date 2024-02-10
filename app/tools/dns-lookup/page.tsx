@@ -7,6 +7,7 @@ export async function generateMetadata() {
     description:
       "The WHOIS lookup tool allows you to query the WHOIS database for information about a domain name or IP address.",
     url: "https://DnsBuddy.co/tools/dns-lookup/",
+    slogan: "DNS Records for TXT, MX, A, CNAME, NS, and more.",
   });
 }
 

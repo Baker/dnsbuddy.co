@@ -49,6 +49,7 @@ export async function generateMetadata() {
     description:
       "This page contains a list of the various other DNS related tools we maintain today. Some of the tools are offer today are DNS Record Lookup, Bulk DNS Record Lookup, WHOIS Lookup, Bulk FCrDNS Lookup, and more.",
     url: "https://DnsBuddy.co/tools/",
+    slogan: "DNS Swissy Army Tool",
   });
 }
 

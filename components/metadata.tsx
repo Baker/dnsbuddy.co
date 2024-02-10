@@ -4,7 +4,13 @@ export function buildMetadata({
   title,
   description,
   url,
-}: { title: string; description: string; url: string }): Metadata {
+  slogan,
+}: {
+  title: string;
+  description: string;
+  url: string;
+  slogan?: string;
+}): Metadata {
   return {
     title: title,
     description: description,
@@ -32,6 +38,7 @@ export function buildMetadata({
       card: "summary_large_image",
       title: title,
       description: description,
+      images: [`/api/og?slogan=${slogan}`],
     },
     openGraph: {
       title: title,
@@ -40,6 +47,9 @@ export function buildMetadata({
       siteName: "DnsBuddy",
       locale: "en_US",
       type: "website",
+      images: {
+        url: `/api/og?slogan=${slogan}`,
+      },
     },
     robots: {
       follow: true,

@@ -6,6 +6,7 @@ export async function generateMetadata() {
     title: "DnsBuddy | Index",
     description: "An opensourced DNS Swiss Army Knife.",
     url: "https://DnsBuddy.co/",
+    slogan: "DNS Swissy Army Tool",
   });
 }
 

@@ -1,26 +1,15 @@
 import { BulkDnsLookupForm } from "@/components/forms/forms";
-import type { Metadata } from "next";
+import { buildMetadata } from "@/components/metadata";
 
-export const metadata: Metadata = {
-  title: "Bulk DNS Lookup | DnsBuddy",
-  description:
-    "Explore information across 100 domains or IP addresses (IPv4 or IPv6) using our versatile tool. We currently support a wide range of DNS record types, including TXT, CNAME, MX, NS, A, AAAA, PTR, SOA, and more. Select  to run the test against any of our nine DNS providers and locations. Plus, enjoy the convenience of exporting this data for your personalized use at any time.",
-  twitter: {
-    card: "summary",
-    title: "Bulk DNS Lookup",
-    description:
-      "Explore information across 100 domains or IP addresses (IPv4 or IPv6) using our versatile tool. We currently support a wide range of DNS record types, including TXT, CNAME, MX, NS, A, AAAA, PTR, SOA, and more. Select  to run the test against any of our nine DNS providers and locations. Plus, enjoy the convenience of exporting this data for your personalized use at any time.",
-  },
-  openGraph: {
-    title: "Bulk DNS Lookup",
+export async function generateMetadata() {
+  return buildMetadata({
+    title: "Bulk DNS Lookup | DnsBuddy",
     description:
       "Explore information across 100 domains or IP addresses (IPv4 or IPv6) using our versatile tool. We currently support a wide range of DNS record types, including TXT, CNAME, MX, NS, A, AAAA, PTR, SOA, and more. Select  to run the test against any of our nine DNS providers and locations. Plus, enjoy the convenience of exporting this data for your personalized use at any time.",
     url: "https://DnsBuddy.co/tools/bulk-dns-lookup",
-    siteName: "DnsBuddy",
-    locale: "en_US",
-    type: "website",
-  },
-};
+    slogan: "Bulk DNS Records lookup.",
+  });
+}
 
 export default function BulkFCrDNS() {
   return (

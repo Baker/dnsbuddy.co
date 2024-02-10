@@ -752,7 +752,7 @@ export function WhoisForm({
       {response !== undefined ? (
         <div className="mx-auto flex max-w-2xl items-center justify-center pt-4">
           <code className="text-left">
-            {(Object.keys(response) as string[]).map((resp: string) => (
+            {Object.keys(response).map((resp) => (
               <div key={resp}>
                 {resp}: {response[resp]}
                 <br />

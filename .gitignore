@@ -43,3 +43,4 @@ next-env.d.ts
 .env
 public/robots.txt
 public/sitemap*.xml
+public/assests/OpenSans-Bold.ttf

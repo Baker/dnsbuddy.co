@@ -21,7 +21,7 @@ export default function Navigation() {
         </div>
         <div className="flex justify-end lg:flex-1">
           <div className="flex items-center ">
-            <Link href={"/tools"} className="pr-4 underline">
+            <Link href={"/tools"} className="pr-4 underline underline-offset-2">
               Other Tools
             </Link>
           </div>
