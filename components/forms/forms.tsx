@@ -753,9 +753,9 @@ export function WhoisForm({
       {response !== undefined ? (
         <div className="mx-auto flex max-w-2xl items-center justify-center pt-4">
           <code className="text-left">
-            {Object.keys(response).map((resp) => (
+            {Object.keys(response).map((resp: string) => (
               <div key={resp}>
-                {resp}: {response[resp]}
+                {resp}: {String(response[resp as keyof typeof response])}
                 <br />
               </div>
             ))}
@@ -813,45 +813,47 @@ export function DomainForm({ domain }: { domain?: string }) {
 
   return (
     <>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="mx-auto flex max-w-2xl items-center justify-center px-4 leading-8"
-        >
-          <FormField
-            control={form.control}
-            name="domain"
-            render={({ field }) => (
-              <FormItem className="">
-                <FormLabel className="sr-only">Domain</FormLabel>
-                <FormControl>
-                  <Input
-                    className=""
-                    {...field}
-                    disabled={isPending}
-                    placeholder={"example.com"}
-                  />
-                </FormControl>
-                <FormDescription className="sr-only">
-                  This is where you input your domain that you want to look up
-                  the WHOIS results for.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="">
-            <Button
-              type="submit"
-              disabled={isPending}
-              className="h-full w-full text-black"
+      <div className="flex">
+        <div className="w-full">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="inline-flex w-full pt-3"
             >
-              <MagnifyingGlassIcon className="" />{" "}
-              {isPending ? "Digging.." : "Dig"}
-            </Button>
-          </div>
-        </form>
-      </Form>
+              <FormField
+                control={form.control}
+                name="domain"
+                render={({ field }) => (
+                  <FormItem className="mr-4 w-full space-y-0">
+                    <FormLabel className="sr-only">Domain</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="bg-black/5 dark:bg-white/5"
+                        {...field}
+                        disabled={isPending}
+                        placeholder={"example.com"}
+                      />
+                    </FormControl>
+                    <FormDescription className="sr-only">
+                      This is where you input your domain that you want to look
+                      up the WHOIS results for.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="h-10 w-1/2 text-black"
+              >
+                <MagnifyingGlassIcon className="" />{" "}
+                {isPending ? "Digging.." : "Dig"}
+              </Button>
+            </form>
+          </Form>
+        </div>
+      </div>
     </>
   );
 }
