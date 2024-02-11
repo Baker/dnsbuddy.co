@@ -8,6 +8,7 @@ import {
   bulkDnsLookup,
   bulkFCrDNSFormSchema,
   dnsLookupFormSchema,
+  domainSchema,
   whoIsFormSchema,
 } from "@/components/forms/schema";
 import {
@@ -173,7 +174,7 @@ export function DnsLookUpForm({
                     <FormLabel className="sr-only">Query</FormLabel>
                     <FormControl>
                       <Input
-                        className="min-w-0 flex-auto rounded-md bg-black/5 px-3.5 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200 sm:text-sm sm:leading-6"
+                        className="min-w-0 flex-auto bg-black/5 px-3.5 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200 sm:text-sm sm:leading-6"
                         {...field}
                         disabled={isPending}
                         placeholder={"example.com"}
@@ -689,7 +690,7 @@ export function WhoisForm({
                     <FormLabel className="sr-only">Query</FormLabel>
                     <FormControl>
                       <Input
-                        className="min-w-0 flex-auto rounded-md bg-black/5 px-3.5 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200 sm:text-sm sm:leading-6"
+                        className="min-w-0 flex-auto bg-black/5 px-3.5 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200 sm:text-sm sm:leading-6"
                         {...field}
                         disabled={isPending}
                         placeholder={"example.com"}
@@ -761,6 +762,96 @@ export function WhoisForm({
           </code>
         </div>
       ) : null}
+    </>
+  );
+}
+
+export function DomainForm({ domain }: { domain?: string }) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [response, setResponse] = useState<[]>();
+  const [lastSubmitted, setLastSubmitted] = useState<{
+    domain: string | undefined;
+  } | null>(null);
+
+  useEffect(() => {
+    if (domain && (!lastSubmitted || lastSubmitted.domain !== domain)) {
+      // Checks if the form is valid and if not redirects to the whois homepage.
+      const result = domainSchema.safeParse({
+        query: domain,
+      });
+
+      if (!result.success) {
+        redirect("/tools/whois");
+      }
+      onSubmit(result.data);
+      setLastSubmitted(result.data);
+    }
+  }, [domain, lastSubmitted]);
+
+  const form = useForm<z.infer<typeof domainSchema>>({
+    resolver: zodResolver(domainSchema),
+    defaultValues: {
+      domain: domain || "",
+    },
+    mode: "onChange",
+  });
+
+  async function onSubmit(values: z.infer<typeof domainSchema>) {
+    if (response !== undefined) {
+      // Handle Multiple queries easier, by resetting state.
+      setResponse(undefined);
+    }
+
+    startTransition(async () => {
+      if (values.domain.toLowerCase() !== domain?.toLowerCase()) {
+        router.push(`/tools/domain/${values.domain}`);
+        return;
+      }
+    });
+  }
+
+  return (
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="mx-auto flex max-w-2xl items-center justify-center px-4 leading-8"
+        >
+          <FormField
+            control={form.control}
+            name="domain"
+            render={({ field }) => (
+              <FormItem className="">
+                <FormLabel className="sr-only">Domain</FormLabel>
+                <FormControl>
+                  <Input
+                    className=""
+                    {...field}
+                    disabled={isPending}
+                    placeholder={"example.com"}
+                  />
+                </FormControl>
+                <FormDescription className="sr-only">
+                  This is where you input your domain that you want to look up
+                  the WHOIS results for.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="">
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="h-full w-full text-black"
+            >
+              <MagnifyingGlassIcon className="" />{" "}
+              {isPending ? "Digging.." : "Dig"}
+            </Button>
+          </div>
+        </form>
+      </Form>
     </>
   );
 }

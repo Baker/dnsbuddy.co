@@ -57,7 +57,7 @@ export async function GET(request: Request) {
           </span>
         </div>
         <div
-          tw="flex flex-wrap justify-center p-5 md:p-10 m-0 md:m-10 text-2xl w-auto min-w-3/4 text-center bg-white/5 text-white leading-6 rounded-md"
+          tw="flex flex-wrap justify-center p-5 md:p-10 m-0 md:m-10 text-2xl w-auto min-w-3/4 text-center bg-white/5 text-white leading-6 rounded"
           style={{
             fontFamily: "domine",
           }}

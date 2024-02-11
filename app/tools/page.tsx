@@ -69,7 +69,7 @@ export default function Tools() {
           {ToolsList.map((tool) => (
             <Link
               href={tool.link}
-              className="rounded-md border bg-black/5 p-8 dark:bg-white/5"
+              className="rounded border bg-black/5 p-8 dark:bg-white/5"
               key={tool.name}
             >
               <h2 className="text-lg font-semibold">{tool.name}</h2>

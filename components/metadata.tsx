@@ -11,6 +11,9 @@ export function buildMetadata({
   url: string;
   slogan?: string;
 }): Metadata {
+  const siteUrl = process.env.SITE_URL
+    ? `https://${process.env.SITE_URL}`
+    : "http://localhost:3000";
   return {
     title: title,
     description: description,
@@ -38,7 +41,7 @@ export function buildMetadata({
       card: "summary_large_image",
       title: title,
       description: description,
-      images: [`/api/og?slogan=${slogan}`],
+      images: [`${siteUrl}/api/og?slogan=${slogan}`],
     },
     openGraph: {
       title: title,
@@ -48,7 +51,7 @@ export function buildMetadata({
       locale: "en_US",
       type: "website",
       images: {
-        url: `/api/og?slogan=${slogan}`,
+        url: `${siteUrl}/api/og?slogan=${slogan}`,
       },
     },
     robots: {

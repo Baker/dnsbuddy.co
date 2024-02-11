@@ -152,7 +152,7 @@ export function DataTable<TData, TValue>({
           </Button>
         ) : null}
       </div>
-      <div className='rounded-md border bg-black/5  px-4 py-4 dark:bg-white/5 '>
+      <div className='rounded border bg-black/5  px-4 py-4 dark:bg-white/5 '>
         <Table className=''>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
