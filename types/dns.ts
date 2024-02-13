@@ -29,3 +29,14 @@ export interface AnswerItem {
   type: number;
   Expires?: string;
 }
+
+export interface DomainDnsResponse {
+  domain: string;
+  txtRecords: string[];
+  aRecords: string[];
+  aaaaRecords: string[];
+  cnameRecords: string[];
+  mxRecords: string[];
+  nsRecords: string[];
+  soaRecords: string[];
+}

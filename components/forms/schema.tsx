@@ -118,3 +118,7 @@ export const domainSchema = z.object({
       message: "The URL contains a protocol, please remove it.",
     }),
 });
+
+export const dnsSchema = z.object({
+  dns_provider: z.string(),
+});

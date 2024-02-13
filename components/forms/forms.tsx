@@ -8,6 +8,7 @@ import {
   bulkDnsLookup,
   bulkFCrDNSFormSchema,
   dnsLookupFormSchema,
+  dnsSchema,
   domainSchema,
   whoIsFormSchema,
 } from "@/components/forms/schema";
@@ -46,7 +47,13 @@ import type { ResponseItem } from "@/types/dns";
 import { CommonRecordTypes } from "@/types/record-types";
 import { WhoIsTypes } from "@/types/whois";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { redirect, useRouter } from "next/navigation";
+import {
+  redirect,
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 
 export function DnsLookUpForm({
@@ -768,26 +775,16 @@ export function WhoisForm({
 
 export function DomainForm({ domain }: { domain?: string }) {
   const router = useRouter();
+  const params = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const [response, setResponse] = useState<[]>();
-  const [lastSubmitted, setLastSubmitted] = useState<{
-    domain: string | undefined;
-  } | null>(null);
+  const dnsProviders = Object.keys(ProviderToLabelMapping);
+  const paramsDnsProvider = params.get("dns_provider");
+  const dns_provider =
+    paramsDnsProvider && dnsProviders.includes(paramsDnsProvider)
+      ? paramsDnsProvider
+      : ProviderToLabelMapping.cloudflare.toLowerCase()
 
-  useEffect(() => {
-    if (domain && (!lastSubmitted || lastSubmitted.domain !== domain)) {
-      // Checks if the form is valid and if not redirects to the whois homepage.
-      const result = domainSchema.safeParse({
-        query: domain,
-      });
-
-      if (!result.success) {
-        redirect("/tools/whois");
-      }
-      onSubmit(result.data);
-      setLastSubmitted(result.data);
-    }
-  }, [domain, lastSubmitted]);
 
   const form = useForm<z.infer<typeof domainSchema>>({
     resolver: zodResolver(domainSchema),
@@ -805,7 +802,9 @@ export function DomainForm({ domain }: { domain?: string }) {
 
     startTransition(async () => {
       if (values.domain.toLowerCase() !== domain?.toLowerCase()) {
-        router.push(`/tools/domain/${values.domain}`);
+        router.push(
+          `/tools/domain/${values.domain}?dns_provider=${dns_provider.toLowerCase()}`,
+        );
         return;
       }
     });
@@ -854,6 +853,102 @@ export function DomainForm({ domain }: { domain?: string }) {
           </Form>
         </div>
       </div>
+    </>
+  );
+}
+
+export function DnsForm({ domain }: { domain?: string }) {
+  const router = useRouter();
+  const params = useParams();
+  const queryParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+  const [response, setResponse] = useState<[]>();
+  const dnsProviders = Object.keys(ProviderToLabelMapping);
+  const paramsDnsProvider = queryParams.get("dns_provider");
+  const dns_provider =
+    paramsDnsProvider && dnsProviders.includes(paramsDnsProvider)
+      ? paramsDnsProvider
+      : ProviderToLabelMapping.cloudflare;
+
+  const form = useForm<z.infer<typeof dnsSchema>>({
+    resolver: zodResolver(dnsSchema),
+    defaultValues: {
+      dns_provider: dns_provider,
+    },
+    mode: "onChange",
+  });
+
+  async function onSubmit(values: z.infer<typeof dnsSchema>) {
+    if (response !== undefined) {
+      // Handle Multiple queries easier, by resetting state.
+      setResponse(undefined);
+    }
+    startTransition(async () => {
+      if (values.dns_provider.toLowerCase() !== dns_provider) {
+        router.push(
+          `/tools/domain/${params.domain}?dns_provider=${values.dns_provider}`,
+        );
+        return;
+      }
+    });
+  }
+
+  return (
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="inline-flex w-full pt-3"
+        >
+          <FormField
+            control={form.control}
+            name="dns_provider"
+            render={({ field }) => (
+              <FormItem className="w-full space-y-0">
+                <FormLabel className="sr-only">Domain</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      onSubmit(form.getValues());
+                    }}
+                    disabled={isPending}
+                    name="dns_provider"
+                  >
+                    <FormControl>
+                      <SelectTrigger className="bg-black/5 px-3.5 text-gray-600 dark:bg-white/5 dark:text-gray-200">
+                        <SelectValue
+                          placeholder={
+                            ProviderToLabelMapping[
+                              paramsDnsProvider as keyof typeof ProviderToLabelMapping
+                            ]
+                          }
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {dnsProviders.map((value) => (
+                        <SelectItem key={value} value={value}>
+                          {
+                            ProviderToLabelMapping[
+                              value as keyof typeof ProviderToLabelMapping
+                            ]
+                          }
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormDescription className="sr-only">
+                  This is where you input your domain that you want to look up
+                  the WHOIS results for.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
     </>
   );
 }
