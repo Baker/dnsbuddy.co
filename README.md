@@ -46,3 +46,7 @@ As of right now we only use a few things to keep this repo formatted nicely, etc
 - [BiomeJS](https://biomejs.dev/) - Linter & Code Formatter.
 
 The above is all handled by our CI, Github actions.
+
+## Credit
+
+- Logo provided by [Brandfetch](https://brandfetch.com)

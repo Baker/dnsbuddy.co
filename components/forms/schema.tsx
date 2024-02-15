@@ -120,5 +120,13 @@ export const domainSchema = z.object({
 });
 
 export const dnsSchema = z.object({
+  domain: z
+    .string()
+    .toLowerCase()
+    .trim()
+    .min(3, { message: "The domain is not long enough." })
+    .refine(isValidDomain, {
+      message: "The URL contains a protocol, please remove it.",
+    }),
   dns_provider: z.string(),
 });
