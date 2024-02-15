@@ -1076,32 +1076,108 @@ export function DnsForm({ domain }: { domain: string }) {
         {response !== undefined ? (
           <>
             <div className="">
-              {response?.aRecords ? (
-                <>
-                  <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
-                    A Records
-                  </h2>
-                  <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
-                  {response.aRecords.map((record: string) => (
+              <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
+                NS Records
+              </h2>
+              <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
+              {response.nsRecords?.length > 0
+                ? response.nsRecords.map((record: string) => (
+                    <Link
+                      key={record}
+                      className="text-left inline-flex w-full leading-6"
+                      href={`/tools/domain/${record}?dns_provider=cloudflare`}
+                    >
+                      <Image
+                        alt={`${record} icon`}
+                        width={24}
+                        height={24}
+                        src={`https://icons.duckduckgo.com/ip3/${record}.ico`}
+                        className="mr-1"
+                      />{" "}
+                      <span className="underline decoration-dotted">
+                        {record}
+                      </span>
+                    </Link>
+                  ))
+                : "No records available."}
+              <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
+                A Records
+              </h2>
+              <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
+              {response.aRecords?.length > 0
+                ? response.aRecords.map((record: string) => (
+                    <Link
+                      key={record}
+                      className="text-left inline-flex w-full leading-6"
+                      href={`/tools/whois/IP/${record}`}
+                    >
+                      <span className="underline decoration-dotted">
+                        {record}
+                      </span>
+                    </Link>
+                  ))
+                : "No records available."}
+              <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
+                AAAA Records
+              </h2>
+              <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
+              {response.aaaaRecords?.length > 0
+                ? response.aaaaRecords.map((record: string) => (
+                    <Link
+                      key={record}
+                      className="text-left inline-flex w-full leading-6"
+                      href={`/tools/whois/IP/${record}`}
+                    >
+                      <span className="underline decoration-dotted">
+                        {record}
+                      </span>
+                    </Link>
+                  ))
+                : "No records available."}
+              <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
+                TXT Records
+              </h2>
+              <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
+              {response.txtRecords?.length > 0
+                ? response.txtRecords.map((record: string) => (
                     <div key={record} className="text-left">
                       {record}
                     </div>
-                  ))}
-                </>
-              ) : null}
-              {response?.txtRecords ? (
-                <>
-                  <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
-                    TXT Records
-                  </h2>
-                  <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
-                  {response.txtRecords.map((record: string) => (
+                  ))
+                : "No records available."}
+              <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
+                MX Records
+              </h2>
+              <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
+              {response.mxRecords?.length > 0
+                ? response.mxRecords.map((record: string) => (
                     <div key={record} className="text-left">
                       {record}
                     </div>
-                  ))}
-                </>
-              ) : null}
+                  ))
+                : "No records available."}
+              <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
+                CNAME Records
+              </h2>
+              <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
+              {response.cnameRecords?.length > 0
+                ? response.cnameRecords.map((record: string) => (
+                    <div key={record} className="text-left">
+                      {record}
+                    </div>
+                  ))
+                : "No records available."}
+              <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
+                SOA Records
+              </h2>
+              <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
+              {response.soaRecords?.length > 0
+                ? response.soaRecords.map((record: string) => (
+                    <div key={record} className="text-left">
+                      {record}
+                    </div>
+                  ))
+                : "No records available."}
             </div>
           </>
         ) : null}
