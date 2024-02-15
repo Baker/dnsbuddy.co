@@ -779,15 +779,7 @@ export function WhoisForm({
 
 export function DomainForm({ domain }: { domain?: string }) {
   const router = useRouter();
-  const params = useSearchParams();
   const [isPending, startTransition] = useTransition();
-  const [response, setResponse] = useState<[]>();
-  const paramsDnsProvider = params.get("dns_provider");
-  const dns_provider =
-    paramsDnsProvider &&
-    Object.keys(ProviderToLabelMapping).includes(paramsDnsProvider)
-      ? paramsDnsProvider
-      : ProviderToLabelMapping.cloudflare.toLowerCase();
 
   const form = useForm<z.infer<typeof domainSchema>>({
     resolver: zodResolver(domainSchema),
@@ -798,17 +790,12 @@ export function DomainForm({ domain }: { domain?: string }) {
   });
 
   async function onSubmit(values: z.infer<typeof domainSchema>) {
-    if (response !== undefined) {
-      // Handle Multiple queries easier, by resetting state.
-      setResponse(undefined);
-    }
-
     startTransition(async () => {
       if (values.domain.toLowerCase() !== domain?.toLowerCase()) {
         router.push(
           `/tools/domain/${
             values.domain
-          }?dns_provider=${dns_provider.toLowerCase()}`,
+          }?dns_provider=${ProviderToLabelMapping.cloudflare}`,
         );
         return;
       }
@@ -839,7 +826,7 @@ export function DomainForm({ domain }: { domain?: string }) {
                     </FormControl>
                     <FormDescription className="sr-only">
                       This is where you input your domain that you want to look
-                      up the WHOIS results for.
+                      up run the DNS Any against.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -926,6 +913,7 @@ export function DnsForm({ domain }: { domain: string }) {
         );
         return;
       }
+
       setResponse({ domain: domain });
 
       for (const recordType of Object.keys(CommonRecordTypes)) {
@@ -949,8 +937,9 @@ export function DnsForm({ domain }: { domain: string }) {
             answers.push(resp.data);
           }
         }
-        setResponse((prevResponse) => ({
+        setResponse((prevResponse: DomainDnsResponse | undefined) => ({
           ...prevResponse,
+          domain: prevResponse?.domain || "",
           [`${recordType.toLowerCase()}Records`]: answers,
         }));
       }
@@ -1080,8 +1069,8 @@ export function DnsForm({ domain }: { domain: string }) {
                 NS Records
               </h2>
               <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
-              {response.nsRecords?.length > 0
-                ? response.nsRecords.map((record: string) => (
+              {response.nsRecords
+                ? response.nsRecords?.map((record: string) => (
                     <Link
                       key={record}
                       className="text-left inline-flex w-full leading-6"
@@ -1104,7 +1093,7 @@ export function DnsForm({ domain }: { domain: string }) {
                 A Records
               </h2>
               <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
-              {response.aRecords?.length > 0
+              {response.aRecords
                 ? response.aRecords.map((record: string) => (
                     <Link
                       key={record}
@@ -1121,7 +1110,7 @@ export function DnsForm({ domain }: { domain: string }) {
                 AAAA Records
               </h2>
               <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
-              {response.aaaaRecords?.length > 0
+              {response.aaaaRecords
                 ? response.aaaaRecords.map((record: string) => (
                     <Link
                       key={record}
@@ -1138,7 +1127,7 @@ export function DnsForm({ domain }: { domain: string }) {
                 TXT Records
               </h2>
               <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
-              {response.txtRecords?.length > 0
+              {response.txtRecords
                 ? response.txtRecords.map((record: string) => (
                     <div key={record} className="text-left">
                       {record}
@@ -1149,7 +1138,7 @@ export function DnsForm({ domain }: { domain: string }) {
                 MX Records
               </h2>
               <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
-              {response.mxRecords?.length > 0
+              {response.mxRecords
                 ? response.mxRecords.map((record: string) => (
                     <div key={record} className="text-left">
                       {record}
@@ -1160,7 +1149,7 @@ export function DnsForm({ domain }: { domain: string }) {
                 CNAME Records
               </h2>
               <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
-              {response.cnameRecords?.length > 0
+              {response.cnameRecords
                 ? response.cnameRecords.map((record: string) => (
                     <div key={record} className="text-left">
                       {record}
@@ -1171,7 +1160,7 @@ export function DnsForm({ domain }: { domain: string }) {
                 SOA Records
               </h2>
               <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
-              {response.soaRecords?.length > 0
+              {response.soaRecords
                 ? response.soaRecords.map((record: string) => (
                     <div key={record} className="text-left">
                       {record}

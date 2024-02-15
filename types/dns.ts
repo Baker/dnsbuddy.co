@@ -32,11 +32,11 @@ export interface AnswerItem {
 
 export interface DomainDnsResponse {
   domain: string;
-  txtRecords: string[];
-  aRecords: string[];
-  aaaaRecords: string[];
-  cnameRecords: string[];
-  mxRecords: string[];
-  nsRecords: string[];
-  soaRecords: string[];
+  txtRecords?: string[];
+  aRecords?: string[];
+  aaaaRecords?: string[];
+  cnameRecords?: string[];
+  mxRecords?: string[];
+  nsRecords?: string[];
+  soaRecords?: string[];
 }
