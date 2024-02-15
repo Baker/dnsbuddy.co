@@ -793,9 +793,7 @@ export function DomainForm({ domain }: { domain?: string }) {
     startTransition(async () => {
       if (values.domain.toLowerCase() !== domain?.toLowerCase()) {
         router.push(
-          `/tools/domain/${
-            values.domain
-          }?dns_provider=${ProviderToLabelMapping.cloudflare}`,
+          `/tools/domain/${values.domain}?dns_provider=${ProviderToLabelMapping.cloudflare}`,
         );
         return;
       }
