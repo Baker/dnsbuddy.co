@@ -793,7 +793,9 @@ export function DomainForm({ domain }: { domain?: string }) {
     startTransition(async () => {
       if (values.domain.toLowerCase() !== domain?.toLowerCase()) {
         router.push(
-          `/tools/domain/${values.domain}?dns_provider=${ProviderToLabelMapping.cloudflare}`,
+          `/tools/domain/${
+            values.domain
+          }?dns_provider=${ProviderToLabelMapping.cloudflare.toLowerCase()}`,
         );
         return;
       }
@@ -813,7 +815,7 @@ export function DomainForm({ domain }: { domain?: string }) {
                 control={form.control}
                 name="domain"
                 render={({ field }) => (
-                  <FormItem className="mr-4 w-full space-y-0 bg-black/5 dark:bg-white/5">
+                  <FormItem className="mr-4 w-full space-y-0 ">
                     <FormLabel className="sr-only">Domain</FormLabel>
                     <FormControl>
                       <Input
@@ -955,7 +957,7 @@ export function DnsForm({ domain }: { domain: string }) {
               control={form.control}
               name="domain"
               render={({ field }) => (
-                <FormItem className="mr-4 w-full space-y-0 bg-black/5 dark:bg-white/5">
+                <FormItem className="mr-4 w-full space-y-0">
                   <FormLabel className="sr-only">Domain</FormLabel>
                   <FormControl>
                     <Input
@@ -1058,7 +1060,7 @@ export function DnsForm({ domain }: { domain: string }) {
                 ? response.nsRecords?.map((record: string) => (
                     <Link
                       key={record}
-                      className="text-left inline-flex w-full leading-6"
+                      className="text-left inline-flex w-full leading-4"
                       href={`/tools/domain/${record}?dns_provider=cloudflare`}
                     >
                       <FavIcon domain={record} />
