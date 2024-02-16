@@ -1,8 +1,8 @@
 "use client";
 
+import FavIcon from "@/components/favicon";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
 import { useForm } from "react-hook-form";
 import type * as z from "zod";
 
@@ -48,7 +48,7 @@ import type {
 import type { DomainDnsResponse, ResponseItem } from "@/types/dns";
 import { CommonRecordTypes } from "@/types/record-types";
 import { WhoIsTypes } from "@/types/whois";
-import { Link2Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import {
   redirect,
@@ -115,7 +115,7 @@ export function DnsLookUpForm({
     provider: string,
     values: z.infer<typeof dnsLookupFormSchema>,
   ) {
-    const query = await fetch(`/api/${provider}`, {
+    const query = await fetch(`/api/${provider}/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -280,7 +280,7 @@ export function BulkFCrDNSForm() {
       const deduplicatedList = Array.from(new Set(IpAddressList));
 
       for (const ip of deduplicatedList) {
-        const ptr_record = await fetch(`/api/${values.dns_provider}`, {
+        const ptr_record = await fetch(`/api/${values.dns_provider}/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -289,7 +289,7 @@ export function BulkFCrDNSForm() {
         });
         const ptrRecord: ResponseItem = await ptr_record.json();
         if (ptrRecord?.data?.Answer?.[0].data) {
-          const a_record = await fetch(`/api/${values.dns_provider}`, {
+          const a_record = await fetch(`/api/${values.dns_provider}/`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -438,7 +438,7 @@ export function BulkDnsLookupForm() {
       const domainList = values.query.split("\n");
 
       for (const domain in domainList) {
-        const query = await fetch(`/api/${values.dns_provider}`, {
+        const query = await fetch(`/api/${values.dns_provider}/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -853,7 +853,6 @@ export function DnsForm({ domain }: { domain: string }) {
   const [isPending, startTransition] = useTransition();
   const [response, setResponse] = useState<DomainDnsResponse>();
   const paramsDnsProvider = queryParams.get("dns_provider");
-  const [logoError, setLogoError] = useState(false);
   const [lastSubmitted, setLastSubmitted] = useState<{
     domain: string | undefined;
     dns_provider: string | undefined;
@@ -915,7 +914,7 @@ export function DnsForm({ domain }: { domain: string }) {
       setResponse({ domain: domain });
 
       for (const recordType of Object.keys(CommonRecordTypes)) {
-        const response = await fetch(`/api/${values.dns_provider}`, {
+        const response = await fetch(`/api/${values.dns_provider}/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -942,7 +941,6 @@ export function DnsForm({ domain }: { domain: string }) {
         }));
       }
     });
-    console.log(response);
   }
 
   return (
@@ -990,18 +988,7 @@ export function DnsForm({ domain }: { domain: string }) {
                 href={domain}
                 className="underline decoration-dotted inline-flex items-center pl-2"
               >
-                {!logoError ? (
-                  <Image
-                    alt={`${domain} icon`}
-                    width={12}
-                    height={12}
-                    src={`https://icons.duckduckgo.com/ip3/${domain}.ico`}
-                    className="w-4 h-4 mr-1"
-                    onError={() => setLogoError(true)}
-                  />
-                ) : (
-                  <Link2Icon className="w-4 h-4 mr-1" />
-                )}
+                <FavIcon domain={domain as string} />
                 {domain}
               </Link>
             </h1>
@@ -1074,13 +1061,7 @@ export function DnsForm({ domain }: { domain: string }) {
                       className="text-left inline-flex w-full leading-6"
                       href={`/tools/domain/${record}?dns_provider=cloudflare`}
                     >
-                      <Image
-                        alt={`${record} icon`}
-                        width={24}
-                        height={24}
-                        src={`https://icons.duckduckgo.com/ip3/${record}.ico`}
-                        className="mr-1"
-                      />{" "}
+                      <FavIcon domain={record} />
                       <span className="underline decoration-dotted">
                         {record}
                       </span>

@@ -14,6 +14,17 @@ export const isValidUrl = (url: string): boolean => {
   }
 };
 
+export function extractRootDomain(url: string) {
+  let modifiedUrl = url;
+  if (modifiedUrl.endsWith(".")) {
+    modifiedUrl = modifiedUrl.slice(0, -1);
+  }
+  const urlObj = new URL(`http://${modifiedUrl}`);
+  const parts = urlObj.hostname.split(".");
+  const rootDomain = parts.slice(-2).join(".");
+  return rootDomain;
+}
+
 export const isValidDomain = (url: string): boolean => {
   if (url.startsWith("http://")) {
     return false;

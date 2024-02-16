@@ -2,12 +2,14 @@ import { DnsForm } from "@/components/forms/forms";
 import { buildMetadata } from "@/components/metadata";
 import { redirect } from "next/navigation";
 
-export async function generateMetadata() {
+export async function generateMetadata({
+  params,
+}: { params: { domain: string } }) {
   return buildMetadata({
-    title: "DnsBuddy | Index",
+    title: `${params.domain} - DnsBuddy.co`,
     description: "An opensourced DNS Swiss Army Knife.",
-    url: "https://DnsBuddy.co/",
-    slogan: "DNS Swissy Army Tool",
+    url: `https://DnsBuddy.co/domain/${params.domain}`,
+    slogan: `${params.domain} - DnsBuddy.co`,
   });
 }
 
