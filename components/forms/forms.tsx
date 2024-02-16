@@ -1,186 +1,195 @@
-'use client';
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import FavIcon from "@/components/favicon";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import type * as z from "zod";
 
+import DnsFormResponse from "@/components/forms/responses";
+import {
+  bulkDnsLookup,
+  bulkFCrDNSFormSchema,
+  dnsLookupFormSchema,
+  dnsSchema,
+  domainSchema,
+  whoIsFormSchema,
+} from "@/components/forms/schema";
+import {
+  BulkDnsLookupColumnDef,
+  BulkFCrDNSColumnDef,
+  DnsLookupColumnDef,
+} from "@/components/tables/columns";
+import { DataTable } from "@/components/tables/data-table";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormDescription,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-
-import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import { CommonRecordTypes } from '@/lib/types/record-types';
-import { useTransition, useState, useEffect } from 'react';
-import {
-  ProviderToLabelMapping,
-  ProviderToUrlMapping,
-  WhoIsTypes,
-} from '@/lib/constants/api';
-import {
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { ProviderToLabelMapping, ProviderToUrlMapping } from "@/constants/api";
+import type {
+  BulkFCrDNSResponseList,
   BulkResponseList,
   ResponseList,
-  BulkFCrDNSResponseList,
-} from '@/lib/types/data';
-import { ResponseItem } from '@/lib/types/dns';
-import { useSearchParams, useRouter } from 'next/navigation';
+} from "@/types/data";
+import type { DomainDnsResponse, ResponseItem } from "@/types/dns";
+import { CommonRecordTypes } from "@/types/record-types";
+import { WhoIsTypes } from "@/types/whois";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
 import {
-  bulkDnsLookup,
-  bulkFCrDNSFormSchema,
-  dnsLookupFormSchema,
-  whoIsFormSchema,
-} from '@/components/forms/schema';
-import { DataTable } from '@/components/tables/data-table';
-import {
-  BulkDnsLookupColumnDef,
-  BulkFCrDNSColumnDef,
-  DnsLookupColumnDef,
-} from '@/components/tables/columns';
-import { ASNWhoisData, DomainWhoisData, IPWhoisData } from '@/lib/types/whois';
-import {
-  AsnWhoisResponse,
-  DomainWhoisResponse,
-  IpAddressWhoisReponse,
-} from '@/components/forms/responses';
+  redirect,
+  useParams,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
 
-export function DnsLookUpForm({ path }: { path: string }) {
+export function DnsLookUpForm({
+  recordType,
+  query,
+}: { recordType?: string; query?: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [response, setResponse] = useState<ResponseList[]>([]);
-  const searchParams = useSearchParams();
-  const recordType = searchParams.get('record_type');
+  const recordTypes = Object.keys(CommonRecordTypes);
+  const [lastSubmitted, setLastSubmitted] = useState<{
+    query: string | undefined;
+    record_type: string | undefined;
+  } | null>(null);
+
+  const recordValue =
+    recordType &&
+    // biome-ignore lint: This isn't an issue.
+    CommonRecordTypes.hasOwnProperty(
+      recordType.toUpperCase() as keyof typeof CommonRecordTypes,
+    )
+      ? recordType.toUpperCase()
+      : undefined;
 
   useEffect(() => {
     if (
-      !CommonRecordTypes.hasOwnProperty(
-        recordType as keyof typeof CommonRecordTypes
-      ) &&
-      recordType != null
+      query &&
+      recordValue &&
+      (!lastSubmitted ||
+        lastSubmitted.query !== query ||
+        lastSubmitted.record_type !== recordValue)
     ) {
-      router.push(
-        `${path}/${
-          searchParams.get('query') != null
-            ? `?query=${searchParams.get('query')}`
-            : ''
-        }`,
-        { scroll: false }
-      );
-    }
-  }, []);
+      // Checks if the form is valid and if not redirects to the dns-lookup homepage.
+      const result = dnsLookupFormSchema.safeParse({
+        query: query,
+        record_type: recordValue,
+      });
 
-  let recordValue;
-  if (recordType != null) {
-    if (
-      CommonRecordTypes.hasOwnProperty(
-        recordType as keyof typeof CommonRecordTypes
-      )
-    ) {
-      recordValue = recordType;
-    } else {
-      recordValue = undefined;
+      if (!result.success) {
+        redirect("/tools/dns-lookup");
+      }
+      onSubmit(result.data);
+      setLastSubmitted(result.data);
     }
-  } else {
-    recordValue = undefined;
-  }
-  const recordTypes = Object.keys(CommonRecordTypes);
+  }, [query, recordValue, lastSubmitted]);
 
   const form = useForm<z.infer<typeof dnsLookupFormSchema>>({
     resolver: zodResolver(dnsLookupFormSchema),
     defaultValues: {
-      query: searchParams.get('query') || '',
+      query: query || "",
       record_type: recordValue,
     },
-    mode: 'onChange',
+    mode: "onChange",
   });
+
+  async function fetchProviderData(
+    provider: string,
+    values: z.infer<typeof dnsLookupFormSchema>,
+  ) {
+    const query = await fetch(`/api/${provider}/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+
+    if (!query.ok) {
+      throw new Error(
+        `Error: DnsLookupForm status=${query.status} provider=${provider}`,
+      );
+    }
+
+    const queryData: ResponseItem = await query.json();
+    const answers =
+      // biome-ignore lint: This is handled later
+      queryData.data?.Answer?.map((resp: any) => {
+        if (resp.type === 16 && !resp.data.startsWith('"')) {
+          return `"${resp.data}"`;
+        }
+        if (resp.type !== 46) {
+          return resp.data;
+        }
+      }) || [];
+
+    return {
+      status: answers.length > 0 ? queryData.success : false,
+      provider:
+        ProviderToLabelMapping[provider as keyof typeof ProviderToLabelMapping],
+      response: answers,
+    };
+  }
 
   async function onSubmit(values: z.infer<typeof dnsLookupFormSchema>) {
     if (response.length > 0) {
-      // Handle Multiple queries easier, by resetting state.
       setResponse([]);
     }
 
     startTransition(async () => {
-      for (const provider of Object.keys(ProviderToUrlMapping)) {
-        const query = await fetch(`/api/${provider}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(values),
-        });
+      if (
+        values.query.toLowerCase() !== query?.toLowerCase() ||
+        values.record_type.toLowerCase() !== recordValue?.toLowerCase()
+      ) {
+        router.push(`/tools/dns-lookup/${values.record_type}/${values.query}`);
+        return;
+      }
 
-        if (!query.ok) {
-          throw new Error(
-            `Error: DnsLookupForm status=${query.status} provider=${provider}`
-          );
-        } else {
-          const queryData: ResponseItem = await query.json();
-          const answers: string[] = [];
-          for (const item in queryData.data.Answer) {
-            const resp = queryData.data.Answer[item];
-            if (resp.type == 16 && !resp.data.startsWith('"')) {
-              answers.push(`"${resp.data}"`);
-            } else if (resp.type != 46) {
-              answers.push(resp.data);
-            }
-          }
-          setResponse((prevResponse) => [
-            ...prevResponse,
-            {
-              status: queryData.success,
-              provider:
-                ProviderToLabelMapping[
-                  provider as keyof typeof ProviderToLabelMapping
-                ],
-              response: answers,
-            },
-          ]);
-        }
+      for (const provider of Object.keys(ProviderToUrlMapping)) {
+        const providerData = await fetchProviderData(provider, values);
+        setResponse((prevResponse) => [...prevResponse, providerData]);
       }
     });
-    router.push(
-      `${path}?query=${values.query}&record_type=${values.record_type}`,
-      {
-        scroll: false,
-      }
-    );
   }
   return (
     <>
-      <div className='mx-auto flex max-w-2xl items-center justify-center'>
-        <div className='w-full md:w-1/2'>
+      <div className="mx-auto flex max-w-2xl items-center justify-center">
+        <div className="w-full md:w-1/2">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className=''>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="">
               <FormField
                 control={form.control}
-                name='query'
+                name="query"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='sr-only'>Query</FormLabel>
+                    <FormLabel className="sr-only">Query</FormLabel>
                     <FormControl>
                       <Input
-                        className='min-w-0 flex-auto rounded-md bg-black/5 px-3.5 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200 sm:text-sm sm:leading-6'
+                        className="min-w-0 flex-auto bg-black/5 px-3.5 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200 sm:text-sm sm:leading-6"
                         {...field}
                         disabled={isPending}
-                        placeholder={'example.com'}
+                        placeholder={"example.com"}
                       />
                     </FormControl>
-                    <FormDescription className='sr-only'>
+                    <FormDescription className="sr-only">
                       This is where you input your domain or IP Address that you
                       want to look up the DNS results for.
                     </FormDescription>
@@ -188,21 +197,21 @@ export function DnsLookUpForm({ path }: { path: string }) {
                   </FormItem>
                 )}
               />
-              <div className='inline-flex w-full pt-3'>
+              <div className="inline-flex w-full pt-3">
                 <FormField
                   control={form.control}
-                  name='record_type'
+                  name="record_type"
                   render={({ field }) => (
-                    <FormItem className='mr-6 w-3/4 text-gray-600 dark:text-gray-200 '>
+                    <FormItem className="mr-6 w-3/4 text-gray-600 dark:text-gray-200 ">
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                         disabled={isPending}
-                        name='record_type'
+                        name="record_type"
                       >
                         <FormControl>
-                          <SelectTrigger className='bg-black/5 dark:bg-white/5'>
-                            <SelectValue placeholder='Select record type' />
+                          <SelectTrigger className="bg-black/5 dark:bg-white/5">
+                            <SelectValue placeholder="Select record type" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -213,7 +222,7 @@ export function DnsLookUpForm({ path }: { path: string }) {
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormDescription className='sr-only'>
+                      <FormDescription className="sr-only">
                         This is where you select the record type you want to
                         look up the DNS records for.
                       </FormDescription>
@@ -222,19 +231,19 @@ export function DnsLookUpForm({ path }: { path: string }) {
                   )}
                 />
                 <Button
-                  type='submit'
+                  type="submit"
                   disabled={isPending}
-                  className='h-full w-1/2 text-black'
+                  className="h-full w-1/2 text-black"
                 >
-                  <MagnifyingGlassIcon className='' />{' '}
-                  {isPending ? 'Digging..' : 'Dig'}
+                  <MagnifyingGlassIcon className="" />{" "}
+                  {isPending ? "Digging.." : "Dig"}
                 </Button>
               </div>
             </form>
           </Form>
         </div>
       </div>
-      <div className='mx-auto max-w-full pb-20 pt-8 md:max-w-4xl'>
+      <div className="mx-auto max-w-full pb-20 pt-8 md:max-w-4xl">
         {response.length > 0 ? (
           <DataTable
             data={response}
@@ -243,7 +252,7 @@ export function DnsLookUpForm({ path }: { path: string }) {
             download={true}
           />
         ) : (
-          ''
+          ""
         )}
       </div>
     </>
@@ -251,13 +260,12 @@ export function DnsLookUpForm({ path }: { path: string }) {
 }
 
 export function BulkFCrDNSForm() {
-  const dnsProviders = Object.keys(ProviderToLabelMapping);
   const [response, setResponse] = useState<BulkFCrDNSResponseList[]>([]);
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof bulkFCrDNSFormSchema>>({
     resolver: zodResolver(bulkFCrDNSFormSchema),
-    mode: 'onChange',
+    mode: "onChange",
   });
 
   async function onSubmit(values: z.infer<typeof bulkFCrDNSFormSchema>) {
@@ -268,34 +276,34 @@ export function BulkFCrDNSForm() {
 
     startTransition(async () => {
       const IpAddressString = values.query;
-      const IpAddressList = IpAddressString.split('\n');
+      const IpAddressList = IpAddressString.split("\n");
       const deduplicatedList = Array.from(new Set(IpAddressList));
 
       for (const ip of deduplicatedList) {
-        const ptr_record = await fetch(`/api/${values.dns_provider}`, {
-          method: 'POST',
+        const ptr_record = await fetch(`/api/${values.dns_provider}/`, {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ query: ip, record_type: 'PTR' }),
+          body: JSON.stringify({ query: ip, record_type: "PTR" }),
         });
         const ptrRecord: ResponseItem = await ptr_record.json();
         if (ptrRecord?.data?.Answer?.[0].data) {
-          const a_record = await fetch(`/api/${values.dns_provider}`, {
-            method: 'POST',
+          const a_record = await fetch(`/api/${values.dns_provider}/`, {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
               query: ptrRecord?.data?.Answer?.[0].data,
-              record_type: 'A',
+              record_type: "A",
             }),
           });
           const aRecord: ResponseItem = await a_record.json();
           setResponse((prevResponse) => [
             ...prevResponse,
             {
-              status: aRecord?.data?.Answer?.[0].data == ip,
+              status: aRecord?.data?.Answer?.[0].data === ip,
               aRecord: ip,
               ptrRecord: ptrRecord?.data?.Answer?.[0].data,
             },
@@ -315,26 +323,26 @@ export function BulkFCrDNSForm() {
   }
   return (
     <>
-      <div className='mx-auto flex max-w-2xl items-center justify-center'>
-        <div className='w-full'>
+      <div className="mx-auto flex max-w-2xl items-center justify-center">
+        <div className="w-full">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='mt-8'>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8">
               <FormField
                 control={form.control}
-                name='query'
+                name="query"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='sr-only'>IP Address List</FormLabel>
+                    <FormLabel className="sr-only">IP Address List</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder='Enter up to 100 IP Addresses, separated by a new line'
+                        placeholder="Enter up to 100 IP Addresses, separated by a new line"
                         rows={10}
                         {...field}
                         disabled={isPending}
-                        className='bg-black/5 px-3.5 leading-6 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200'
+                        className="bg-black/5 px-3.5 leading-6 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200"
                       />
                     </FormControl>
-                    <FormDescription className='sr-only'>
+                    <FormDescription className="sr-only">
                       Input the list of IP Addresses that you want to look up
                       the and verify the FCrDNS is valid. Please know each IP
                       Address is separated by a new line.
@@ -343,35 +351,37 @@ export function BulkFCrDNSForm() {
                   </FormItem>
                 )}
               />
-              <div className='inline-flex w-full pb-2 pt-3'>
+              <div className="inline-flex w-full pb-2 pt-3">
                 <FormField
                   control={form.control}
-                  name='dns_provider'
+                  name="dns_provider"
                   render={({ field }) => (
-                    <FormItem className='mr-3 w-3/4 text-gray-600 dark:text-gray-200'>
+                    <FormItem className="mr-3 w-3/4 text-gray-600 dark:text-gray-200">
                       <Select
                         onValueChange={field.onChange}
                         disabled={isPending}
-                        name='dns_provider'
+                        name="dns_provider"
                       >
                         <FormControl>
-                          <SelectTrigger className='bg-black/5 px-3.5 text-gray-600 dark:bg-white/5 dark:text-gray-200'>
-                            <SelectValue placeholder='Select DNS Provider/location' />
+                          <SelectTrigger className="bg-black/5 px-3.5 text-gray-600 dark:bg-white/5 dark:text-gray-200">
+                            <SelectValue placeholder="Select DNS Provider/location" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {dnsProviders.map((value) => (
-                            <SelectItem key={value} value={value}>
-                              {
-                                ProviderToLabelMapping[
-                                  value as keyof typeof ProviderToLabelMapping
-                                ]
-                              }
-                            </SelectItem>
-                          ))}
+                          {Object.keys(ProviderToLabelMapping).map(
+                            (value: string) => (
+                              <SelectItem key={value} value={value}>
+                                {
+                                  ProviderToLabelMapping[
+                                    value as keyof typeof ProviderToLabelMapping
+                                  ]
+                                }
+                              </SelectItem>
+                            ),
+                          )}
                         </SelectContent>
                       </Select>
-                      <FormDescription className='sr-only'>
+                      <FormDescription className="sr-only">
                         This is where you select the DNS Provider you want us to
                         use.
                       </FormDescription>
@@ -380,18 +390,18 @@ export function BulkFCrDNSForm() {
                   )}
                 />
                 <Button
-                  type='submit'
+                  type="submit"
                   disabled={isPending}
-                  className='h-full w-1/2 text-black'
+                  className="h-full w-1/2 text-black"
                 >
-                  {isPending ? 'Checking..' : 'Check'}
+                  {isPending ? "Checking.." : "Check"}
                 </Button>
               </div>
             </form>
           </Form>
         </div>
       </div>
-      <div className='mx-auto max-w-full pb-20 pt-8 md:max-w-4xl'>
+      <div className="mx-auto max-w-full pb-20 pt-8 md:max-w-4xl">
         {response.length > 0 ? (
           <DataTable
             data={response}
@@ -400,7 +410,7 @@ export function BulkFCrDNSForm() {
             download={true}
           />
         ) : (
-          ''
+          ""
         )}
       </div>
     </>
@@ -408,7 +418,6 @@ export function BulkFCrDNSForm() {
 }
 
 export function BulkDnsLookupForm() {
-  const dnsProviders = Object.keys(ProviderToLabelMapping);
   const [response, setResponse] = useState<BulkResponseList[]>([]);
   const [isPending, startTransition] = useTransition();
 
@@ -416,7 +425,7 @@ export function BulkDnsLookupForm() {
 
   const form = useForm<z.infer<typeof bulkDnsLookup>>({
     resolver: zodResolver(bulkDnsLookup),
-    mode: 'onChange',
+    mode: "onChange",
   });
 
   async function onSubmit(values: z.infer<typeof bulkDnsLookup>) {
@@ -426,13 +435,13 @@ export function BulkDnsLookupForm() {
     }
 
     startTransition(async () => {
-      const domainList = values.query.split('\n');
+      const domainList = values.query.split("\n");
 
       for (const domain in domainList) {
-        const query = await fetch(`/api/${values.dns_provider}`, {
-          method: 'POST',
+        const query = await fetch(`/api/${values.dns_provider}/`, {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             query: domainList[domain],
@@ -442,58 +451,57 @@ export function BulkDnsLookupForm() {
 
         if (!query.ok) {
           throw new Error(
-            `Error: DnsLookupForm status=${query.status} provider=${values.dns_provider}`
+            `Error: DnsLookupForm status=${query.status} provider=${values.dns_provider}`,
           );
-        } else {
-          const responseData: ResponseItem = await query.json();
-          const answers: string[] = [];
-          for (const item in responseData.data.Answer) {
-            const resp = responseData.data.Answer[item];
-            if (resp.type == 16 && !resp.data.startsWith('"')) {
-              answers.push(`"${resp.data}"`);
-            } else if (resp.type != 46) {
-              answers.push(resp.data);
-            }
-          }
-          setResponse((prevResponse) => [
-            ...prevResponse,
-            {
-              status: responseData.success,
-              provider:
-                ProviderToLabelMapping[
-                  values.dns_provider as keyof typeof ProviderToLabelMapping
-                ],
-              query: domainList[domain],
-              record_type: values.record_type,
-              response: answers,
-            },
-          ]);
         }
+        const responseData: ResponseItem = await query.json();
+        const answers: string[] = [];
+        for (const item in responseData.data.Answer) {
+          const resp = responseData.data.Answer[item];
+          if (resp.type === 16 && !resp.data.startsWith('"')) {
+            answers.push(`"${resp.data}"`);
+          } else if (resp.type !== 46) {
+            answers.push(resp.data);
+          }
+        }
+        setResponse((prevResponse) => [
+          ...prevResponse,
+          {
+            status: responseData.success,
+            provider:
+              ProviderToLabelMapping[
+                values.dns_provider as keyof typeof ProviderToLabelMapping
+              ],
+            query: domainList[domain],
+            record_type: values.record_type,
+            response: answers,
+          },
+        ]);
       }
     });
   }
   return (
     <>
-      <div className='mx-auto flex max-w-2xl items-center justify-center'>
-        <div className='w-full'>
+      <div className="mx-auto flex max-w-2xl items-center justify-center">
+        <div className="w-full">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='mt-8'>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8">
               <FormField
                 control={form.control}
-                name='query'
+                name="query"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='sr-only'>IP Address List</FormLabel>
+                    <FormLabel className="sr-only">IP Address List</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder='Enter up to 100 IP Addresses/Domains, separated by a new line'
+                        placeholder="Enter up to 100 IP Addresses/Domains, separated by a new line"
                         rows={10}
                         {...field}
                         disabled={isPending}
-                        className='bg-black/5 px-3.5 leading-6 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200'
+                        className="bg-black/5 px-3.5 leading-6 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200"
                       />
                     </FormControl>
-                    <FormDescription className='sr-only'>
+                    <FormDescription className="sr-only">
                       Input the list of IP Addresses/Domains that you want to
                       look up any DNS Record for. Please know each IP
                       Address/Domain is separated by a new line.
@@ -502,36 +510,38 @@ export function BulkDnsLookupForm() {
                   </FormItem>
                 )}
               />
-              <div className='float-right w-full text-right'>
-                <div className='inline-flex w-full pb-2 pt-3'>
+              <div className="float-right w-full text-right">
+                <div className="inline-flex w-full pb-2 pt-3">
                   <FormField
                     control={form.control}
-                    name='dns_provider'
+                    name="dns_provider"
                     render={({ field }) => (
-                      <FormItem className='mr-4 w-1/2 text-gray-600 dark:text-gray-200'>
+                      <FormItem className="mr-4 w-1/2 text-gray-600 dark:text-gray-200">
                         <Select
                           onValueChange={field.onChange}
                           disabled={isPending}
-                          name='dns_provider'
+                          name="dns_provider"
                         >
                           <FormControl>
-                            <SelectTrigger className='bg-black/5 px-3.5 text-gray-600 dark:bg-white/5 dark:text-gray-200'>
-                              <SelectValue placeholder='Select DNS Provider/location' />
+                            <SelectTrigger className="bg-black/5 px-3.5 text-gray-600 dark:bg-white/5 dark:text-gray-200">
+                              <SelectValue placeholder="Select DNS Provider/location" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {dnsProviders.map((value) => (
-                              <SelectItem key={value} value={value}>
-                                {
-                                  ProviderToLabelMapping[
-                                    value as keyof typeof ProviderToLabelMapping
-                                  ]
-                                }
-                              </SelectItem>
-                            ))}
+                            {Object.keys(ProviderToLabelMapping).map(
+                              (value: string) => (
+                                <SelectItem key={value} value={value}>
+                                  {
+                                    ProviderToLabelMapping[
+                                      value as keyof typeof ProviderToLabelMapping
+                                    ]
+                                  }
+                                </SelectItem>
+                              ),
+                            )}
                           </SelectContent>
                         </Select>
-                        <FormDescription className='sr-only'>
+                        <FormDescription className="sr-only">
                           This is where you select the DNS Provider you want us
                           to use.
                         </FormDescription>
@@ -541,18 +551,18 @@ export function BulkDnsLookupForm() {
                   />
                   <FormField
                     control={form.control}
-                    name='record_type'
+                    name="record_type"
                     render={({ field }) => (
-                      <FormItem className=' w-1/2 text-gray-600 dark:text-gray-200 '>
+                      <FormItem className=" w-1/2 text-gray-600 dark:text-gray-200 ">
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                           disabled={isPending}
-                          name='record_type'
+                          name="record_type"
                         >
                           <FormControl>
-                            <SelectTrigger className='bg-black/5 dark:bg-white/5'>
-                              <SelectValue placeholder='Select record type' />
+                            <SelectTrigger className="bg-black/5 dark:bg-white/5">
+                              <SelectValue placeholder="Select record type" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -563,7 +573,7 @@ export function BulkDnsLookupForm() {
                             ))}
                           </SelectContent>
                         </Select>
-                        <FormDescription className='sr-only'>
+                        <FormDescription className="sr-only">
                           This is where you select the record type you want to
                           look up the DNS records for.
                         </FormDescription>
@@ -573,18 +583,18 @@ export function BulkDnsLookupForm() {
                   />
                 </div>
                 <Button
-                  type='submit'
+                  type="submit"
                   disabled={isPending}
-                  className='h-full w-32 text-black'
+                  className="h-full w-32 text-black"
                 >
-                  {isPending ? 'Checking..' : 'Check'}
+                  {isPending ? "Checking.." : "Check"}
                 </Button>
               </div>
             </form>
           </Form>
         </div>
       </div>
-      <div className='mx-auto max-w-full pb-20 pt-8 md:max-w-4xl'>
+      <div className="mx-auto max-w-full pb-20 pt-8 md:max-w-4xl">
         {response.length > 0 ? (
           <DataTable
             data={response}
@@ -593,47 +603,72 @@ export function BulkDnsLookupForm() {
             download={true}
           />
         ) : (
-          ''
+          ""
         )}
       </div>
     </>
   );
 }
 
-export function WhoisForm() {
+export function WhoisForm({
+  whoisType,
+  query,
+}: { whoisType?: string; query?: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [response, setResponse] = useState<
-    DomainWhoisData | IPWhoisData | ASNWhoisData
-  >();
-  const [type, setType] = useState<string>('');
-  const searchParams = useSearchParams();
-  const whoisType = searchParams.get('type');
+  const [response, setResponse] = useState<[]>();
+  const [lastSubmitted, setLastSubmitted] = useState<{
+    query: string | undefined;
+    type: string | undefined;
+  } | null>(null);
+
+  const whoisValue =
+    whoisType && (whoisType.toUpperCase() as keyof typeof WhoIsTypes)
+      ? whoisType.toUpperCase()
+      : undefined;
+  query = query ? decodeURIComponent(query.toLowerCase()) : undefined;
 
   useEffect(() => {
     if (
-      !WhoIsTypes.hasOwnProperty(whoisType as keyof typeof WhoIsTypes) &&
-      whoisType != null
+      query &&
+      whoisValue &&
+      (!lastSubmitted ||
+        lastSubmitted.query !== query ||
+        lastSubmitted.type !== whoisValue)
     ) {
-      router.push(
-        `/tools/whois${
-          searchParams.get('query') != null
-            ? `?query=${searchParams.get('query')}`
-            : ''
-        }`,
-        { scroll: false }
-      );
+      // Checks if the form is valid and if not redirects to the whois homepage.
+      const result = whoIsFormSchema.safeParse({
+        query: query,
+        type: whoisValue,
+      });
+
+      if (!result.success) {
+        redirect("/tools/whois");
+      }
+      onSubmit(result.data);
+      setLastSubmitted(result.data);
     }
-  }, []);
+  }, [query, whoisValue, lastSubmitted]);
 
   const form = useForm<z.infer<typeof whoIsFormSchema>>({
     resolver: zodResolver(whoIsFormSchema),
     defaultValues: {
-      query: searchParams.get('query') || '',
-      type: searchParams.get('type') || '',
+      query: query || "",
+      type: whoisValue || "",
     },
-    mode: 'onChange',
+    mode: "onChange",
   });
+
+  async function fetchWhoIsData(values: z.infer<typeof whoIsFormSchema>) {
+    const query = await fetch("/api/whois", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+    setResponse(await query.json());
+  }
 
   async function onSubmit(values: z.infer<typeof whoIsFormSchema>) {
     if (response !== undefined) {
@@ -642,41 +677,37 @@ export function WhoisForm() {
     }
 
     startTransition(async () => {
-      const query = await fetch(`/api/whois`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
-      setType(values.type);
-      setResponse(await query.json());
-    });
-    router.push(`/tools/whois?query=${values.query}&type=${values.type}`, {
-      scroll: false,
+      if (
+        values.type.toLowerCase() !== whoisValue?.toLowerCase() ||
+        values.query.toLowerCase() !== query?.toLowerCase()
+      ) {
+        router.push(`/tools/whois/${values.type}/${values.query}`);
+        return;
+      }
+      await fetchWhoIsData(values);
     });
   }
   return (
     <>
-      <div className='mx-auto flex max-w-2xl items-center justify-center px-4'>
-        <div className='w-full md:w-1/2'>
+      <div className="mx-auto flex max-w-2xl items-center justify-center px-4">
+        <div className="w-full md:w-1/2">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className=''>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="">
               <FormField
                 control={form.control}
-                name='query'
+                name="query"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='sr-only'>Query</FormLabel>
+                    <FormLabel className="sr-only">Query</FormLabel>
                     <FormControl>
                       <Input
-                        className='min-w-0 flex-auto rounded-md bg-black/5 px-3.5 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200 sm:text-sm sm:leading-6'
+                        className="min-w-0 flex-auto bg-black/5 px-3.5 text-gray-600 shadow-sm dark:bg-white/5 dark:text-gray-200 sm:text-sm sm:leading-6"
                         {...field}
                         disabled={isPending}
-                        placeholder={'example.com'}
+                        placeholder={"example.com"}
                       />
                     </FormControl>
-                    <FormDescription className='sr-only'>
+                    <FormDescription className="sr-only">
                       This is where you input your domain or IP Address that you
                       want to look up the WhoIS results for.
                     </FormDescription>
@@ -684,21 +715,21 @@ export function WhoisForm() {
                   </FormItem>
                 )}
               />
-              <div className='mb-1 inline-flex w-full pt-3'>
+              <div className="mb-1 inline-flex w-full pt-3">
                 <FormField
                   control={form.control}
-                  name='type'
+                  name="type"
                   render={({ field }) => (
-                    <FormItem className='mr-6 w-3/4 text-gray-600 dark:text-gray-200 '>
+                    <FormItem className="mr-6 w-3/4 text-gray-600 dark:text-gray-200 ">
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                         disabled={isPending}
-                        name='type'
+                        name="type"
                       >
                         <FormControl>
-                          <SelectTrigger className='bg-black/5 dark:bg-white/5'>
-                            <SelectValue placeholder='Select type' />
+                          <SelectTrigger className="bg-black/5 dark:bg-white/5">
+                            <SelectValue placeholder="Select type" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -709,7 +740,7 @@ export function WhoisForm() {
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormDescription className='sr-only'>
+                      <FormDescription className="sr-only">
                         This is where you select the type you want to look up
                         the WHOIS data for.
                       </FormDescription>
@@ -718,12 +749,12 @@ export function WhoisForm() {
                   )}
                 />
                 <Button
-                  type='submit'
+                  type="submit"
                   disabled={isPending}
-                  className='h-full w-1/2 text-black'
+                  className="h-full w-1/2 text-black"
                 >
-                  <MagnifyingGlassIcon className='' />{' '}
-                  {isPending ? 'Digging..' : 'Dig'}
+                  <MagnifyingGlassIcon className="" />{" "}
+                  {isPending ? "Digging.." : "Dig"}
                 </Button>
               </div>
             </form>
@@ -731,21 +762,297 @@ export function WhoisForm() {
         </div>
       </div>
       {response !== undefined ? (
-        // @ts-ignore
-        response.error ? (
-          <p className='mx-auto my-6 rounded-md border bg-black/5 p-8 text-gray-600 dark:bg-white/5 dark:text-gray-300 md:max-w-4xl'>
-            No data available, this could be due to an invalid domain, or IP
-            Address.
-          </p>
-        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] == WhoIsTypes.DOMAIN ? (
-          <DomainWhoisResponse response={response as DomainWhoisData} />
-        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] ==
-          WhoIsTypes.IP_ADDRESS ? (
-          <IpAddressWhoisReponse response={response as IPWhoisData} />
-        ) : WhoIsTypes[type as keyof typeof WhoIsTypes] == WhoIsTypes.ASN ? (
-          <AsnWhoisResponse response={response as ASNWhoisData} />
-        ) : null
+        <div className="mx-auto flex max-w-2xl items-center justify-center pt-4">
+          <code className="text-left">
+            {Object.keys(response).map((resp: string) => (
+              <div key={resp}>
+                {resp}: {String(response[resp as keyof typeof response])}
+                <br />
+              </div>
+            ))}
+          </code>
+        </div>
       ) : null}
+    </>
+  );
+}
+
+export function DomainForm({ domain }: { domain?: string }) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  const form = useForm<z.infer<typeof domainSchema>>({
+    resolver: zodResolver(domainSchema),
+    defaultValues: {
+      domain: domain || "",
+    },
+    mode: "onChange",
+  });
+
+  async function onSubmit(values: z.infer<typeof domainSchema>) {
+    startTransition(async () => {
+      if (values.domain.toLowerCase() !== domain?.toLowerCase()) {
+        router.push(
+          `/tools/domain/${
+            values.domain
+          }?dns_provider=${ProviderToLabelMapping.cloudflare.toLowerCase()}`,
+        );
+        return;
+      }
+    });
+  }
+
+  return (
+    <>
+      <div className="flex">
+        <div className="w-full">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="inline-flex w-full pt-3"
+            >
+              <FormField
+                control={form.control}
+                name="domain"
+                render={({ field }) => (
+                  <FormItem className="mr-4 w-full space-y-0 ">
+                    <FormLabel className="sr-only">Domain</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        placeholder={"example.com"}
+                      />
+                    </FormControl>
+                    <FormDescription className="sr-only">
+                      This is where you input your domain that you want to look
+                      up run the DNS Any against.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="h-10 w-1/2 text-black"
+              >
+                <MagnifyingGlassIcon className="" />{" "}
+                {isPending ? "Digging.." : "Dig"}
+              </Button>
+            </form>
+          </Form>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export function DnsForm({ domain }: { domain: string }) {
+  const router = useRouter();
+  const params = useParams();
+  const queryParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+  const [response, setResponse] = useState<DomainDnsResponse>();
+  const paramsDnsProvider = queryParams.get("dns_provider");
+  const [lastSubmitted, setLastSubmitted] = useState<{
+    domain: string | undefined;
+    dns_provider: string | undefined;
+  } | null>(null);
+  const dns_provider =
+    paramsDnsProvider &&
+    Object.keys(ProviderToLabelMapping).includes(paramsDnsProvider)
+      ? paramsDnsProvider
+      : ProviderToLabelMapping.cloudflare.toLowerCase();
+
+  const form = useForm<z.infer<typeof dnsSchema>>({
+    resolver: zodResolver(dnsSchema),
+    defaultValues: {
+      domain: domain,
+      dns_provider: dns_provider,
+    },
+    mode: "onChange",
+  });
+
+  useEffect(() => {
+    if (
+      domain &&
+      dns_provider &&
+      (!lastSubmitted ||
+        lastSubmitted.domain !== domain ||
+        lastSubmitted.dns_provider !== dns_provider)
+    ) {
+      // Checks if the form is valid and if not redirects to the dns-lookup homepage.
+      const result = dnsSchema.safeParse({
+        domain: domain,
+        dns_provider: dns_provider,
+      });
+
+      if (!result.success) {
+        redirect("/");
+      }
+      onSubmit(result.data);
+      setLastSubmitted(result.data);
+    }
+  }, [domain, dns_provider, lastSubmitted]);
+
+  async function onSubmit(values: z.infer<typeof dnsSchema>) {
+    if (response !== undefined) {
+      // Handle Multiple queries easier, by resetting state.
+      setResponse(undefined);
+    }
+
+    startTransition(async () => {
+      if (
+        values.dns_provider.toLowerCase() !== paramsDnsProvider ||
+        values.domain !== domain
+      ) {
+        router.push(
+          `/tools/domain/${values.domain}?dns_provider=${values.dns_provider}`,
+        );
+        return;
+      }
+
+      setResponse({ domain: domain });
+
+      for (const recordType of Object.keys(CommonRecordTypes)) {
+        const response = await fetch(`/api/${values.dns_provider}/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query: params.domain,
+            record_type: recordType,
+          }),
+        });
+        const records = await response.json();
+        const answers: string[] = [];
+        for (const item in records.data.Answer) {
+          const resp = records.data.Answer[item];
+          if (resp.type === 16 && !resp.data.startsWith('"')) {
+            answers.push(`"${resp.data}"`);
+          } else if (resp.type !== 46) {
+            answers.push(resp.data);
+          }
+        }
+        setResponse((prevResponse: DomainDnsResponse | undefined) => ({
+          ...prevResponse,
+          domain: prevResponse?.domain || "",
+          [`${recordType.toLowerCase()}Records`]: answers,
+        }));
+      }
+    });
+  }
+
+  return (
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full max-w-lg justify-center items-center mx-auto"
+        >
+          <div className="inline-flex w-full">
+            <FormField
+              control={form.control}
+              name="domain"
+              render={({ field }) => (
+                <FormItem className="mr-4 w-full space-y-0">
+                  <FormLabel className="sr-only">Domain</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      disabled={isPending}
+                      placeholder={"example.com"}
+                    />
+                  </FormControl>
+                  <FormDescription className="sr-only">
+                    This is where you input your domain that you want to look up
+                    the WHOIS results for.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="h-10 w-1/2 text-black"
+            >
+              <MagnifyingGlassIcon className="" />{" "}
+              {isPending ? "Digging.." : "Dig"}
+            </Button>
+          </div>
+          <div className="inline-flex w-full justify-between pb-2">
+            <h1 className="text-xl md:text-xl font-bold tracking-tight text-center pt-4 text-black dark:text-white justify-start">
+              Results:{" "}
+              <Link
+                href={domain}
+                className="underline decoration-dotted inline-flex items-center pl-2"
+              >
+                <FavIcon domain={domain as string} />
+                {domain}
+              </Link>
+            </h1>
+            <div className="justify-end pt-3 inline-flex">
+              <FormField
+                control={form.control}
+                name="dns_provider"
+                render={({ field }) => (
+                  <FormItem className="w-full space-y-0 bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-200">
+                    <FormLabel className="sr-only">Domain</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          onSubmit(form.getValues());
+                        }}
+                        disabled={isPending}
+                        name="dns_provider"
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={
+                                ProviderToLabelMapping[
+                                  paramsDnsProvider as keyof typeof ProviderToLabelMapping
+                                ]
+                              }
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.keys(ProviderToLabelMapping).map(
+                            (value: string) => (
+                              <SelectItem key={value} value={value}>
+                                {
+                                  ProviderToLabelMapping[
+                                    value as keyof typeof ProviderToLabelMapping
+                                  ]
+                                }
+                              </SelectItem>
+                            ),
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormDescription className="sr-only">
+                      This is where you input your domain that you want to look
+                      up the WHOIS results for.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        </form>
+      </Form>
+      <div className="mx-auto max-w-full pb-20 pt-8">
+        {response !== undefined ? (
+          <DnsFormResponse response={response} />
+        ) : null}
+      </div>
     </>
   );
 }

@@ -1,4 +1,7 @@
-# 🌐 DnsBuddy
+
+![logo](/public/android-chrome-192x192.png)
+
+# DnsBuddy - An opensourced DNS Swiss Army Knife
 
 [![CI](https://github.com/Baker/dnsbuddy.co/actions/workflows/ci.yml/badge.svg)](https://github.com/Baker/dnsbuddy.co/actions/workflows/ci.yml)
 
@@ -10,6 +13,7 @@ This is an open sourced website that you can use to pull up various DNS related 
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Shadcn UI](https://ui.shadcn.com)
 - [React Hook Form](https://www.react-hook-form.com/)
+- [Zod](https://zod.dev/)
 
 ## Development
 
@@ -39,7 +43,10 @@ Below are the two primary commands to run for tests:
 As of right now we only use a few things to keep this repo formatted nicely, etc.
 
 - [Playwright](https://playwright.dev/) - E2E Tests.
-- [Prettier](https://prettier.io/) - Code Formatter.
-- [Eslint](https://eslint.org/) - Linter.
+- [BiomeJS](https://biomejs.dev/) - Linter & Code Formatter.
 
 The above is all handled by our CI, Github actions.
+
+## Credit
+
+- Logo provided by [Brandfetch](https://brandfetch.com)

@@ -17,48 +17,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  eslint:
-    timeout-minutes: 60
+  biome:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        name: Checkout Code
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
         with:
-          version: 8
-          run_install: true
-      - uses: actions/setup-node@v3
-        name: Setup Node
-        with:
-          node-version: 18
-          cache: 'pnpm'
-      - name: Run Eslint
-        run: pnpm run lint
+          version: latest
+      - name: Run Biome
+        run: biome ci .
 
-  prettier:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        name: Checkout Code
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        with:
-          version: 8
-          run_install: true
-      - uses: actions/setup-node@v3
-        name: Setup Node
-        with:
-          node-version: 18
-          cache: 'pnpm'
-      - name: Run Prettier
-        run: pnpm exec prettier --check .
 
   playwright:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    needs: [prettier, eslint]
+    needs: [biome]
     steps:
       - uses: actions/checkout@v3
         name: Checkout Code
@@ -70,7 +45,7 @@ jobs:
       - uses: actions/setup-node@v3
         name: Setup Node
         with:
-          node-version: 18
+          node-version: 20
           cache: 'pnpm'
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
@@ -87,10 +62,14 @@ jobs:
     if: github.event_name == 'pull_request'
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    needs: [prettier, eslint, playwright]
+    needs: [biome, playwright]
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v3
         name: Checkout Code
@@ -102,7 +81,7 @@ jobs:
       - uses: actions/setup-node@v3
         name: Setup Node
         with:
-          node-version: 18
+          node-version: 20
           cache: 'pnpm'
       - name: Install Vercel CLI
         run: pnpm install --global vercel@latest
@@ -111,23 +90,55 @@ jobs:
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        id: deploy
+        run: echo url="$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2.4.0
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          token: ${{ secrets.GH_PAT }}
+          comment-author: 'Baker'
+          body-includes: Deployment URL
+      - name: Set current date as env variable
+        run: echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+      - name: Render template
+        id: template
+        uses: chuhlomin/render-template@v1.9
+        with:
+          template: .github/comment-template.md
+          vars: |
+            author: ${{ github.actor }}
+            url: ${{ steps.deploy.outputs.url }}
+            time: ${{ env.NOW }}
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v3.1.0
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.template.outputs.result }}
+          edit-mode: replace
+          token: ${{ secrets.GH_PAT }}
 
   vercel-production:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    needs: [prettier, eslint, playwright]
+    needs: [biome, playwright]
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v3
         name: Checkout Code
       - uses: actions/setup-node@v3
         name: Setup Node
         with:
-          node-version: 18
+          node-version: 20
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         with:

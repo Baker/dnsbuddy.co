@@ -1,5 +1,5 @@
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -14,14 +14,25 @@ export const isValidUrl = (url: string): boolean => {
   }
 };
 
+export function extractRootDomain(url: string) {
+  let modifiedUrl = url;
+  if (modifiedUrl.endsWith(".")) {
+    modifiedUrl = modifiedUrl.slice(0, -1);
+  }
+  const urlObj = new URL(`http://${modifiedUrl}`);
+  const parts = urlObj.hostname.split(".");
+  const rootDomain = parts.slice(-2).join(".");
+  return rootDomain;
+}
+
 export const isValidDomain = (url: string): boolean => {
-  if (url.startsWith('http://')) {
+  if (url.startsWith("http://")) {
     return false;
   }
-  if (url.startsWith('http//')) {
+  if (url.startsWith("http//")) {
     return false;
   }
-  if (url.startsWith('www.')) {
+  if (url.startsWith("www.")) {
     return false;
   }
   return true;
@@ -31,7 +42,7 @@ export const delay = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 export const stringToList = (string: string): string[] => {
-  const stringArray = string.split('\n');
+  const stringArray = string.split("\n");
   return stringArray;
 };
 
