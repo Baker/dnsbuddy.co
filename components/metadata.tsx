@@ -12,7 +12,7 @@ export function buildMetadata({
   slogan?: string;
 }): Metadata {
   const siteUrl = process.env.SITE_URL
-    ? `https://${process.env.SITE_URL}`
+    ? `${process.env.SITE_URL}`
     : "http://localhost:3000";
   return {
     title: title,
