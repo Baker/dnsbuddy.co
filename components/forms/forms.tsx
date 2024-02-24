@@ -875,6 +875,11 @@ export function DnsForm({ domain }: { domain: string }) {
   });
 
   useEffect(() => {
+    if (dns_provider !== paramsDnsProvider) {
+      router.push(`/tools/domain/${domain}?dns_provider=${dns_provider}`);
+      return;
+    }
+
     if (
       domain &&
       dns_provider &&
@@ -894,7 +899,7 @@ export function DnsForm({ domain }: { domain: string }) {
       onSubmit(result.data);
       setLastSubmitted(result.data);
     }
-  }, [domain, dns_provider, lastSubmitted]);
+  }, [domain, dns_provider, lastSubmitted, paramsDnsProvider, router.push]);
 
   async function onSubmit(values: z.infer<typeof dnsSchema>) {
     if (response !== undefined) {
@@ -904,7 +909,7 @@ export function DnsForm({ domain }: { domain: string }) {
 
     startTransition(async () => {
       if (
-        values.dns_provider.toLowerCase() !== paramsDnsProvider ||
+        values.dns_provider.toLowerCase() !== dns_provider ||
         values.domain !== domain
       ) {
         router.push(
@@ -968,7 +973,7 @@ export function DnsForm({ domain }: { domain: string }) {
                   </FormControl>
                   <FormDescription className="sr-only">
                     This is where you input your domain that you want to look up
-                    the WHOIS results for.
+                    the DNS Any against.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -999,9 +1004,9 @@ export function DnsForm({ domain }: { domain: string }) {
                 control={form.control}
                 name="dns_provider"
                 render={({ field }) => (
-                  <FormItem className="w-full space-y-0 bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-200">
+                  <FormItem className="space-y-0 ">
                     <FormLabel className="sr-only">Domain</FormLabel>
-                    <FormControl>
+                    <FormControl className="">
                       <Select
                         onValueChange={(value) => {
                           field.onChange(value);
@@ -1011,7 +1016,7 @@ export function DnsForm({ domain }: { domain: string }) {
                         name="dns_provider"
                       >
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="bg-black/5 text-gray-600 dark:bg-white/5 dark:text-gray-200">
                             <SelectValue
                               placeholder={
                                 ProviderToLabelMapping[
@@ -1037,8 +1042,8 @@ export function DnsForm({ domain }: { domain: string }) {
                       </Select>
                     </FormControl>
                     <FormDescription className="sr-only">
-                      This is where you input your domain that you want to look
-                      up the WHOIS results for.
+                      This is where you select the DNS Provider you want us to
+                      use.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

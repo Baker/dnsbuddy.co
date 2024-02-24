@@ -56,7 +56,7 @@ export async function generateMetadata() {
 export default function Tools() {
   return (
     <main className="relative isolate overflow-hidden">
-      <div className="mx-auto max-w-4xl px-6 pt-56 text-center lg:px-8">
+      <div className="mx-auto max-w-4xl px-6 pt-24 md:pt-56 text-center lg:px-8">
         <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white sm:text-5xl">
           Tools
         </h1>

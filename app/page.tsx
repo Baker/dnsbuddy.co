@@ -14,7 +14,7 @@ export async function generateMetadata() {
 export default function Home() {
   return (
     <main className="relative isolate overflow-hidden px-6 max-w-xl justify-center items-center mx-auto">
-      <div className="mx-auto pt-56 text-left">
+      <div className="mx-auto pt-24 md:pt-56 text-left">
         <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-black dark:text-white">
           Welcome to DnsBuddy 👋
         </h1>

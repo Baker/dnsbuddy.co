@@ -34,7 +34,7 @@ export default function WHOISPage({
 
   return (
     <main className="relative isolate overflow-hidden">
-      <div className="mx-auto pt-56 text-center">
+      <div className="mx-auto pt-24 md:pt-56 text-center">
         <h1 className="text-4xl font-bold tracking-tight text-black dark:text-white">
           Lookup{" "}
           {

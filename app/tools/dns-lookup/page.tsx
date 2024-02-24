@@ -16,7 +16,7 @@ export default function DnsLookup({
 }: { params: { recordType?: string; query?: string } }) {
   return (
     <main className="relative isolate overflow-hidden">
-      <div className="mx-auto px-6 pt-56 text-center lg:px-8">
+      <div className="mx-auto px-6 pt-24 md:pt-56 text-center lg:px-8">
         <h1 className="text-4xl font-bold tracking-tight text-black dark:text-white">
           DNS Lookups, made easy.
         </h1>
