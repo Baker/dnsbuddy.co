@@ -1,11 +1,13 @@
 "use client";
 
 import { DataTableColumnHeader } from "@/components/tables/column-header";
+import { Badge } from "@/components/ui/badge";
 import type {
   BulkFCrDNSResponseList,
   BulkResponseList,
   ResponseList,
 } from "@/types/data";
+import type { parsedMxRecords } from "@/types/parse";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 import type { ColumnDef, RowData } from "@tanstack/react-table";
 
@@ -97,4 +99,29 @@ export const BulkDnsLookupColumnDef: ExtendedColumnDef<BulkResponseList>[] = [
   },
   { accessorKey: "record_type", header: "Record Type", isVisible: false },
   { accessorKey: "response", header: "Response" },
+];
+
+export const MxRecordColumnDef: ExtendedColumnDef<parsedMxRecords>[] = [
+  { accessorKey: "value", header: "Mail Server" },
+  {
+    accessorKey: "priority",
+    header: ({ column }) => {
+      return <DataTableColumnHeader column={column} title="Priority" />;
+    },
+    cell: ({ row }) => {
+      if (parseInt(row.id) === 0) {
+        return (
+          <>
+            {row.getValue("priority")}{" "}
+            <Badge variant="outline" className="">
+              Priority
+            </Badge>
+          </>
+        );
+      }
+      return row.getValue("priority");
+    },
+    label: "priority",
+    enableHiding: false,
+  },
 ];

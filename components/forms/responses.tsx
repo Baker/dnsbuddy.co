@@ -1,6 +1,9 @@
 import FavIcon from "@/components/favicon";
+import { MxRecordColumnDef } from "@/components/tables/columns";
+import { DataTable } from "@/components/tables/data-table";
 import { Separator } from "@/components/ui/separator";
 import type { DomainDnsResponse } from "@/types/dns";
+import { parseMxRecords } from "lib/parse";
 import Link from "next/link";
 
 export default function DnsFormResponse({
@@ -70,13 +73,16 @@ export default function DnsFormResponse({
           MX Records
         </h2>
         <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
-        {response.mxRecords && response.mxRecords.length > 0
-          ? response.mxRecords.map((record: string) => (
-              <div key={record} className="text-left">
-                {record}
-              </div>
-            ))
-          : "No records available."}
+        {response.mxRecords && response.mxRecords.length > 0 ? (
+          <DataTable
+            data={parseMxRecords(response.mxRecords)}
+            columns={MxRecordColumnDef}
+            pagination={false}
+            download={true}
+          />
+        ) : (
+          "No records available."
+        )}
         <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
           CNAME Records
         </h2>
