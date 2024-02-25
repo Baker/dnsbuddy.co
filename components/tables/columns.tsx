@@ -113,7 +113,7 @@ export const MxRecordColumnDef: ExtendedColumnDef<parsedMxRecords>[] = [
         return (
           <>
             {row.getValue("priority")}{" "}
-            <Badge variant="outline" className="">
+            <Badge variant="default" className="">
               Priority
             </Badge>
           </>
