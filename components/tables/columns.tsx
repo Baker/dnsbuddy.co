@@ -102,7 +102,7 @@ export const BulkDnsLookupColumnDef: ExtendedColumnDef<BulkResponseList>[] = [
 ];
 
 export const MxRecordColumnDef: ExtendedColumnDef<parsedMxRecords>[] = [
-  { accessorKey: "value", header: "Mail Server" },
+  { accessorKey: "value", header: "Mail Server", enableHiding: false },
   {
     accessorKey: "priority",
     header: ({ column }) => {

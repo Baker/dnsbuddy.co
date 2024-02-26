@@ -3,7 +3,7 @@ import { MxRecordColumnDef } from "@/components/tables/columns";
 import { DataTable } from "@/components/tables/data-table";
 import { Separator } from "@/components/ui/separator";
 import type { DomainDnsResponse } from "@/types/dns";
-import { parseMxRecords } from "lib/parse";
+import { parseMxRecords, parseSpfRecords } from "lib/parse";
 import Link from "next/link";
 
 export default function DnsFormResponse({
@@ -65,10 +65,24 @@ export default function DnsFormResponse({
         {response.txtRecords && response.txtRecords.length > 0
           ? response.txtRecords.map((record: string) => (
               <div key={record} className="text-left">
-                {record}
+                {!record.startsWith('"v=spf1') ? record : null}
               </div>
             ))
           : "No records available."}
+        {response.txtRecords &&
+        parseSpfRecords(response.txtRecords).length > 0 ? (
+          <>
+            <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
+              SPF Record
+            </h2>
+            <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
+            {parseSpfRecords(response.txtRecords as []).map((record) => (
+              <div key={record} className="text-left">
+                {record}
+              </div>
+            ))}
+          </>
+        ) : null}
         <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
           MX Records
         </h2>

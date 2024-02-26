@@ -49,16 +49,6 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-  if (columns.length > 1) {
-    columns.forEach((column) => {
-      if (
-        column.isVisible === false &&
-        columnVisibility[column.accessorKey] === undefined
-      ) {
-        columnVisibility[column.accessorKey] = column.isVisible;
-      }
-    });
-  }
   const csvHeader = columns.map((column) => ({
     label:
       (column.label || column.header).charAt(0).toUpperCase() +
@@ -111,9 +101,12 @@ export function DataTable<TData, TValue>({
       columnVisibility,
     },
   });
+  const hideableColumns = table.getAllColumns().filter((column) => column.getCanHide());
+
   return (
     <div>
       <div className='flex items-center py-4'>
+        {hideableColumns.length > 0 ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant='outline' className='mr-auto'>
@@ -140,6 +133,7 @@ export function DataTable<TData, TValue>({
               })}
           </DropdownMenuContent>
         </DropdownMenu>
+        ) : null}
         {download ? (
           <Button variant='outline' className='ml-auto'>
             <CSVLink

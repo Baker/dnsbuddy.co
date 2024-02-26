@@ -9,3 +9,13 @@ export function parseMxRecords(records: string[]): parsedMxRecords[] {
   parsedRecords.sort((a, b) => a.priority - b.priority);
   return parsedRecords;
 }
+
+export function parseSpfRecords(records: string[]): string[] {
+  const parsedRecords: string[] = [];
+  records.map((record) => {
+    if (record.startsWith('"v=spf1')) {
+      parsedRecords.push(record);
+    }
+  });
+  return parsedRecords;
+}
