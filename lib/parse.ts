@@ -14,7 +14,7 @@ export function parseSpfRecords(records: string[]): string[] {
   const parsedRecords: string[] = [];
   records.map((record) => {
     if (record.startsWith('"v=spf1')) {
-      parsedRecords.push(record);
+      parsedRecords.push(record.substring(1, record.length - 1));
     }
   });
   return parsedRecords;
