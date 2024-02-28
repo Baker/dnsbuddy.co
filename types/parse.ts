@@ -66,6 +66,11 @@ export enum TxtTitle {
   detectify = "Detectify",
   twilio = "Twilio",
   linear = "Linear",
+  bugcrowd = "Bugcrowd",
+  segment = "Segment",
+  keybase = "Keybase.io",
+  mixpanel = "Mixpanel",
+  firebase = "Firebase",
 }
 
 export enum TxtImage {
@@ -130,4 +135,9 @@ export enum TxtImage {
   detectify = "detectify",
   twilio = "twilio",
   linear = "linear",
+  bugcrowd = "bugcrowd",
+  segment = "segment",
+  keybase = "keybase",
+  mixpanel = "mixpanel",
+  firebase = "google",
 }
