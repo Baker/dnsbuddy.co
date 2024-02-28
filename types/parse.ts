@@ -64,6 +64,8 @@ export enum TxtTitle {
   digicert = "DigiCert",
   liveramp = "LiveRamp",
   detectify = "Detectify",
+  twilio = "Twilio",
+  linear = "Linear",
 }
 
 export enum TxtImage {
@@ -126,4 +128,6 @@ export enum TxtImage {
   digicert = "digicert",
   liveramp = "liveramp",
   detectify = "detectify",
+  twilio = "twilio",
+  linear = "linear",
 }

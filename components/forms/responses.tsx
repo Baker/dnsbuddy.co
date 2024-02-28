@@ -84,11 +84,16 @@ export default function DnsFormResponse({
           </h2>
           <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
           {response.txtRecords && response.txtRecords.length > 0
-            ? response.txtRecords.map((record: string) => (
-                <div key={record} className="text-left">
-                  {record}
-                </div>
-              ))
+            ? response.txtRecords.map((record: string) => {
+                if (record.startsWith('"v=spf1')) {
+                  return null;
+                }
+                return (
+                  <div key={record} className="text-left">
+                    {record}
+                  </div>
+                );
+              })
             : "No records available."}
           <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
             SPF Record
