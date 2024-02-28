@@ -76,25 +76,28 @@ export default function DnsFormResponse({
             })
           : "No records available."}
       </div>
-      {response.txtRecords &&
-      parseSpfRecords(response.txtRecords).length > 0 ? (
+
+      {response.txtRecords && response.txtRecords.length > 0 ? (
         <>
           <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
             Other TXT Record
           </h2>
           <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
-          {response.txtRecords && response.txtRecords.length > 0
-            ? response.txtRecords.map((record: string) => {
-                if (record.startsWith('"v=spf1')) {
-                  return null;
-                }
-                return (
-                  <div key={record} className="text-left">
-                    {record}
-                  </div>
-                );
-              })
-            : "No records available."}
+          {response.txtRecords.map((record: string) => {
+            if (record.startsWith('"v=spf1')) {
+              return null;
+            }
+            return (
+              <div key={record} className="text-left">
+                {record}
+              </div>
+            );
+          })}
+        </>
+      ) : null}
+      {response.txtRecords &&
+      parseSpfRecords(response.txtRecords).length > 0 ? (
+        <>
           <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
             SPF Record
           </h2>
