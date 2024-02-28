@@ -62,6 +62,8 @@ export enum TxtTitle {
   airtable = "Airtable",
   mongodb = "MongoDB",
   digicert = "DigiCert",
+  liveramp = "LiveRamp",
+  detectify = "Detectify",
 }
 
 export enum TxtImage {
@@ -122,4 +124,6 @@ export enum TxtImage {
   airtable = "airtable",
   mongodb = "mongodb",
   digicert = "digicert",
+  liveramp = "liveramp",
+  detectify = "detectify",
 }
