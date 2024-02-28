@@ -64,14 +64,32 @@ export default function DnsFormResponse({
       <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400 mb-4" />
       <div className="grid grid-cols-6 gap-4">
         {response.txtRecords && response.txtRecords.length > 0
-          ? response.txtRecords.map((record: string) => (
-              <HandleTxtRecords record={record} />
-            ))
+          ? response.txtRecords.map((record: string) => {
+              const resp = HandleTxtRecords({ record: record });
+              if (resp !== null) {
+                const updatedTxtRecords = response.txtRecords?.filter(
+                  (rc) => rc !== record,
+                );
+                response = { ...response, txtRecords: updatedTxtRecords };
+                return <HandleTxtRecords record={record} />;
+              }
+            })
           : "No records available."}
       </div>
       {response.txtRecords &&
       parseSpfRecords(response.txtRecords).length > 0 ? (
         <>
+          <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
+            Other TXT Record
+          </h2>
+          <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400" />
+          {response.txtRecords && response.txtRecords.length > 0
+            ? response.txtRecords.map((record: string) => (
+                <div key={record} className="text-left">
+                  {record}
+                </div>
+              ))
+            : "No records available."}
           <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
             SPF Record
           </h2>

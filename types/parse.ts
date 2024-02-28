@@ -51,6 +51,17 @@ export enum TxtTitle {
   h1 = "HackerOne",
   logmein = "LogMeIn",
   infoblox = "Infoblox",
+  docusign = "DocuSign",
+  dropbox = "Dropbox",
+  intacct = "Sage Intacct",
+  globalsign = "GlobalSign",
+  pardot = "Pardot by SFMC",
+  loaderio = "Loader.io",
+  fastly = "Fastly",
+  openai = "OpenAI",
+  airtable = "Airtable",
+  mongodb = "MongoDB",
+  digicert = "DigiCert",
 }
 
 export enum TxtImage {
@@ -100,4 +111,15 @@ export enum TxtImage {
   h1 = "hackerone",
   logmein = "logmein",
   infoblox = "infoblox",
+  docusign = "docusign",
+  dropbox = "dropbox",
+  intacct = "sage-usa",
+  globalsign = "globalsign",
+  pardot = "salesforce",
+  loaderio = "loader-io",
+  fastly = "fastly",
+  openai = "openai",
+  airtable = "airtable",
+  mongodb = "mongodb",
+  digicert = "digicert",
 }

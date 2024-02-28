@@ -5,9 +5,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { TxtImage, TxtTitle } from "@/types/parse";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 
 export function HandleTxtRecords({ record }: { record: string }) {
+  const { theme } = useTheme();
   if (record.startsWith('"v=spf1')) {
     return null;
   }
@@ -16,6 +18,12 @@ export function HandleTxtRecords({ record }: { record: string }) {
     record.startsWith('"<') ? 2 : 1,
     record.length - 1,
   );
+
+  const splitRecord =
+    newRecord.split("=")[1] ||
+    newRecord.split(":")[1] ||
+    newRecord.split("ZOOM_verify_") ||
+    newRecord.split("SFMC-");
   for (const title in TxtTitle) {
     if (newRecord.split("=")[0].toLowerCase().startsWith(title.toLowerCase())) {
       return (
@@ -25,21 +33,29 @@ export function HandleTxtRecords({ record }: { record: string }) {
             className="rounded p-6 bg-black/5 dark:bg-white/5 flex flex-col justify-between min-h-full"
           >
             <Image
-              src={`/assets/logos/${TxtImage[title]}-logos.svg`}
+              src={`/assets/logos/${theme}/${
+                (TxtImage as Record<string, string>)[title as unknown as string]
+              }.svg`}
               height={120}
               width={120}
-              alt="Contribution Icon"
+              alt={`${
+                (TxtTitle as Record<string, string>)[title as unknown as string]
+              } icon`}
               className="mx-auto w-48 h-24"
             />
             <CardHeader className="mx-auto w-full p-2 leading-4 mb-auto">
               <CardTitle className="text-xl font-semibold">
-                {TxtTitle[title]}
+                {
+                  (TxtTitle as Record<string, string>)[
+                    title as unknown as string
+                  ]
+                }
               </CardTitle>
               <CardDescription
                 className="text-wrap"
                 style={{ overflowWrap: "break-word" }}
               >
-                {newRecord.split("=")[1]}
+                {splitRecord}
               </CardDescription>
             </CardHeader>
           </Card>
