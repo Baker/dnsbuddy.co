@@ -71,6 +71,7 @@ export enum TxtTitle {
   keybase = "Keybase.io",
   mixpanel = "Mixpanel",
   firebase = "Firebase",
+  validity = "Validity",
 }
 
 export enum TxtImage {
@@ -140,4 +141,5 @@ export enum TxtImage {
   keybase = "keybase",
   mixpanel = "mixpanel",
   firebase = "google",
+  validity = "validity",
 }

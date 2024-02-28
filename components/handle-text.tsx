@@ -27,13 +27,16 @@ export function HandleTxtRecords({ record }: { record: string }) {
   for (const title in TxtTitle) {
     if (newRecord.split("=")[0].toLowerCase().startsWith(title.toLowerCase())) {
       return (
-        <div key={newRecord} className="col-span-6 sm:col-span-3 md:col-span-2">
+        <div
+          key={newRecord}
+          className="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3"
+        >
           <Card
             key={newRecord}
             className="rounded p-6 bg-black/5 dark:bg-white/5 flex flex-col justify-between min-h-full"
           >
             <Image
-              src={`/assets/logos/${theme}/${
+              src={`/assets/logos/${theme === "system" ? "dark" : theme}/${
                 (TxtImage as Record<string, string>)[title as unknown as string]
               }.svg`}
               height={120}

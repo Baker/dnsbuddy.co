@@ -62,7 +62,7 @@ export default function DnsFormResponse({
         TXT Records
       </h2>
       <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400 mb-4" />
-      <div className="grid grid-cols-6 gap-4">
+      <div className="grid grid-cols-12 gap-4">
         {response.txtRecords && response.txtRecords.length > 0
           ? response.txtRecords.map((record: string) => {
               const resp = HandleTxtRecords({ record: record });
