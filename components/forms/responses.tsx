@@ -62,22 +62,23 @@ export default function DnsFormResponse({
         TXT Records
       </h2>
       <Separator className="my-1 bg-neutral-600 dark:bg-neutral-400 mb-4" />
-      <div className="grid grid-cols-12 gap-4">
-        {response.txtRecords && response.txtRecords.length > 0
-          ? response.txtRecords.map((record: string) => {
-              const resp = HandleTxtRecords({ record: record });
-              if (resp !== null) {
-                const updatedTxtRecords = response.txtRecords?.filter(
-                  (rc) => rc !== record,
-                );
-                response = { ...response, txtRecords: updatedTxtRecords };
-                return <HandleTxtRecords record={record} />;
-              }
-            })
-          : "No records available."}
-      </div>
-
       {response.txtRecords && response.txtRecords.length > 0 ? (
+        <div className="grid grid-cols-12 gap-4">
+          {response.txtRecords.map((record: string) => {
+            const resp = HandleTxtRecords({ record: record });
+            if (resp !== null) {
+              const updatedTxtRecords = response.txtRecords?.filter(
+                (rc) => rc !== record,
+              );
+              response = { ...response, txtRecords: updatedTxtRecords };
+              return <HandleTxtRecords record={record} />;
+            }
+          })}
+        </div>
+      ) : (
+        "No records available."
+      )}
+      {response.txtRecords && response.txtRecords.length > 1 ? (
         <>
           <h2 className="text-xl font-bold tracking-tight pt-4 text-black dark:text-white">
             Other TXT Record

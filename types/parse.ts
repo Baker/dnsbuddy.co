@@ -71,6 +71,7 @@ export enum TxtTitle {
   mixpanel = "Mixpanel",
   firebase = "Firebase",
   validity = "Validity",
+  yandex = "Yandex",
 }
 
 export enum TxtImage {
@@ -140,4 +141,5 @@ export enum TxtImage {
   mixpanel = "mixpanel",
   firebase = "google",
   validity = "validity",
+  yandex = "yandex",
 }
