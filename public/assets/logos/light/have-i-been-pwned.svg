@@ -1,0 +1,32 @@
+<svg version="1.1" id="Layer_1" xmlns:x="ns_extend;" xmlns:i="ns_ai;" xmlns:graph="ns_graphs;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 56 44" style="enable-background:new 0 0 56 44;" xml:space="preserve">
+ <style type="text/css">
+  .st0{fill:#191919;}
+ </style>
+ <metadata>
+  <sfw xmlns="ns_sfw;">
+   <slices>
+   </slices>
+   <sliceSourceBounds bottomLeftOrigin="true" height="44" width="56" x="156" y="-478.8">
+   </sliceSourceBounds>
+  </sfw>
+ </metadata>
+ <g>
+  <g>
+   <path class="st0" d="M43.6,44H12.4C5.5,44,0,38.5,0,31.6V12.4C0,5.5,5.5,0,12.4,0h31.2C50.4,0,56,5.5,56,12.4v19.3
+			C56,38.5,50.4,44,43.6,44z M12.4,2.5c-5.4,0-9.8,4.4-9.8,9.8v19.3c0,5.4,4.4,9.8,9.8,9.8h31.2c5.4,0,9.8-4.4,9.8-9.8V12.4
+			c0-5.4-4.4-9.8-9.8-9.8H12.4z">
+   </path>
+  </g>
+  <g>
+   <path class="st0" d="M21.3,15.6H25v3.7h-3.7V15.6z M21.3,31.4c0.8-0.2,1.4-0.7,1.7-1.3c0.2-0.4,0.3-0.9,0.4-1.6h-2.1v-3.7h3.8V28
+			c0,0.6-0.1,1.2-0.2,1.8c-0.1,0.6-0.4,1.1-0.8,1.6c-0.4,0.5-0.9,0.8-1.5,1.1c-0.6,0.2-1,0.4-1.2,0.4V31.4z">
+   </path>
+  </g>
+  <rect x="27.3" y="19.7" class="st0" width="7" height="3.4">
+  </rect>
+  <rect x="35.5" y="19.7" class="st0" width="7.1" height="3.4">
+  </rect>
+  <polygon class="st0" points="16.6,18.2 14.4,18.2 13.7,10.5 17.3,10.5 	">
+  </polygon>
+ </g>
+</svg>
