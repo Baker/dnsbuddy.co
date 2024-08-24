@@ -24,8 +24,15 @@ func DNSLookup(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	dnsProviders, err := utils.FetchDnsProvider(body.Provider)
+	if err != nil {
+		utils.Logger.Error("Failed to fetch DNS providers", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch DNS providers"})
+		return
+	}
 
 	dnsxOptions := dnsx.DefaultOptions
+	dnsxOptions.BaseResolvers = dnsProviders
 	dnsxOptions.QuestionTypes = []uint16{recordType}
 	dnsxClient, err := dnsx.New(dnsxOptions)
 	if err != nil {

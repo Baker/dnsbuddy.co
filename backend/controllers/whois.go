@@ -35,6 +35,10 @@ func (w *Whois) WhoisLookup(c *gin.Context) {
 		result, err = w.client.Query(body.Query)
 	case models.IP:
 		result, err = w.client.QueryIP(body.Query)
+	case models.ASN:
+		// TODO: Implement ASN lookup
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ASN lookup not supported"})
+		return
 	default:
 		utils.Logger.Error("Invalid lookup type")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid lookup type"})

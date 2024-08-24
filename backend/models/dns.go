@@ -10,10 +10,15 @@ import (
 type DNSProvider string
 
 const (
-	Cloudflare DNSProvider = "CLOUDFLARE"
-	Google     DNSProvider = "GOOGLE"
-	Alibaba    DNSProvider = "ALIBABA"
-	Quad9      DNSProvider = "QUAD9"
+	Cloudflare  DNSProvider = "CLOUDFLARE"
+	Google      DNSProvider = "GOOGLE"
+	Alibaba     DNSProvider = "ALIBABA"
+	Quad9       DNSProvider = "QUAD9"
+	DNSFilter   DNSProvider = "DNSFILTER"
+	OpenDNS     DNSProvider = "OPENDNS"
+	DynDNS      DNSProvider = "DYNDNS"
+	CenturyLink DNSProvider = "CENTURYLINK"
+	Yandex      DNSProvider = "YANDEX"
 )
 
 type RecordType string
@@ -47,7 +52,7 @@ func (r RecordType) IsValid() bool {
 
 func (d DNSProvider) IsValid() bool {
 	switch DNSProvider(strings.ToUpper(string(d))) {
-	case Cloudflare, Google, Alibaba, Quad9:
+	case Cloudflare, Google, Alibaba, Quad9, DNSFilter, OpenDNS, DynDNS, CenturyLink, Yandex:
 		return true
 	default:
 		return false
