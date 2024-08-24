@@ -9,3 +9,7 @@ I am happy to announce version 2.0, originally the goal of this project was to u
 
 Since 1.0, I have changed the entire backend to Go, this is to ensure that the service is fast and reliable. The frontend is still using Next.JS
 
+## Stack
+
+
+## Features
