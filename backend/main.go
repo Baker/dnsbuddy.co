@@ -26,10 +26,11 @@ func main() {
 		})
 	})
 
-	router.POST("/whois", whoisController.WhoisLookup)
-	router.POST("/whois/domain/available", whoisController.WhoIsDomainAvailable)
+	router.POST("/whois/", whoisController.WhoisLookup)
+	router.POST("/whois/domain/available/", whoisController.WhoIsDomainAvailable)
 
 	router.POST("/dns/", controllers.DNSLookup)
+	router.POST("/dns/all/", controllers.DNSLookupAllProviders)
 	router.POST("/asn/", controllers.ASNLookup)
 
 	router.Run(":8080")

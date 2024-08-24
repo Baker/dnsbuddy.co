@@ -2,14 +2,16 @@ package models
 
 import (
 	"encoding/json"
-	"fmt"
-	"strings"
 	"time"
+
+	"backend/utils/validators"
 )
 
 type DNSProvider string
+type RecordType string
 
 const (
+	// DNS Providers
 	Cloudflare  DNSProvider = "CLOUDFLARE"
 	Google      DNSProvider = "GOOGLE"
 	Alibaba     DNSProvider = "ALIBABA"
@@ -19,11 +21,8 @@ const (
 	DynDNS      DNSProvider = "DYNDNS"
 	CenturyLink DNSProvider = "CENTURYLINK"
 	Yandex      DNSProvider = "YANDEX"
-)
 
-type RecordType string
-
-const (
+	// Record Types
 	A     RecordType = "A"
 	AAAA  RecordType = "AAAA"
 	NS    RecordType = "NS"
@@ -35,64 +34,57 @@ const (
 	CNAME RecordType = "CNAME"
 )
 
-type DNSRecordRequest struct {
-	Query    string      `json:"query"`
-	Type     RecordType  `json:"type"`
-	Provider DNSProvider `json:"provider"`
-}
+var (
+	AllDNSProviders = []DNSProvider{
+		Cloudflare, Google, Alibaba, Quad9, DNSFilter,
+		OpenDNS, DynDNS, CenturyLink, Yandex,
+	}
 
-func (r RecordType) IsValid() bool {
-	switch RecordType(strings.ToUpper(string(r))) {
-	case A, AAAA, NS, MX, SOA, SRV, PTR, TXT, CNAME:
-		return true
-	default:
-		return false
+	AllRecordTypes = []RecordType{
+		A, AAAA, NS, MX, SOA, SRV, PTR, TXT, CNAME,
+	}
+
+	validDNSProviders = make(map[DNSProvider]bool)
+	validRecordTypes  = make(map[RecordType]bool)
+)
+
+func init() {
+	for _, p := range AllDNSProviders {
+		validDNSProviders[p] = true
+	}
+	for _, r := range AllRecordTypes {
+		validRecordTypes[r] = true
 	}
 }
 
 func (d DNSProvider) IsValid() bool {
-	switch DNSProvider(strings.ToUpper(string(d))) {
-	case Cloudflare, Google, Alibaba, Quad9, DNSFilter, OpenDNS, DynDNS, CenturyLink, Yandex:
-		return true
-	default:
-		return false
-	}
+	return validators.IsValid(d, validDNSProviders)
 }
 
-// UnmarshalJSON implements the json.Unmarshaler interface
+func (r RecordType) IsValid() bool {
+	return validators.IsValid(r, validRecordTypes)
+}
+
 func (r *RecordType) UnmarshalJSON(data []byte) error {
-	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
-		return err
-	}
-	*r = RecordType(strings.ToUpper(s))
-	if !r.IsValid() {
-		return fmt.Errorf("invalid RecordType: %s", s)
-	}
-	return nil
+	return validators.UnmarshalJSON(data, r, validRecordTypes, "RecordType")
 }
 
-// MarshalJSON implements the json.Marshaler interface
+func (d *DNSProvider) UnmarshalJSON(data []byte) error {
+	return validators.UnmarshalJSON(data, d, validDNSProviders, "DNSProvider")
+}
+
 func (r RecordType) MarshalJSON() ([]byte, error) {
 	return json.Marshal(string(r))
 }
 
-// UnmarshalJSON implements the json.Unmarshaler interface
-func (r *DNSProvider) UnmarshalJSON(data []byte) error {
-	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
-		return err
-	}
-	*r = DNSProvider(strings.ToUpper(s))
-	if !r.IsValid() {
-		return fmt.Errorf("invalid DNSProvider: %s", s)
-	}
-	return nil
-}
-
-// MarshalJSON implements the json.Marshaler interface
 func (r DNSProvider) MarshalJSON() ([]byte, error) {
 	return json.Marshal(string(r))
+}
+
+type DNSRecordRequest struct {
+	Query    string      `json:"query"`
+	Type     RecordType  `json:"type"`
+	Provider DNSProvider `json:"provider"`
 }
 
 type SOARecord struct {
@@ -124,10 +116,31 @@ type DNSRecords struct {
 }
 
 type DNSRecordResponse struct {
-	Host       string     `json:"host"`
-	TTL        uint32     `json:"ttl"`
-	Resolver   []string   `json:"resolver"`
-	Records    DNSRecords `json:"records"`
-	StatusCode string     `json:"status_code"`
-	Timestamp  time.Time  `json:"timestamp"`
+	Host       string        `json:"host"`
+	Type       RecordType    `json:"type"`
+	TTL        uint32        `json:"ttl"`
+	Resolver   []string      `json:"resolver"`
+	Records    DNSRecords    `json:"records"`
+	StatusCode string        `json:"status_code"`
+	Timestamp  time.Time     `json:"timestamp"`
+	TotalTime  time.Duration `json:"total_time"`
+}
+
+type DNSRecordRequestAllProviders struct {
+	Query string     `json:"query"`
+	Type  RecordType `json:"type"`
+}
+
+type DNSRecordProviderPairing struct {
+	Provider   DNSProvider `json:"provider"`
+	Record     DNSRecords  `json:"record"`
+	StatusCode string      `json:"status_code"`
+}
+
+type DNSRecordResponseAllProviders struct {
+	Host      string                     `json:"host"`
+	Type      RecordType                 `json:"type"`
+	Records   []DNSRecordProviderPairing `json:"records"`
+	Timestamp time.Time                  `json:"timestamp"`
+	TotalTime time.Duration              `json:"total_time"`
 }

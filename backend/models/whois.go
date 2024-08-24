@@ -2,11 +2,10 @@ package models
 
 import (
 	"encoding/json"
-	"fmt"
-	"strings"
+
+	"backend/utils/validators"
 )
 
-// WhoisLookupType represents the type of WHOIS lookup
 type WhoisLookupType string
 
 const (
@@ -15,35 +14,31 @@ const (
 	ASN    WhoisLookupType = "ASN"
 )
 
-// WhoisLookup represents a WHOIS lookup request
 type WhoisLookup struct {
 	Query string          `json:"query" binding:"required"`
 	Type  WhoisLookupType `json:"type" binding:"required"`
 }
 
-// IsValid checks if the WhoisLookupType is valid
+var (
+	AllWhoisLookupTypes = []WhoisLookupType{Domain, IP, ASN}
+
+	validWhoisLookupTypes = make(map[WhoisLookupType]bool)
+)
+
+func init() {
+	for _, t := range AllWhoisLookupTypes {
+		validWhoisLookupTypes[t] = true
+	}
+}
+
 func (t WhoisLookupType) IsValid() bool {
-	switch WhoisLookupType(strings.ToUpper(string(t))) {
-	case Domain, IP, ASN:
-		return true
-	}
-	return false
+	return validators.IsValid(t, validWhoisLookupTypes)
 }
 
-// UnmarshalJSON implements the json.Unmarshaler interface
 func (t *WhoisLookupType) UnmarshalJSON(data []byte) error {
-	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
-		return err
-	}
-	*t = WhoisLookupType(strings.ToUpper(s))
-	if !t.IsValid() {
-		return fmt.Errorf("invalid WhoisLookupType: %s", s)
-	}
-	return nil
+	return validators.UnmarshalJSON(data, t, validWhoisLookupTypes, "WhoisLookupType")
 }
 
-// MarshalJSON implements the json.Marshaler interface
 func (t WhoisLookupType) MarshalJSON() ([]byte, error) {
 	return json.Marshal(string(t))
 }
