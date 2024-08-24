@@ -10,10 +10,10 @@ import (
 type DNSProvider string
 
 const (
-	Cloudflare DNSProvider = "cloudflare"
-	Google     DNSProvider = "google"
-	Alibaba    DNSProvider = "alibaba"
-	Quad9      DNSProvider = "quad9"
+	Cloudflare DNSProvider = "CLOUDFLARE"
+	Google     DNSProvider = "GOOGLE"
+	Alibaba    DNSProvider = "ALIBABA"
+	Quad9      DNSProvider = "QUAD9"
 )
 
 type RecordType string
@@ -46,7 +46,7 @@ func (r RecordType) IsValid() bool {
 }
 
 func (d DNSProvider) IsValid() bool {
-	switch DNSProvider(strings.ToLower(string(d))) {
+	switch DNSProvider(strings.ToUpper(string(d))) {
 	case Cloudflare, Google, Alibaba, Quad9:
 		return true
 	default:
@@ -100,7 +100,6 @@ type SOARecord struct {
 	Expire  uint32 `json:"expire,omitempty"`
 	Minttl  uint32 `json:"minttl,omitempty"`
 }
-
 
 type DNSRecords struct {
 	A     []string    `json:"a,omitempty"`

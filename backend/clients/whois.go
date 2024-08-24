@@ -2,7 +2,7 @@ package clients
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"backend/utils"
 	"github.com/shlin168/go-whois/whois"
@@ -30,18 +30,16 @@ func NewWhoisClient() *WhoisClient {
 	}
 }
 
-func (w *WhoisClient) Query(query string) (interface{}, error) {
+func (c *WhoisClient) Query(query string) (interface{}, error) {
 	if query == "" {
-		utils.Logger.Error("empty domain query")
-		return nil, fmt.Errorf("empty domain query")
+		return nil, errors.New("empty query")
 	}
-	return w.client.Query(w.ctx, query)
+	return c.client.Query(c.ctx, query)
 }
 
-func (w *WhoisClient) QueryIP(query string) (interface{}, error) {
+func (c *WhoisClient) QueryIP(query string) (interface{}, error) {
 	if query == "" {
-		utils.Logger.Error("empty IP query")
-		return nil, fmt.Errorf("empty IP query")
+		return nil, errors.New("empty IP query")
 	}
-	return w.client.QueryIP(w.ctx, query)
+	return c.client.QueryIP(c.ctx, query)
 }
