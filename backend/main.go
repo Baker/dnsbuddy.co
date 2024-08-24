@@ -30,6 +30,7 @@ func main() {
 	router.POST("/whois/domain/available", whoisController.WhoIsDomainAvailable)
 
 	router.POST("/dns/", controllers.DNSLookup)
+	router.POST("/asn/", controllers.ASNLookup)
 
 	router.Run(":8080")
 }

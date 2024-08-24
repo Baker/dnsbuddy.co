@@ -101,11 +101,16 @@ type SOARecord struct {
 	Minttl  uint32 `json:"minttl,omitempty"`
 }
 
+type MXRecord struct {
+	Host string `json:"host,omitempty"`
+	Pref uint16 `json:"pref,omitempty"`
+}
+
 type DNSRecords struct {
 	A     []string    `json:"a,omitempty"`
 	AAAA  []string    `json:"aaaa,omitempty"`
 	CNAME []string    `json:"cname,omitempty"`
-	MX    []string    `json:"mx,omitempty"`
+	MX    []MXRecord  `json:"mx,omitempty"`
 	NS    []string    `json:"ns,omitempty"`
 	PTR   []string    `json:"ptr,omitempty"`
 	SOA   []SOARecord `json:"soa,omitempty"`
@@ -117,7 +122,7 @@ type DNSRecordResponse struct {
 	Host       string     `json:"host"`
 	TTL        uint32     `json:"ttl"`
 	Resolver   []string   `json:"resolver"`
-	Records    DNSRecords `json:"records,omitempty"`
+	Records    DNSRecords `json:"records"`
 	StatusCode string     `json:"status_code"`
 	Timestamp  time.Time  `json:"timestamp"`
 }

@@ -1,23 +1,26 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/projectdiscovery/dnsx/libs/dnsx"
-	"net/http"
-
 	"backend/models"
 	"backend/utils"
+	"go.uber.org/zap"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/projectdiscovery/dnsx/libs/dnsx"
 )
 
 func DNSLookup(c *gin.Context) {
 	var body models.DNSRecordRequest
 	if err := c.ShouldBindJSON(&body); err != nil {
+		utils.Logger.Error("Failed to bind JSON", zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	recordType, err := utils.RecordTypeToUint16(body.Type)
 	if err != nil {
+		utils.Logger.Error("Failed to convert record type", zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -26,51 +29,22 @@ func DNSLookup(c *gin.Context) {
 	dnsxOptions.QuestionTypes = []uint16{recordType}
 	dnsxClient, err := dnsx.New(dnsxOptions)
 	if err != nil {
+		utils.Logger.Error("Failed to initialize DNSX", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to initialize DNSX"})
 		return
 	}
 
 	result, err := dnsxClient.QueryMultiple(body.Query)
 	if err != nil {
+		utils.Logger.Error("DNS lookup failed", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "DNS lookup failed"})
 		return
 	}
 
-	records := models.DNSRecords{}
-
-	switch body.Type {
-	case "A":
-		records.A = result.A
-	case "AAAA":
-		records.AAAA = result.AAAA
-	case "CNAME":
-		records.CNAME = result.CNAME
-	case "MX":
-		records.MX = result.MX
-	case "NS":
-		records.NS = result.NS
-	case "PTR":
-		records.PTR = result.PTR
-	case "SOA":
-		records.SOA = make([]models.SOARecord, len(result.SOA))
-		for i, soa := range result.SOA {
-			records.SOA[i] = models.SOARecord{
-				Name:    soa.Name,
-				NS:      soa.NS,
-				Mbox:    soa.Mbox,
-				Serial:  soa.Serial,
-				Refresh: soa.Refresh,
-				Retry:   soa.Retry,
-				Expire:  soa.Expire,
-				Minttl:  soa.Minttl,
-			}
-		}
-	case "SRV":
-		records.SRV = result.SRV
-	case "TXT":
-		records.TXT = result.TXT
-	default:
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unsupported record type"})
+	records, err := utils.ParseRecords(result, string(body.Type))
+	if err != nil {
+		utils.Logger.Error("Failed to parse DNS records", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse DNS records"})
 		return
 	}
 

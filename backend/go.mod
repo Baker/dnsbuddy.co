@@ -6,6 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/miekg/dns v1.1.56
 	github.com/projectdiscovery/dnsx v1.2.1
+	github.com/projectdiscovery/retryabledns v1.0.72
 	github.com/shlin168/go-whois v0.0.0-20240503140658-013418f716db
 	github.com/stretchr/testify v1.9.0
 	go.uber.org/zap v1.27.0
@@ -39,7 +40,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/projectdiscovery/blackrock v0.0.1 // indirect
 	github.com/projectdiscovery/cdncheck v1.0.9 // indirect
-	github.com/projectdiscovery/retryabledns v1.0.72 // indirect
 	github.com/projectdiscovery/utils v0.2.5 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
