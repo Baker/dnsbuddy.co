@@ -12,8 +12,8 @@ import (
 )
 
 func DNSLookup(c *gin.Context) {
-	var body models.DNSRecordRequest
 	var startTime = time.Now()
+	var body models.DNSRecordRequest
 	if err := c.ShouldBindJSON(&body); err != nil {
 		utils.Logger.Error("Failed to bind JSON", zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -65,7 +65,7 @@ func DNSLookup(c *gin.Context) {
 		TTL:        result.TTL,
 		StatusCode: result.StatusCode,
 		Timestamp:  result.Timestamp,
-		TotalTime: time.Since(startTime),
+		TotalTime:  time.Since(startTime),
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -74,8 +74,8 @@ func DNSLookup(c *gin.Context) {
 }
 
 func DNSLookupAllProviders(c *gin.Context) {
-	var body models.DNSRecordRequestAllProviders
 	var startTime = time.Now()
+	var body models.DNSRecordRequestAllProviders
 	if err := c.ShouldBindJSON(&body); err != nil {
 		utils.Logger.Error("Failed to bind JSON", zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -101,6 +101,7 @@ func DNSLookupAllProviders(c *gin.Context) {
 		dnsxOptions := dnsx.DefaultOptions
 		dnsxOptions.BaseResolvers = dnsProviders
 		dnsxOptions.QuestionTypes = []uint16{recordType}
+		dnsxOptions.MaxRetries = 2
 		dnsxClient, err := dnsx.New(dnsxOptions)
 		if err != nil {
 			utils.Logger.Error("Failed to initialize DNSX", zap.Error(err))
@@ -135,6 +136,94 @@ func DNSLookupAllProviders(c *gin.Context) {
 		Records:   records,
 		Timestamp: time.Now(),
 		TotalTime: time.Since(startTime),
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"response": response,
+	})
+}
+
+func DNSLookupOverview(c *gin.Context) {
+	var startTime = time.Now()
+	var body models.DNSRequest
+	if err := c.ShouldBindJSON(&body); err != nil {
+		utils.Logger.Error("Failed to bind JSON", zap.Error(err))
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	recordTypes := []models.RecordType{
+		models.A,
+		models.AAAA,
+		models.CNAME,
+		models.MX,
+		models.NS,
+		models.SOA,
+		models.TXT,
+	}
+	var questionTypes []uint16
+	for _, rt := range recordTypes {
+		u16, err := utils.RecordTypeToUint16(rt)
+		if err != nil {
+			utils.Logger.Error("Failed to convert record type", zap.Error(err))
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to convert record type"})
+			return
+		}
+		questionTypes = append(questionTypes, u16)
+	}
+
+	dnsxOptions := dnsx.DefaultOptions
+	dnsxOptions.MaxRetries = 1
+	dnsxOptions.QuestionTypes = questionTypes
+	dnsxClient, err := dnsx.New(dnsxOptions)
+	if err != nil {
+		utils.Logger.Error("Failed to initialize DNSX", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to initialize DNSX"})
+		return
+	}
+
+	result, err := dnsxClient.QueryMultiple(body.Query)
+	if err != nil {
+		utils.Logger.Error("DNS lookup failed", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "DNS lookup failed"})
+		return
+	}
+
+	records := models.DNSRecords{}
+	if result.StatusCode != "NXDOMAIN" {
+		for _, rt := range recordTypes {
+			parsedRecords, err := utils.ParseRecords(result, string(rt))
+			if err != nil {
+				utils.Logger.Error("Failed to parse DNS records", zap.Error(err))
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse DNS records"})
+				return
+			}
+			switch rt {
+			case models.A:
+				records.A = append(records.A, parsedRecords.A...)
+			case models.AAAA:
+				records.AAAA = append(records.AAAA, parsedRecords.AAAA...)
+			case models.CNAME:
+				records.CNAME = append(records.CNAME, parsedRecords.CNAME...)
+			case models.MX:
+				records.MX = append(records.MX, parsedRecords.MX...)
+			case models.NS:
+				records.NS = append(records.NS, parsedRecords.NS...)
+			case models.SOA:
+				records.SOA = append(records.SOA, parsedRecords.SOA...)
+			case models.TXT:
+				records.TXT = append(records.TXT, parsedRecords.TXT...)
+			}
+		}
+	}
+
+	response := models.DNSRecordResponse{
+		Host:       result.Host,
+		Resolver:   result.Resolver,
+		Records:    records,
+		TTL:        result.TTL,
+		StatusCode: result.StatusCode,
+		Timestamp:  result.Timestamp,
+		TotalTime:  time.Since(startTime),
 	}
 
 	c.JSON(http.StatusOK, gin.H{

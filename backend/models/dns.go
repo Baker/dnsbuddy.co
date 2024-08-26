@@ -117,7 +117,7 @@ type DNSRecords struct {
 
 type DNSRecordResponse struct {
 	Host       string        `json:"host"`
-	Type       RecordType    `json:"type"`
+	Type       RecordType    `json:"type,omitempty"`
 	TTL        uint32        `json:"ttl"`
 	Resolver   []string      `json:"resolver"`
 	Records    DNSRecords    `json:"records"`
@@ -143,4 +143,8 @@ type DNSRecordResponseAllProviders struct {
 	Records   []DNSRecordProviderPairing `json:"records"`
 	Timestamp time.Time                  `json:"timestamp"`
 	TotalTime time.Duration              `json:"total_time"`
+}
+
+type DNSRequest struct {
+	Query string `json:"query"`
 }

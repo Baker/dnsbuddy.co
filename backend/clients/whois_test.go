@@ -7,7 +7,7 @@ import (
 )
 
 func TestIntegrationWhoisClient_Query(t *testing.T) {
-	client := NewWhoisClient()
+	client := WhoisClient()
 
 	tests := []struct {
 		name        string
@@ -46,7 +46,7 @@ func TestIntegrationWhoisClient_Query(t *testing.T) {
 }
 
 func TestIntegrationWhoisClient_QueryIP(t *testing.T) {
-	client := NewWhoisClient()
+	client := WhoisClient()
 
 	tests := []struct {
 		name        string

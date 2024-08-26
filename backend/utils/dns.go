@@ -61,9 +61,11 @@ func ParseRecords(result *retryabledns.DNSData, recordType string) (models.DNSRe
 	case "PTR":
 		records.PTR = result.PTR
 	case "SOA":
-		records.SOA = make([]models.SOARecord, len(result.SOA))
-		for i, soa := range result.SOA {
-			records.SOA[i] = models.SOARecord{
+		// Noticed the API at times returns duplicate SOA records, so we're using a map to deduplicate them
+		uniqueSOA := make(map[string]models.SOARecord)
+		for _, soa := range result.SOA {
+			key := fmt.Sprintf("%s-%s-%s", soa.Name, soa.NS, soa.Mbox)
+			uniqueSOA[key] = models.SOARecord{
 				Name:    soa.Name,
 				NS:      soa.NS,
 				Mbox:    soa.Mbox,
@@ -73,6 +75,10 @@ func ParseRecords(result *retryabledns.DNSData, recordType string) (models.DNSRe
 				Expire:  soa.Expire,
 				Minttl:  soa.Minttl,
 			}
+		}
+		records.SOA = make([]models.SOARecord, 0, len(uniqueSOA))
+		for _, record := range uniqueSOA {
+			records.SOA = append(records.SOA, record)
 		}
 	case "SRV":
 		records.SRV = result.SRV

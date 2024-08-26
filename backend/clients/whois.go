@@ -14,30 +14,30 @@ type WhoisClientInterface interface {
 	QueryIP(query string) (interface{}, error)
 }
 
-type WhoisClient struct {
+type WhoisClientStruct struct {
 	client *whois.Client
 	ctx    context.Context
 }
 
-func NewWhoisClient() *WhoisClient {
+func WhoisClient() *WhoisClientStruct {
 	client, err := whois.NewClient()
 	if err != nil {
 		utils.Logger.Error("Failed to create WHOIS client", zap.Error(err))
 	}
-	return &WhoisClient{
+	return &WhoisClientStruct{
 		client: client,
 		ctx:    context.Background(),
 	}
 }
 
-func (c *WhoisClient) Query(query string) (interface{}, error) {
+func (c *WhoisClientStruct) Query(query string) (interface{}, error) {
 	if query == "" {
 		return nil, errors.New("empty query")
 	}
 	return c.client.Query(c.ctx, query)
 }
 
-func (c *WhoisClient) QueryIP(query string) (interface{}, error) {
+func (c *WhoisClientStruct) QueryIP(query string) (interface{}, error) {
 	if query == "" {
 		return nil, errors.New("empty IP query")
 	}

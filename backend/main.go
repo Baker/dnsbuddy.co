@@ -14,8 +14,8 @@ func main() {
 
 	utils.InitializeLogger()
 
-	whoisClient := clients.NewWhoisClient()
-	whoisController := controllers.NewWhois(whoisClient)
+	whoisClient := clients.WhoisClient()
+	whoisController := controllers.WhoisController(whoisClient)
 
 	router.GET("/", func(c *gin.Context) {
 		c.Status(http.StatusOK)
@@ -31,7 +31,7 @@ func main() {
 
 	router.POST("/dns/", controllers.DNSLookup)
 	router.POST("/dns/all/", controllers.DNSLookupAllProviders)
-	router.POST("/asn/", controllers.ASNLookup)
+	router.POST("/dns/overview/", controllers.DNSLookupOverview)
 
 	router.Run(":8080")
 }

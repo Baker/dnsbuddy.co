@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jamesog/iptoasn"
 	"net/http"
 	"strings"
 
@@ -15,7 +16,7 @@ type Whois struct {
 	client clients.WhoisClientInterface
 }
 
-func NewWhois(client clients.WhoisClientInterface) *Whois {
+func WhoisController(client clients.WhoisClientInterface) *Whois {
 	return &Whois{client: client}
 }
 
@@ -36,9 +37,7 @@ func (w *Whois) WhoisLookup(c *gin.Context) {
 	case models.IP:
 		result, err = w.client.QueryIP(body.Query)
 	case models.ASN:
-		// TODO: Implement ASN lookup
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ASN lookup not supported"})
-		return
+		result, err = iptoasn.LookupASN(body.Query)
 	default:
 		utils.Logger.Error("Invalid lookup type")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid lookup type"})
