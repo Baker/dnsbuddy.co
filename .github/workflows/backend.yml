@@ -33,7 +33,8 @@ jobs:
         working-directory: ./backend
       - uses: robherley/go-test-action@v0
         with:
-          working-directory: ./backend
+          moduleDirectory: ./backend
+          testArgs: ./...
       - name: Run Gosec Security Scanner
         uses: securego/gosec@master
         with:
