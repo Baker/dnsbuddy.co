@@ -16,37 +16,40 @@ permissions:
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version-file: backend/go.mod
       - run: go version
+        working-directory: ./backend
       - run: go mod verify
+        working-directory: ./backend
       - run: go vet ./...
+        working-directory: ./backend
       - run: go fmt ./...
+        working-directory: ./backend
       - run: go build -v ./...
+        working-directory: ./backend
       - uses: robherley/go-test-action@v0
+        with:
+          working-directory: ./backend
       - name: Run Gosec Security Scanner
         uses: securego/gosec@master
         with:
           args: "-no-fail -fmt sarif -out results.sarif ./..."
+          working-directory: ./backend
       - uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: results.sarif
+          sarif_file: backend/results.sarif
 
   build:
     needs: lint-and-test
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version-file: backend/go.mod
       - run: go build ./...
+        working-directory: ./backend
