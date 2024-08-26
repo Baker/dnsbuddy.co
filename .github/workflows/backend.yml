@@ -42,7 +42,7 @@ jobs:
           working-directory: ./backend
       - uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: backend/results.sarif
+          sarif_file: results.sarif
 
   build:
     needs: lint-and-test
