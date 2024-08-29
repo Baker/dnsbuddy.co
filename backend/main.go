@@ -22,7 +22,7 @@ func main() {
 		})
 	})
 
-	router.POST("/whois/", controllers.Lookup)
+	router.POST("/whois/", controllers.WhoisLookup)
 	router.POST("/whois/domain/available/", controllers.DomainAvailable)
 
 	router.POST("/dns/", controllers.DNSLookup)
@@ -30,6 +30,8 @@ func main() {
 	router.POST("/dns/overview/", controllers.DNSLookupOverview)
 
 	router.POST("/email/spf/", controllers.SpfLookup)
+
+	router.POST("/subfinder/", controllers.SubfinderLookup)
 
 	router.Run(":8080")
 }

@@ -13,7 +13,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func Lookup(c *gin.Context) {
+func WhoisLookup(c *gin.Context) {
 	client, err := whois.NewClient()
 	if err != nil {
 		utils.Logger.Error("Failed to create WHOIS client", zap.Error(err))
