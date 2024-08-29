@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 
-	"backend/clients"
 	"backend/controllers"
 	"backend/utils"
 	"github.com/gin-gonic/gin"
@@ -14,9 +13,6 @@ func main() {
 
 	utils.InitializeLogger()
 
-	whoisClient := clients.WhoisClient()
-	whoisController := controllers.WhoisController(whoisClient)
-
 	router.GET("/", func(c *gin.Context) {
 		c.Status(http.StatusOK)
 	})
@@ -26,8 +22,8 @@ func main() {
 		})
 	})
 
-	router.POST("/whois/", whoisController.WhoisLookup)
-	router.POST("/whois/domain/available/", whoisController.WhoIsDomainAvailable)
+	router.POST("/whois/", controllers.Lookup)
+	router.POST("/whois/domain/available/", controllers.DomainAvailable)
 
 	router.POST("/dns/", controllers.DNSLookup)
 	router.POST("/dns/all/", controllers.DNSLookupAllProviders)
