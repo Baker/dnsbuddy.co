@@ -33,5 +33,7 @@ func main() {
 	router.POST("/dns/all/", controllers.DNSLookupAllProviders)
 	router.POST("/dns/overview/", controllers.DNSLookupOverview)
 
+	router.POST("/email/spf/", controllers.SpfLookup)
+
 	router.Run(":8080")
 }
