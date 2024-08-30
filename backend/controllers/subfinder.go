@@ -1,13 +1,13 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	"context"
-	"backend/utils"
 	"backend/models"
+	"backend/utils"
+	"bytes"
+	"context"
+	"github.com/gin-gonic/gin"
 	"github.com/projectdiscovery/subfinder/v2/pkg/runner"
 	"go.uber.org/zap"
-	"bytes"
 	"io"
 	"net/http"
 	"strings"
@@ -17,7 +17,7 @@ func SubfinderLookup(c *gin.Context) {
 	ctx := context.Background()
 	subfinderOpts := &runner.Options{
 		Threads:            30, // Thread controls the number of threads to use for active enumerations
-		Timeout:            5, // Timeout is the seconds to wait for sources to respond
+		Timeout:            5,  // Timeout is the seconds to wait for sources to respond
 		MaxEnumerationTime: 10, //sources will be queried for max this time (in seconds)
 	}
 
