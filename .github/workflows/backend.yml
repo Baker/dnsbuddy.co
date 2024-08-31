@@ -34,7 +34,7 @@ jobs:
       - uses: robherley/go-test-action@v0
         with:
           moduleDirectory: ./backend
-          testArguments: ./...
+          testArguments: -race ./...
       - name: Run Gosec Security Scanner
         uses: securego/gosec@master
         with:

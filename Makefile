@@ -12,8 +12,7 @@ backend-format: ## Format the backend code
 	@cd backend && go fmt ./...
 
 backend-test: ## Run the backend tests
-	@cd backend && go test -coverprofile=coverage.out ./...
+	@cd backend && go test -race -coverprofile=coverage.out ./...
 
 backend-coverage: ## Generate the backend coverage report
 	@cd backend && go tool cover -html=coverage.out
-
