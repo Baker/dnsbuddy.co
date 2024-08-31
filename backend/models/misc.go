@@ -1,6 +1,5 @@
 package models
 
-
 type SubfinderLookup struct {
 	Domain string `json:"query"`
 }

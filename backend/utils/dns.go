@@ -11,28 +11,23 @@ import (
 // StringToRequestType conversion helper
 // Source: https://github.com/projectdiscovery/dnsx/blob/main/libs/dnsx/util.go
 func RecordTypeToUint16(rt models.RecordType) (uint16, error) {
-	switch rt {
-	case models.A:
-		return dns.TypeA, nil
-	case models.AAAA:
-		return dns.TypeAAAA, nil
-	case models.CNAME:
-		return dns.TypeCNAME, nil
-	case models.MX:
-		return dns.TypeMX, nil
-	case models.NS:
-		return dns.TypeNS, nil
-	case models.PTR:
-		return dns.TypePTR, nil
-	case models.SOA:
-		return dns.TypeSOA, nil
-	case models.SRV:
-		return dns.TypeSRV, nil
-	case models.TXT:
-		return dns.TypeTXT, nil
-	default:
-		return dns.TypeNone, fmt.Errorf("unsupported record type: %v", rt)
+	recordTypeMap := map[models.RecordType]uint16{
+		models.A:     dns.TypeA,
+		models.AAAA:  dns.TypeAAAA,
+		models.CNAME: dns.TypeCNAME,
+		models.MX:    dns.TypeMX,
+		models.NS:    dns.TypeNS,
+		models.PTR:   dns.TypePTR,
+		models.SOA:   dns.TypeSOA,
+		models.SRV:   dns.TypeSRV,
+		models.TXT:   dns.TypeTXT,
 	}
+
+	if dnsType, ok := recordTypeMap[rt]; ok {
+		return dnsType, nil
+	}
+
+	return dns.TypeNone, fmt.Errorf("unsupported record type: %v", rt)
 }
 
 func ParseRecords(result *retryabledns.DNSData, recordType string) (models.DNSRecords, error) {
@@ -93,35 +88,21 @@ func ParseRecords(result *retryabledns.DNSData, recordType string) (models.DNSRe
 
 func FetchDnsProvider(provider models.DNSProvider) ([]string, error) {
 	// TODO Expand this to support countries, and fetch them from: https://public-dns.info
-	switch provider {
-	case models.Cloudflare:
-		// Source: https://one.one.one.one/dns/
-		return []string{"1.1.1.1", "1.0.0.1"}, nil
-	case models.Google:
-		// Source: https://developers.google.com/speed/public-dns
-		return []string{"8.8.8.8", "8.8.4.4"}, nil
-	case models.Alibaba:
-		// Source: https://www.alibabacloud.com/help/en/dns/what-is-alibaba-cloud-public-dns
-		return []string{"223.5.5.5", "223.6.6.6"}, nil
-	case models.Quad9:
-		// Source: https://www.quad9.net/
-		return []string{"9.9.9.9", "149.112.112.112"}, nil
-	case models.DNSFilter:
-		// Source: https://www.dnsfilter.com/
-		return []string{"103.247.36.36", "103.247.37.37"}, nil
-	case models.OpenDNS:
-		// Source: https://www.opendns.com/
-		return []string{"208.67.222.222", "208.67.220.220"}, nil
-	case models.DynDNS:
-		// Source: https://help.dyn.com/internet-guide-setup/
-		return []string{"216.146.35.35", "216.146.36.36"}, nil
-	case models.CenturyLink:
-		// Source: https://www.centurylink.com/home/help/internet/dns.html
-		return []string{"205.171.3.65", "205.171.2.65"}, nil
-	case models.Yandex:
-		// Source: https://dns.yandex.com/
-		return []string{"77.88.8.8", "77.88.8.1"}, nil
-	default:
-		return nil, fmt.Errorf("unsupported DNS provider: %s", provider)
+	var providers map[models.DNSProvider][]string = map[models.DNSProvider][]string{
+		models.Cloudflare:  {"1.1.1.1", "1.0.0.1"},
+		models.Google:      {"8.8.8.8", "8.8.4.4"},
+		models.Alibaba:     {"223.5.5.5", "223.6.6.6"},
+		models.Quad9:       {"9.9.9.9", "149.112.112.112"},
+		models.DNSFilter:   {"103.247.36.36", "103.247.37.37"},
+		models.OpenDNS:     {"208.67.222.222", "208.67.220.220"},
+		models.DynDNS:      {"216.146.35.35", "216.146.36.36"},
+		models.CenturyLink: {"205.171.3.65", "205.171.2.65"},
+		models.Yandex:      {"77.88.8.8", "77.88.8.1"},
 	}
+
+	if ips, ok := providers[provider]; ok {
+		return ips, nil
+	}
+
+	return nil, fmt.Errorf("unsupported DNS provider: %s", provider)
 }

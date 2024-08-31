@@ -32,7 +32,7 @@ type directive struct {
 	param     string
 }
 
-var allMechanismRegex = regexp.MustCompile(`([+\-~?]?)all`)
+var allMechanismRegex = regexp.MustCompile(`([+-?~\s])all$`)
 
 var otherMechanismRegex = regexp.MustCompile(`([+\-~?])?(include|mx|ip4|ip6|a|ptr|exists):(\S+)`)
 var modifierRegex = regexp.MustCompile(`(redirect|exp)=(\S+)`)
@@ -50,7 +50,7 @@ func allQualifier(q string) Result {
 	}
 }
 
-func ParseSPF(spf string) models.SpfRecord {
+func BreakDownSpf(spf string) models.SpfRecord {
 	spf = strings.TrimSpace(strings.TrimPrefix(spf, "v=spf1"))
 
 	var terms string
@@ -65,25 +65,21 @@ func ParseSPF(spf string) models.SpfRecord {
 
 	var record models.SpfRecord
 
-	for _, m := range mechanisms {
-		mechanism := m[1]
-		value := m[2]
+	mechanismMap := map[string]*[]string{
+		"include": &record.Include,
+		"mx":      &record.MX,
+		"ip4":     &record.IPv4,
+		"ip6":     &record.IPv6,
+		"ptr":     &record.PTR,
+		"a":       &record.A,
+		"exists":  &record.Exists,
+	}
 
-		switch mechanism {
-		case "include":
-			record.Include = append(record.Include, value)
-		case "mx":
-			record.MX = append(record.MX, value)
-		case "ip4":
-			record.IPv4 = append(record.IPv4, value)
-		case "ip6":
-			record.IPv6 = append(record.IPv6, value)
-		case "ptr":
-			record.PTR = append(record.PTR, value)
-		case "a":
-			record.A = append(record.A, value)
-		case "redirect":
-			record.Exists = append(record.Exists, value)
+	for _, m := range mechanisms {
+		mechanism := m[2]
+		value := m[3]
+		if slice, ok := mechanismMap[mechanism]; ok {
+			*slice = append(*slice, value)
 		}
 	}
 

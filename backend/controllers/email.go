@@ -62,6 +62,6 @@ func SpfLookup(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "No SPF record found", "time": time.Since(startTime)})
 		return
 	}
-	parsedSPF := utils.ParseSPF(spfs)
-	c.JSON(http.StatusOK, gin.H{"spf": spfs, "parsed": parsedSPF, "time": time.Since(startTime)})
+	spfRecord := utils.BreakDownSpf(spfs)
+	c.JSON(http.StatusOK, gin.H{"spf": spfs, "record": spfRecord, "time": time.Since(startTime)})
 }

@@ -153,6 +153,39 @@ func TestParseRecords(t *testing.T) {
 			want:       models.DNSRecords{},
 			wantErr:    true,
 		},
+		{
+			name: "SOA record",
+			result: &retryabledns.DNSData{
+				SOA: []retryabledns.SOA{
+					{
+						Name:    "example.com.",
+						NS:      "ns1.example.com.",
+						Mbox:    "admin.example.com.",
+						Serial:  2023060101,
+						Refresh: 7200,
+						Retry:   3600,
+						Expire:  1209600,
+						Minttl:  300,
+					},
+				},
+			},
+			recordType: "SOA",
+			want: models.DNSRecords{
+				SOA: []models.SOARecord{
+					{
+						Name:    "example.com.",
+						NS:      "ns1.example.com.",
+						Mbox:    "admin.example.com.",
+						Serial:  2023060101,
+						Refresh: 7200,
+						Retry:   3600,
+						Expire:  1209600,
+						Minttl:  300,
+					},
+				},
+			},
+			wantErr: false,
+		},
 	}
 
 	for _, tt := range tests {
