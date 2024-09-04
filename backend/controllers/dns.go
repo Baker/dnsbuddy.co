@@ -13,29 +13,32 @@ import (
 
 func DNSLookup(c *gin.Context) {
 	var startTime = time.Now()
-	var body models.DNSRecordRequest
-	if err := c.ShouldBindJSON(&body); err != nil {
+	var req models.DNSRecordRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.Logger.Error("Failed to bind JSON", zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	recordType, err := utils.RecordTypeToUint16(body.Type)
+	recordType, err := utils.RecordTypeToUint16(req.Type)
 	if err != nil {
 		utils.Logger.Error("Failed to convert record type", zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	dnsProviders, err := utils.FetchDnsProvider(body.Provider)
+
+	dnsProviders, err := utils.FetchDnsProvider(req.Provider)
 	if err != nil {
 		utils.Logger.Error("Failed to fetch DNS providers", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch DNS providers"})
 		return
 	}
 
-	dnsxOptions := dnsx.DefaultOptions
-	dnsxOptions.BaseResolvers = dnsProviders
-	dnsxOptions.QuestionTypes = []uint16{recordType}
+	dnsxOptions := dnsx.Options{
+		BaseResolvers: dnsProviders,
+		QuestionTypes: []uint16{recordType},
+		MaxRetries:    2,
+	}
 	dnsxClient, err := dnsx.New(dnsxOptions)
 	if err != nil {
 		utils.Logger.Error("Failed to initialize DNSX", zap.Error(err))
@@ -43,14 +46,14 @@ func DNSLookup(c *gin.Context) {
 		return
 	}
 
-	result, err := dnsxClient.QueryMultiple(body.Query)
+	result, err := dnsxClient.QueryMultiple(req.Query)
 	if err != nil {
 		utils.Logger.Error("DNS lookup failed", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "DNS lookup failed"})
 		return
 	}
 
-	records, err := utils.ParseRecords(result, string(body.Type))
+	records, err := utils.ParseRecords(result, string(req.Type))
 	if err != nil {
 		utils.Logger.Error("Failed to parse DNS records", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse DNS records"})
@@ -59,7 +62,7 @@ func DNSLookup(c *gin.Context) {
 
 	response := models.DNSRecordResponse{
 		Host:       result.Host,
-		Type:       body.Type,
+		Type:       req.Type,
 		Resolver:   result.Resolver,
 		Records:    records,
 		TTL:        result.TTL,
@@ -75,14 +78,14 @@ func DNSLookup(c *gin.Context) {
 
 func DNSLookupAllProviders(c *gin.Context) {
 	var startTime = time.Now()
-	var body models.DNSRecordRequestAllProviders
-	if err := c.ShouldBindJSON(&body); err != nil {
+	var req models.DNSRecordRequestAllProviders
+	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.Logger.Error("Failed to bind JSON", zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	recordType, err := utils.RecordTypeToUint16(body.Type)
+	recordType, err := utils.RecordTypeToUint16(req.Type)
 	if err != nil {
 		utils.Logger.Error("Failed to convert record type", zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -98,10 +101,11 @@ func DNSLookupAllProviders(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch DNS providers"})
 			return
 		}
-		dnsxOptions := dnsx.DefaultOptions
-		dnsxOptions.BaseResolvers = dnsProviders
-		dnsxOptions.QuestionTypes = []uint16{recordType}
-		dnsxOptions.MaxRetries = 2
+		dnsxOptions := dnsx.Options{
+			BaseResolvers: dnsProviders,
+			QuestionTypes: []uint16{recordType},
+			MaxRetries:    1,
+		}
 		dnsxClient, err := dnsx.New(dnsxOptions)
 		if err != nil {
 			utils.Logger.Error("Failed to initialize DNSX", zap.Error(err))
@@ -109,14 +113,14 @@ func DNSLookupAllProviders(c *gin.Context) {
 			return
 		}
 
-		result, err := dnsxClient.QueryMultiple(body.Query)
+		result, err := dnsxClient.QueryMultiple(req.Query)
 		if err != nil {
 			utils.Logger.Error("DNS lookup failed", zap.Error(err))
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "DNS lookup failed"})
 			return
 		}
 
-		parsedRecords, err := utils.ParseRecords(result, string(body.Type))
+		parsedRecords, err := utils.ParseRecords(result, string(req.Type))
 		if err != nil {
 			utils.Logger.Error("Failed to parse DNS records", zap.Error(err))
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse DNS records"})
@@ -131,8 +135,8 @@ func DNSLookupAllProviders(c *gin.Context) {
 	}
 
 	response := models.DNSRecordResponseAllProviders{
-		Host:      body.Query,
-		Type:      body.Type,
+		Host:      req.Query,
+		Type:      req.Type,
 		Records:   records,
 		Timestamp: time.Now(),
 		TotalTime: time.Since(startTime),
@@ -145,8 +149,8 @@ func DNSLookupAllProviders(c *gin.Context) {
 
 func DNSLookupOverview(c *gin.Context) {
 	var startTime = time.Now()
-	var body models.DNSRequest
-	if err := c.ShouldBindJSON(&body); err != nil {
+	var req models.DNSRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.Logger.Error("Failed to bind JSON", zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -174,6 +178,7 @@ func DNSLookupOverview(c *gin.Context) {
 	dnsxOptions := dnsx.DefaultOptions
 	dnsxOptions.MaxRetries = 1
 	dnsxOptions.QuestionTypes = questionTypes
+
 	dnsxClient, err := dnsx.New(dnsxOptions)
 	if err != nil {
 		utils.Logger.Error("Failed to initialize DNSX", zap.Error(err))
@@ -181,7 +186,7 @@ func DNSLookupOverview(c *gin.Context) {
 		return
 	}
 
-	result, err := dnsxClient.QueryMultiple(body.Query)
+	result, err := dnsxClient.QueryMultiple(req.Query)
 	if err != nil {
 		utils.Logger.Error("DNS lookup failed", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "DNS lookup failed"})
@@ -197,21 +202,26 @@ func DNSLookupOverview(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse DNS records"})
 				return
 			}
-			switch rt {
-			case models.A:
-				records.A = append(records.A, parsedRecords.A...)
-			case models.AAAA:
-				records.AAAA = append(records.AAAA, parsedRecords.AAAA...)
-			case models.CNAME:
-				records.CNAME = append(records.CNAME, parsedRecords.CNAME...)
-			case models.MX:
-				records.MX = append(records.MX, parsedRecords.MX...)
-			case models.NS:
-				records.NS = append(records.NS, parsedRecords.NS...)
-			case models.SOA:
-				records.SOA = append(records.SOA, parsedRecords.SOA...)
-			case models.TXT:
-				records.TXT = append(records.TXT, parsedRecords.TXT...)
+
+			recordMap := map[models.RecordType]interface{}{
+				models.A:     &records.A,
+				models.AAAA:  &records.AAAA,
+				models.CNAME: &records.CNAME,
+				models.MX:    &records.MX,
+				models.NS:    &records.NS,
+				models.SOA:   &records.SOA,
+				models.TXT:   &records.TXT,
+			}
+
+			if slice, ok := recordMap[rt]; ok {
+				switch s := slice.(type) {
+				case *[]string:
+					*s = append(*s, parsedRecords.A...)
+				case *[]models.MXRecord:
+					*s = append(*s, parsedRecords.MX...)
+				case *[]models.SOARecord:
+					*s = append(*s, parsedRecords.SOA...)
+				}
 			}
 		}
 	}

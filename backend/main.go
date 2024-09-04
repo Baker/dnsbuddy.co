@@ -1,17 +1,27 @@
 package main
 
 import (
-	"net/http"
-
 	"backend/controllers"
 	"backend/utils"
+	sentrygin "github.com/getsentry/sentry-go/gin"
+	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"time"
 )
+
+func init() {
+	utils.InitializeLogger()
+	utils.InitializeSentry()
+	utils.LoadEnv()
+}
 
 func main() {
 	router := gin.Default()
 
-	utils.InitializeLogger()
+	router.Use(ginzap.Ginzap(utils.Logger, time.RFC3339, true))
+	router.Use(ginzap.RecoveryWithZap(utils.Logger, true))
+	router.Use(sentrygin.New(sentrygin.Options{}))
 
 	router.GET("/", func(c *gin.Context) {
 		c.Status(http.StatusOK)
@@ -29,7 +39,7 @@ func main() {
 	router.POST("/dns/all/", controllers.DNSLookupAllProviders)
 	router.POST("/dns/overview/", controllers.DNSLookupOverview)
 
-	router.POST("/email/spf/", controllers.SpfLookup)
+	router.POST("/email/spf/", controllers.BreakDownSpf)
 
 	router.POST("/subfinder/", controllers.SubfinderLookup)
 

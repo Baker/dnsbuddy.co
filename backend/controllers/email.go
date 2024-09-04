@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func SpfLookup(c *gin.Context) {
+func BreakDownSpf(c *gin.Context) {
 	var startTime = time.Now()
 	var body models.DNSRecordRequest
 	if err := c.ShouldBindJSON(&body); err != nil {
