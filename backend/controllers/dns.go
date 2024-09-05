@@ -95,7 +95,9 @@ func DNSLookupAllProviders(c *gin.Context) {
 	records := []models.DNSRecordProviderPairing{}
 
 	for _, provider := range models.AllDNSProviders {
+		var startTime = time.Now()
 		dnsProviders, err := utils.FetchDnsProvider(provider)
+
 		if err != nil {
 			utils.Logger.Error("Failed to fetch DNS providers", zap.Error(err))
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch DNS providers"})
@@ -131,6 +133,7 @@ func DNSLookupAllProviders(c *gin.Context) {
 			Provider:   provider,
 			Record:     parsedRecords,
 			StatusCode: result.StatusCode,
+			TotalTime:  time.Since(startTime),
 		})
 	}
 

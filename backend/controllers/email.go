@@ -66,7 +66,6 @@ func BreakDownSpf(c *gin.Context) {
 		return
 	}
 	spfRecord := utils.BreakDownSpf(spfs)
-	lookups++
 
 	extendedInclude := make(map[string]models.ExtendedSpf)
 	var wg sync.WaitGroup
@@ -96,7 +95,6 @@ func BreakDownSpf(c *gin.Context) {
 			return models.ExtendedSpf{}
 		}
 
-		lookups++
 		subRecord := utils.BreakDownSpf(domainSpf)
 		extendedSubRecord := models.ExtendedSpf{
 			Qualifier: subRecord.Qualifier,
@@ -114,7 +112,7 @@ func BreakDownSpf(c *gin.Context) {
 			subInclude := processInclude(subDomain, depth+1)
 			extendedSubRecord.Include[subDomain] = subInclude
 		}
-
+		lookups++
 		return extendedSubRecord
 	}
 

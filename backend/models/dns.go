@@ -132,9 +132,10 @@ type DNSRecordRequestAllProviders struct {
 }
 
 type DNSRecordProviderPairing struct {
-	Provider   DNSProvider `json:"provider"`
-	Record     DNSRecords  `json:"record"`
-	StatusCode string      `json:"status_code"`
+	Provider   DNSProvider   `json:"provider"`
+	Record     DNSRecords    `json:"record"`
+	StatusCode string        `json:"status_code"`
+	TotalTime  time.Duration `json:"total_time"`
 }
 
 type DNSRecordResponseAllProviders struct {
