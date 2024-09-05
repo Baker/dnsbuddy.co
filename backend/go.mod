@@ -9,6 +9,7 @@ require (
 	github.com/jamesog/iptoasn v0.1.0
 	github.com/joho/godotenv v1.5.1
 	github.com/miekg/dns v1.1.56
+	github.com/projectdiscovery/asnmap v1.1.1
 	github.com/projectdiscovery/dnsx v1.2.1
 	github.com/projectdiscovery/retryabledns v1.0.72
 	github.com/projectdiscovery/subfinder/v2 v2.6.6
@@ -56,6 +57,7 @@ require (
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-github/v30 v30.1.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
 	github.com/hako/durafmt v0.0.0-20210316092057-3a2c319c1acd // indirect
@@ -88,10 +90,11 @@ require (
 	github.com/projectdiscovery/cdncheck v1.0.9 // indirect
 	github.com/projectdiscovery/chaos-client v0.5.1 // indirect
 	github.com/projectdiscovery/fastdialer v0.2.3 // indirect
-	github.com/projectdiscovery/goflags v0.1.42 // indirect
+	github.com/projectdiscovery/goflags v0.1.56 // indirect
 	github.com/projectdiscovery/gologger v1.1.18 // indirect
 	github.com/projectdiscovery/hmap v0.0.52 // indirect
 	github.com/projectdiscovery/machineid v0.0.0-20240226150047-2e2c51e35983 // indirect
+	github.com/projectdiscovery/mapcidr v1.1.34 // indirect
 	github.com/projectdiscovery/networkpolicy v0.0.9 // indirect
 	github.com/projectdiscovery/ratelimit v0.0.34 // indirect
 	github.com/projectdiscovery/retryablehttp-go v1.0.72 // indirect
@@ -137,6 +140,7 @@ require (
 	golang.org/x/oauth2 v0.11.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/sys v0.24.0 // indirect
+	golang.org/x/term v0.23.0 // indirect
 	golang.org/x/text v0.17.0 // indirect
 	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
 	google.golang.org/appengine v1.6.7 // indirect

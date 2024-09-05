@@ -2,13 +2,13 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jamesog/iptoasn"
 	"net/http"
 	"strings"
 
 	"backend/models"
 	"backend/utils"
 	"context"
+	asnmap "github.com/projectdiscovery/asnmap/libs"
 	"github.com/shlin168/go-whois/whois"
 	"go.uber.org/zap"
 )
@@ -38,7 +38,19 @@ func WhoisLookup(c *gin.Context) {
 	case models.IP:
 		result, error = client.QueryIP(ctx, body.Query)
 	case models.ASN:
-		result, error = iptoasn.LookupASN(body.Query)
+		asnclient, err := asnmap.NewClient()
+		if err != nil {
+			utils.Logger.Error("Failed to create ASNMAP client", zap.Error(err))
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		responses, err := asnclient.GetData(body.Query)
+		if err != nil {
+			utils.Logger.Error("Failed to get ASN data", zap.Error(err))
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		result, err = asnmap.MapToResults(responses)
 	default:
 		utils.Logger.Error("Invalid lookup type")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid lookup type"})

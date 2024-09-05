@@ -176,7 +176,7 @@ func DNSLookupOverview(c *gin.Context) {
 	}
 
 	dnsxOptions := dnsx.DefaultOptions
-	dnsxOptions.MaxRetries = 1
+	dnsxOptions.MaxRetries = 2
 	dnsxOptions.QuestionTypes = questionTypes
 
 	dnsxClient, err := dnsx.New(dnsxOptions)
@@ -203,29 +203,24 @@ func DNSLookupOverview(c *gin.Context) {
 				return
 			}
 
-			recordMap := map[models.RecordType]interface{}{
-				models.A:     &records.A,
-				models.AAAA:  &records.AAAA,
-				models.CNAME: &records.CNAME,
-				models.MX:    &records.MX,
-				models.NS:    &records.NS,
-				models.SOA:   &records.SOA,
-				models.TXT:   &records.TXT,
-			}
-
-			if slice, ok := recordMap[rt]; ok {
-				switch s := slice.(type) {
-				case *[]string:
-					*s = append(*s, parsedRecords.A...)
-				case *[]models.MXRecord:
-					*s = append(*s, parsedRecords.MX...)
-				case *[]models.SOARecord:
-					*s = append(*s, parsedRecords.SOA...)
-				}
+			switch rt {
+			case models.A:
+				records.A = append(records.A, parsedRecords.A...)
+			case models.AAAA:
+				records.AAAA = append(records.AAAA, parsedRecords.AAAA...)
+			case models.CNAME:
+				records.CNAME = append(records.CNAME, parsedRecords.CNAME...)
+			case models.MX:
+				records.MX = append(records.MX, parsedRecords.MX...)
+			case models.NS:
+				records.NS = append(records.NS, parsedRecords.NS...)
+			case models.SOA:
+				records.SOA = append(records.SOA, parsedRecords.SOA...)
+			case models.TXT:
+				records.TXT = append(records.TXT, parsedRecords.TXT...)
 			}
 		}
 	}
-
 	response := models.DNSRecordResponse{
 		Host:       result.Host,
 		Resolver:   result.Resolver,
@@ -235,7 +230,6 @@ func DNSLookupOverview(c *gin.Context) {
 		Timestamp:  result.Timestamp,
 		TotalTime:  time.Since(startTime),
 	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"response": response,
 	})

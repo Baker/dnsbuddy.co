@@ -24,6 +24,7 @@ func LoadEnv() {
 // RequiredEnvVars defines the list of required environment variables
 var RequiredEnvVars = []string{
 	"SENTRY_DSN",
+	"PDCP_API_KEY",
 }
 
 // OptionalEnvVars defines the list of optional environment variables
