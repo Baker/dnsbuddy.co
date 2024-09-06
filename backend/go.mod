@@ -6,7 +6,6 @@ require (
 	github.com/getsentry/sentry-go v0.28.1
 	github.com/gin-contrib/zap v1.1.4
 	github.com/gin-gonic/gin v1.10.0
-	github.com/jamesog/iptoasn v0.1.0
 	github.com/joho/godotenv v1.5.1
 	github.com/miekg/dns v1.1.56
 	github.com/projectdiscovery/asnmap v1.1.1

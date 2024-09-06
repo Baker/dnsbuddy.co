@@ -85,17 +85,19 @@ func BreakDownSpf(spf string) models.SpfRecord {
 
 	for _, mod := range modifiers {
 		if mod[1] == "redirect" {
-			// Handle redirect modifier if needed
+			record.Redirect = append(record.Redirect, mod[2])
 		} else if mod[1] == "exp" {
-			// Handle explanation modifier if needed
+			record.Explanation = append(record.Explanation, mod[2])
 		}
 	}
 	return models.SpfRecord{
-		Qualifier: terms,
-		Include:   record.Include,
-		MX:        record.MX,
-		IPv4:      record.IPv4,
-		IPv6:      record.IPv6,
-		PTR:       record.PTR,
+		Qualifier:   terms,
+		Include:     record.Include,
+		MX:          record.MX,
+		IPv4:        record.IPv4,
+		IPv6:        record.IPv6,
+		PTR:         record.PTR,
+		Redirect:    record.Redirect,
+		Explanation: record.Explanation,
 	}
 }

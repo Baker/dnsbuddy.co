@@ -40,6 +40,7 @@ func main() {
 	router.POST("/dns/overview/", controllers.DNSLookupOverview)
 
 	router.POST("/email/spf/", controllers.BreakDownSpf)
+	router.POST("/email/dmarc/", controllers.ValidateDmarc)
 
 	router.POST("/subfinder/", controllers.SubfinderLookup)
 
