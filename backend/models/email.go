@@ -68,24 +68,24 @@ const (
 type FailureReporting string
 
 const (
-	All           Fai = "0"
-	Any           Fai = "1"
-	SPF           Fai = "d"
-	DomainFailure Fai = "s"
+	All           FailureReporting = "0"
+	Any           FailureReporting = "1"
+	SPF           FailureReporting = "d"
+	DomainFailure FailureReporting = "s"
 )
 
 type DmarcRecord struct {
-	Version         string   `json:"version"`
-	Policy          Policy   `json:"policy"`
-	SubdomainPolicy Policy   `json:"subdomain_policy"`
-	Adkim           Mode     `json:"adkim"`
-	Aspf            Mode     `json:"aspf"`
-	Percentage      int      `json:"percentage"`
-	RUA             []string `json:"rua"`
-	RI              int      `json:"ri"`
-	RUF             []string `json:"ruf"`
-	FO              Fai      `json:"fo"`
-	RF              string   `json:"rf"`
+	Version         string           `json:"version"`
+	Policy          Policy           `json:"policy"`
+	SubdomainPolicy Policy           `json:"subdomain_policy"`
+	Adkim           Mode             `json:"adkim"`
+	Aspf            Mode             `json:"aspf"`
+	Percentage      int              `json:"percentage"`
+	RUA             []string         `json:"rua"`
+	RI              int              `json:"ri"`
+	RUF             []string         `json:"ruf"`
+	FO              FailureReporting `json:"fo"`
+	RF              string           `json:"rf"`
 }
 
 func NewDmarcRecord() DmarcRecord {
