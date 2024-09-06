@@ -222,12 +222,18 @@ func ValidateDmarc(c *gin.Context) {
 		return
 	}
 
-	// TODO: Parse and validate the DMARC record
-	// This would involve checking the syntax and values of the DMARC record
+	// Check if the first TXT record starts with "v=DMARC1" and contains "p="
+	if !strings.HasPrefix(strings.ToLower(result.TXT[0]), "v=dmarc1") || !strings.Contains(strings.ToLower(result.TXT[0]), "p=") {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid DMARC record format"})
+		return
+	}
+
+	record := utils.BreakDownDmarc(result.TXT[0])
 
 	response := gin.H{
 		"query":     body.Query,
-		"record":    result.TXT[0],
+		"record":    record,
+		"raw":       result.TXT[0],
 		"timestamp": time.Now(),
 		"totalTime": time.Since(startTime),
 	}

@@ -118,8 +118,11 @@ func TestBreakDownSpf(t *testing.T) {
 		},
 		{
 			name: "SPF record with modifiers",
-			spf:  "v=spf1 redirect=_spf.example.com exp=explain._spf.%{d}",
-			want: models.SpfRecord{},
+			spf:  "v=spf1 redirect=_spf.example.com exp=explain.example.com",
+			want: models.SpfRecord{
+				Redirect:    []string{"_spf.example.com"},
+				Explanation: []string{"explain.example.com"},
+			},
 		},
 		{
 			name: "SPF record with different qualifiers",

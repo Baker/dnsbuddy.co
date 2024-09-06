@@ -50,16 +50,67 @@ type ExtendedSpfRecordResponse struct {
 	Breakdown ExtendedSpfRecord `json:"breakdown"`
 }
 
+type Policy string
+
+const (
+	None       Policy = "none"
+	Quarantine Policy = "quarantine"
+	Reject     Policy = "reject"
+)
+
+type Mode string
+
+const (
+	Relaxed Mode = "r"
+	Strict  Mode = "s"
+)
+
+type FailureReporting string
+
+const (
+	All           Fai = "0"
+	Any           Fai = "1"
+	SPF           Fai = "d"
+	DomainFailure Fai = "s"
+)
+
 type DmarcRecord struct {
 	Version         string   `json:"version"`
-	Policy          string   `json:"policy"`
-	SubdomainPolicy string   `json:"subdomain_policy"`
-	Adkim           string   `json:"adkim"`
-	Aspf            string   `json:"aspf"`
-	Percentage      string   `json:"percentage"`
+	Policy          Policy   `json:"policy"`
+	SubdomainPolicy Policy   `json:"subdomain_policy"`
+	Adkim           Mode     `json:"adkim"`
+	Aspf            Mode     `json:"aspf"`
+	Percentage      int      `json:"percentage"`
 	RUA             []string `json:"rua"`
 	RI              int      `json:"ri"`
 	RUF             []string `json:"ruf"`
-	FO              int      `json:"fo"`
+	FO              Fai      `json:"fo"`
 	RF              string   `json:"rf"`
+}
+
+func NewDmarcRecord() DmarcRecord {
+	return DmarcRecord{
+		Version:    "DMARC1",
+		Adkim:      "r",
+		Aspf:       "r",
+		Percentage: 100,
+		RI:         86400,
+		FO:         FailureReporting(All),
+		RF:         "afrf",
+	}
+}
+
+type DmarcExternalReporting struct {
+	Domain string `json:"domain"`
+	Record string `json:"record"`
+	Valid  bool   `json:"valid"`
+}
+
+type DmarcRecordResponse struct {
+	Query     string      `json:"query"`
+	Record    DmarcRecord `json:"record"`
+	External  []DmarcExternalReporting
+	Raw       string        `json:"raw"`
+	Time      time.Duration `json:"time"`
+	TotalTime time.Duration `json:"total_time"`
 }

@@ -1,10 +1,11 @@
 package utils
 
 import (
-	"regexp"
-	"strings"
-
 	"backend/models"
+	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 // Result of SPF check
@@ -33,7 +34,6 @@ type directive struct {
 }
 
 var allMechanismRegex = regexp.MustCompile(`([+-?~\s])all$`)
-
 var otherMechanismRegex = regexp.MustCompile(`([+\-~?])?(include|mx|ip4|ip6|a|ptr|exists):(\S+)`)
 var modifierRegex = regexp.MustCompile(`(redirect|exp)=(\S+)`)
 
@@ -100,4 +100,53 @@ func BreakDownSpf(spf string) models.SpfRecord {
 		Redirect:    record.Redirect,
 		Explanation: record.Explanation,
 	}
+}
+
+// regexr.com/85jvr
+var dmarcRegex = regexp.MustCompile(`(p|sp|rua|ruf|adkim|aspf|pct|ri|ro|rf|v)=(\S+)`)
+
+func BreakDownDmarc(dmarc string) models.DmarcRecord {
+	var record models.DmarcRecord = models.NewDmarcRecord()
+
+	matches := dmarcRegex.FindAllStringSubmatch(dmarc, -1)
+
+	for _, match := range matches {
+		key := match[1]
+		value := strings.TrimSuffix(match[2], ";")
+		switch key {
+		case "v":
+			record.Version = value
+		case "p":
+			record.Policy = models.Policy(value)
+		case "sp":
+			record.SubdomainPolicy = models.Policy(value)
+		case "adkim":
+			record.Adkim = models.Mode(value)
+		case "aspf":
+			record.Aspf = models.Mode(value)
+		case "pct":
+			if pct, err := strconv.Atoi(value); err == nil {
+				record.Percentage = pct
+			}
+		case "rua":
+			record.RUA = append(record.RUA, value)
+		case "ruf":
+			record.RUF = append(record.RUF, value)
+		case "ri":
+			if ri, err := strconv.Atoi(value); err == nil {
+				record.RI = ri
+			}
+		case "fo":
+			fmt.Println(value)
+			record.FO = models.FailureReportingOptions(value)
+		case "rf":
+			record.RF = value
+		}
+	}
+
+	if record.SubdomainPolicy == "" {
+		record.SubdomainPolicy = record.Policy
+	}
+
+	return record
 }
