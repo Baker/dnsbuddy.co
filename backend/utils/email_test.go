@@ -177,3 +177,136 @@ func TestBreakDownSpf(t *testing.T) {
 		})
 	}
 }
+
+func TestDmarcRegex(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  bool
+	}{
+		{
+			"Basic DMARC record",
+			"v=DMARC1; p=none; rua=mailto:dmarc@example.com",
+			true,
+		},
+		{
+			"DMARC record with all fields",
+			"v=DMARC1; p=quarantine; sp=reject; adkim=s; aspf=s; pct=50; rua=mailto:dmarc@example.com; ruf=mailto:forensic@example.com; ri=3600; fo=1; rf=afrf",
+			true,
+		},
+		{
+			"DMARC record with multiple RUA and RUF",
+			"v=DMARC1; p=none; rua=mailto:dmarc1@example.com,mailto:dmarc2@example.com; ruf=mailto:forensic1@example.com,mailto:forensic2@example.com",
+			true,
+		},
+		{
+			"Invalid DMARC record",
+			"DMARC1; policy=none",
+			false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := dmarcRegex.MatchString(tt.input); got != tt.want {
+				t.Errorf("dmarcRegex.MatchString(%q) = %v, want %v", tt.input, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestBreakDownDmarc(t *testing.T) {
+	tests := []struct {
+		name  string
+		dmarc string
+		want  models.DmarcRecord
+	}{
+		{
+			name:  "Basic DMARC record",
+			dmarc: "v=DMARC1; p=none; rua=mailto:dmarc@example.com",
+			want: models.DmarcRecord{
+				Version:         "DMARC1",
+				Policy:          "none",
+				SubdomainPolicy: "none",
+				RUA:             []string{"mailto:dmarc@example.com"},
+				RI:              86400,
+				FO:              "0",
+				RF:              "afrf",
+				Adkim:           "r",
+				Aspf:            "r",
+				Percentage:      100,
+			},
+		},
+		{
+			name:  "DMARC record with multiple RUA and RUF",
+			dmarc: "v=DMARC1; p=none; rua=mailto:dmarc1@example.com,mailto:dmarc2@example.com; ruf=mailto:forensic1@example.com,mailto:forensic2@example.com",
+			want: models.DmarcRecord{
+				Version:         "DMARC1",
+				Policy:          "none",
+				SubdomainPolicy: "none",
+				RUA:             []string{"mailto:dmarc1@example.com", "mailto:dmarc2@example.com"},
+				RUF:             []string{"mailto:forensic1@example.com", "mailto:forensic2@example.com"},
+				RI:              86400,
+				FO:              "0",
+				RF:              "afrf",
+				Adkim:           "r",
+				Aspf:            "r",
+				Percentage:      100,
+			},
+		},
+		{
+			name:  "DMARC record with different policies",
+			dmarc: "v=DMARC1; p=reject; sp=quarantine",
+			want: models.DmarcRecord{
+				Version:         "DMARC1",
+				Policy:          "reject",
+				SubdomainPolicy: "quarantine",
+				Adkim:           "r",
+				Aspf:            "r",
+				Percentage:      100,
+				RI:              86400,
+				RF:              "afrf",
+				FO:              "0",
+			},
+		},
+		{
+			name:  "DMARC record with non-standard values",
+			dmarc: "v=DMARC1; p=none; aspf=r; adkim=r; fo=0:1:d:s",
+			want: models.DmarcRecord{
+				Version:         "DMARC1",
+				Policy:          "none",
+				SubdomainPolicy: "none",
+				Aspf:            "r",
+				Adkim:           "r",
+				FO:              "0",
+				Percentage:      100,
+				RI:              86400,
+				RF:              "afrf",
+			},
+		},
+		{
+			name:  "Minimal DMARC record",
+			dmarc: "v=DMARC1; p=none;",
+			want: models.DmarcRecord{
+				Version:         "DMARC1",
+				Policy:          "none",
+				SubdomainPolicy: "none",
+				RI:              86400,
+				FO:              "0",
+				RF:              "afrf",
+				Adkim:           "r",
+				Aspf:            "r",
+				Percentage:      100,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := BreakDownDmarc(tt.dmarc)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("BreakDownDmarc() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

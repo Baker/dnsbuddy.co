@@ -2,7 +2,6 @@ package utils
 
 import (
 	"backend/models"
-	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -129,16 +128,21 @@ func BreakDownDmarc(dmarc string) models.DmarcRecord {
 				record.Percentage = pct
 			}
 		case "rua":
-			record.RUA = append(record.RUA, value)
+			Addresses := strings.Split(value, ",")
+			for _, address := range Addresses {
+				record.RUA = append(record.RUA, strings.TrimSpace(address))
+			}
 		case "ruf":
-			record.RUF = append(record.RUF, value)
+			Addresses := strings.Split(value, ",")
+			for _, address := range Addresses {
+				record.RUF = append(record.RUF, strings.TrimSpace(address))
+			}
 		case "ri":
 			if ri, err := strconv.Atoi(value); err == nil {
 				record.RI = ri
 			}
 		case "fo":
-			fmt.Println(value)
-			record.FO = models.FailureReportingOptions(value)
+			record.FO = models.FailureReporting(value)
 		case "rf":
 			record.RF = value
 		}
