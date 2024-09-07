@@ -18,7 +18,8 @@ Since 1.0, I have changed the entire backend to Go, this is to ensure that the s
 - Lookup WHOIS information for domains, IPs and ASNs.
 - Bulk lookup of DNS records across multiple providers.
 - Find subdomains for a given domain. (This is still a WIP - not the most efficient, but it works)
-- Breakdown the different types of mechanisms being in a domains SPF.
+- Breakdown the different types of mechanisms being in a domains SPF and follow an unlimited amount of `includes` and `redirects`.
+- Breakdown and validate the different parts of a DMARC record. (Also handles defaults if not present.)
 
 ## Backend
 

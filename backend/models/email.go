@@ -2,6 +2,8 @@ package models
 
 import (
 	"time"
+
+	"backend/utils/validators"
 )
 
 type SpfRecord struct {
@@ -46,33 +48,60 @@ type ExtendedSpfRecord struct {
 type ExtendedSpfRecordResponse struct {
 	Lookups   int               `json:"lookups"`
 	SPF       string            `json:"spf"`
-	Time      time.Duration     `json:"time"`
+	Timestamp time.Time         `json:"timestamp"`
+	TotalTime time.Duration     `json:"total_time"`
 	Breakdown ExtendedSpfRecord `json:"breakdown"`
 }
 
 type Policy string
-
-const (
-	None       Policy = "none"
-	Quarantine Policy = "quarantine"
-	Reject     Policy = "reject"
-)
-
 type Mode string
-
-const (
-	Relaxed Mode = "r"
-	Strict  Mode = "s"
-)
-
 type FailureReporting string
 
 const (
+	None          Policy           = "none"
+	Quarantine    Policy           = "quarantine"
+	Reject        Policy           = "reject"
+	Relaxed       Mode             = "r"
+	Strict        Mode             = "s"
 	All           FailureReporting = "0"
 	Any           FailureReporting = "1"
 	SPF           FailureReporting = "d"
 	DomainFailure FailureReporting = "s"
 )
+
+var (
+	AllPolicies         = []Policy{None, Quarantine, Reject}
+	AllModes            = []Mode{Relaxed, Strict}
+	AllFailureReporting = []FailureReporting{All, Any, SPF, DomainFailure}
+
+	validPolicies         = make(map[Policy]bool)
+	validModes            = make(map[Mode]bool)
+	validFailureReporting = make(map[FailureReporting]bool)
+)
+
+func init() {
+	for _, p := range AllPolicies {
+		validPolicies[p] = true
+	}
+	for _, m := range AllModes {
+		validModes[m] = true
+	}
+	for _, f := range AllFailureReporting {
+		validFailureReporting[f] = true
+	}
+}
+
+func (p Policy) IsValid() bool {
+	return validators.IsValid(p, validPolicies)
+}
+
+func (m Mode) IsValid() bool {
+	return validators.IsValid(m, validModes)
+}
+
+func (f FailureReporting) IsValid() bool {
+	return validators.IsValid(f, validFailureReporting)
+}
 
 type DmarcRecord struct {
 	Version         string           `json:"version"`
@@ -107,10 +136,10 @@ type DmarcExternalReporting struct {
 }
 
 type DmarcRecordResponse struct {
-	Query     string      `json:"query"`
-	Record    DmarcRecord `json:"record"`
-	External  []DmarcExternalReporting
-	Raw       string        `json:"raw"`
-	Time      time.Duration `json:"time"`
-	TotalTime time.Duration `json:"total_time"`
+	Query     string                   `json:"query"`
+	Record    DmarcRecord              `json:"record,omitempty"`
+	External  []DmarcExternalReporting `json:"external,omitempty"`
+	Raw       string                   `json:"raw"`
+	Timestamp time.Time                `json:"timestamp"`
+	TotalTime time.Duration            `json:"total_time"`
 }

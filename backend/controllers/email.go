@@ -172,7 +172,8 @@ func BreakDownSpf(c *gin.Context) {
 	response := models.ExtendedSpfRecordResponse{
 		Lookups:   lookups,
 		SPF:       spfs,
-		Time:      time.Since(startTime),
+		Timestamp: time.Now(),
+		TotalTime: time.Since(startTime),
 		Breakdown: extendedSpfRecord,
 	}
 	c.JSON(http.StatusOK, response)
@@ -190,6 +191,8 @@ func ValidateDmarc(c *gin.Context) {
 	if !strings.HasPrefix(body.Query, "_dmarc") {
 		body.Query = "_dmarc." + body.Query
 	}
+
+	rawDomain := strings.Split(body.Query, "_dmarc.")[1]
 
 	questionType, err := utils.RecordTypeToUint16(models.TXT)
 	if err != nil {
@@ -229,14 +232,37 @@ func ValidateDmarc(c *gin.Context) {
 	}
 
 	record := utils.BreakDownDmarc(result.TXT[0])
-
-	response := gin.H{
-		"query":     body.Query,
-		"record":    record,
-		"raw":       result.TXT[0],
-		"timestamp": time.Now(),
-		"totalTime": time.Since(startTime),
+	externalReporting := []models.DmarcExternalReporting{}
+	for _, address := range append(record.RUA, record.RUF...) {
+		externalDomain, err := utils.ParseDmarcReportingAddress(rawDomain, address)
+		if err != nil {
+			utils.Logger.Error("DMARC External Domain", zap.Error(err))
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "DMARC External Domain"})
+			return
+		}
+		if externalDomain == "" {
+			continue
+		}
+		result, err := dnsxClient.QueryMultiple(externalDomain)
+		if err != nil {
+			utils.Logger.Error("DMARC DNS lookup failed", zap.Error(err))
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "DMARC DNS lookup failed"})
+			return
+		}
+		externalReporting = append(externalReporting, models.DmarcExternalReporting{
+			Domain: externalDomain,
+			Record: result.TXT[0],
+			Valid:  strings.HasPrefix(strings.ToLower(result.TXT[0]), "v=dmarc1"),
+		})
 	}
 
+	response := models.DmarcRecordResponse{
+		Query:     body.Query,
+		Record:    record,
+		Raw:       result.TXT[0],
+		Timestamp: time.Now(),
+		TotalTime: time.Since(startTime),
+		External:  externalReporting,
+	}
 	c.JSON(http.StatusOK, response)
 }

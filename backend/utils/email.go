@@ -2,6 +2,7 @@ package utils
 
 import (
 	"backend/models"
+	"errors"
 	"regexp"
 	"strconv"
 	"strings"
@@ -102,7 +103,7 @@ func BreakDownSpf(spf string) models.SpfRecord {
 }
 
 // regexr.com/85jvr
-var dmarcRegex = regexp.MustCompile(`(p|sp|rua|ruf|adkim|aspf|pct|ri|ro|rf|v)=(\S+)`)
+var dmarcRegex = regexp.MustCompile(`(p|sp|rua|ruf|adkim|aspf|pct|ri|fo|rf|v)\s*=\s*([^;\s]+)(?:|\s|$)`)
 
 func BreakDownDmarc(dmarc string) models.DmarcRecord {
 	var record models.DmarcRecord = models.NewDmarcRecord()
@@ -142,7 +143,12 @@ func BreakDownDmarc(dmarc string) models.DmarcRecord {
 				record.RI = ri
 			}
 		case "fo":
-			record.FO = models.FailureReporting(value)
+			fo := models.FailureReporting(value)
+			if fo.IsValid() {
+				record.FO = fo
+			} else {
+				record.FO = models.All
+			}
 		case "rf":
 			record.RF = value
 		}
@@ -153,4 +159,15 @@ func BreakDownDmarc(dmarc string) models.DmarcRecord {
 	}
 
 	return record
+}
+
+func ParseDmarcReportingAddress(domain string, address string) (string, error) {
+	parts := strings.Split(address, "@")
+	if len(parts) != 2 {
+		return "", errors.New("invalid reporting address")
+	}
+	if strings.Contains(parts[1], domain) {
+		return "", nil
+	}
+	return domain + "._report._dmarc." + parts[1], nil
 }
