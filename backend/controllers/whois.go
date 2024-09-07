@@ -8,11 +8,22 @@ import (
 	"backend/models"
 	"backend/utils"
 	"context"
-	asnmap "github.com/projectdiscovery/asnmap/libs"
+	"github.com/jamesog/iptoasn"
 	"github.com/shlin168/go-whois/whois"
 	"go.uber.org/zap"
 )
 
+// WhoisLookup godoc
+// @Summary Perform a WHOIS lookup
+// @Description Perform a WHOIS lookup for a domain, IP address, or ASN
+// @Tags whois
+// @Accept json
+// @Produce json
+// @Param request body models.WhoisLookup true "WHOIS lookup request"
+// @Success 200 {object} interface{}
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /whois [post]
 func WhoisLookup(c *gin.Context) {
 	client, err := whois.NewClient()
 	if err != nil {
@@ -38,19 +49,20 @@ func WhoisLookup(c *gin.Context) {
 	case models.IP:
 		result, error = client.QueryIP(ctx, body.Query)
 	case models.ASN:
-		asnclient, err := asnmap.NewClient()
-		if err != nil {
-			utils.Logger.Error("Failed to create ASNMAP client", zap.Error(err))
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		responses, err := asnclient.GetData(body.Query)
-		if err != nil {
-			utils.Logger.Error("Failed to get ASN data", zap.Error(err))
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		result, err = asnmap.MapToResults(responses)
+		// asnclient, err := asnmap.NewClient()
+		// if err != nil {
+		// 	utils.Logger.Error("Failed to create ASNMAP client", zap.Error(err))
+		// 	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		// 	return
+		// }
+		// responses, err := asnclient.GetData(body.Query)
+		// if err != nil {
+		// 	utils.Logger.Error("Failed to get ASN data", zap.Error(err))
+		// 	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		// 	return
+		// }
+		// result, err = asnmap.MapToResults(responses)
+		result, error = iptoasn.LookupASN(body.Query)
 	default:
 		utils.Logger.Error("Invalid lookup type")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid lookup type"})

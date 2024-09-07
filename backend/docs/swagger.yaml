@@ -1,0 +1,581 @@
+definitions:
+  models.DNSProvider:
+    enum:
+    - CLOUDFLARE
+    - GOOGLE
+    - ALIBABA
+    - QUAD9
+    - DNSFILTER
+    - OPENDNS
+    - DYNDNS
+    - CENTURYLINK
+    - YANDEX
+    type: string
+    x-enum-varnames:
+    - Cloudflare
+    - Google
+    - Alibaba
+    - Quad9
+    - DNSFilter
+    - OpenDNS
+    - DynDNS
+    - CenturyLink
+    - Yandex
+  models.DNSRecordProviderPairing:
+    properties:
+      provider:
+        $ref: '#/definitions/models.DNSProvider'
+      record:
+        $ref: '#/definitions/models.DNSRecords'
+      status_code:
+        type: string
+      total_time:
+        type: integer
+    type: object
+  models.DNSRecordRequest:
+    properties:
+      provider:
+        $ref: '#/definitions/models.DNSProvider'
+      query:
+        type: string
+      type:
+        $ref: '#/definitions/models.RecordType'
+    type: object
+  models.DNSRecordRequestAllProviders:
+    properties:
+      query:
+        type: string
+      type:
+        $ref: '#/definitions/models.RecordType'
+    type: object
+  models.DNSRecordResponse:
+    properties:
+      host:
+        type: string
+      records:
+        $ref: '#/definitions/models.DNSRecords'
+      resolver:
+        items:
+          type: string
+        type: array
+      status_code:
+        type: string
+      timestamp:
+        type: string
+      total_time:
+        type: integer
+      ttl:
+        type: integer
+      type:
+        $ref: '#/definitions/models.RecordType'
+    type: object
+  models.DNSRecords:
+    properties:
+      a:
+        items:
+          type: string
+        type: array
+      aaaa:
+        items:
+          type: string
+        type: array
+      cname:
+        items:
+          type: string
+        type: array
+      mx:
+        items:
+          $ref: '#/definitions/models.MXRecord'
+        type: array
+      ns:
+        items:
+          type: string
+        type: array
+      ptr:
+        items:
+          type: string
+        type: array
+      soa:
+        items:
+          $ref: '#/definitions/models.SOARecord'
+        type: array
+      srv:
+        items:
+          type: string
+        type: array
+      txt:
+        items:
+          type: string
+        type: array
+    type: object
+  models.DNSRequest:
+    properties:
+      query:
+        type: string
+    type: object
+  models.DmarcExternalReporting:
+    properties:
+      domain:
+        type: string
+      record:
+        type: string
+      valid:
+        type: boolean
+    type: object
+  models.DmarcRecord:
+    properties:
+      adkim:
+        $ref: '#/definitions/models.Mode'
+      aspf:
+        $ref: '#/definitions/models.Mode'
+      fo:
+        $ref: '#/definitions/models.FailureReporting'
+      percentage:
+        type: integer
+      policy:
+        $ref: '#/definitions/models.Policy'
+      rf:
+        type: string
+      ri:
+        type: integer
+      rua:
+        items:
+          type: string
+        type: array
+      ruf:
+        items:
+          type: string
+        type: array
+      subdomain_policy:
+        $ref: '#/definitions/models.Policy'
+      version:
+        type: string
+    type: object
+  models.DmarcRecordResponse:
+    properties:
+      external:
+        items:
+          $ref: '#/definitions/models.DmarcExternalReporting'
+        type: array
+      query:
+        type: string
+      raw:
+        type: string
+      record:
+        $ref: '#/definitions/models.DmarcRecord'
+      timestamp:
+        type: string
+      total_time:
+        type: integer
+    type: object
+  models.ExtendedSpf:
+    properties:
+      a:
+        items:
+          type: string
+        type: array
+      exists:
+        items:
+          type: string
+        type: array
+      explanation:
+        additionalProperties:
+          type: string
+        type: object
+      include:
+        additionalProperties:
+          $ref: '#/definitions/models.ExtendedSpf'
+        type: object
+      ipv4:
+        items:
+          type: string
+        type: array
+      ipv6:
+        items:
+          type: string
+        type: array
+      mx:
+        items:
+          type: string
+        type: array
+      ptr:
+        items:
+          type: string
+        type: array
+      qualifier:
+        type: string
+      redirect:
+        additionalProperties:
+          $ref: '#/definitions/models.ExtendedSpf'
+        type: object
+    type: object
+  models.ExtendedSpfRecord:
+    properties:
+      a:
+        items:
+          type: string
+        type: array
+      exists:
+        items:
+          type: string
+        type: array
+      explanation:
+        additionalProperties:
+          type: string
+        type: object
+      include:
+        additionalProperties:
+          $ref: '#/definitions/models.ExtendedSpf'
+        type: object
+      ipv4:
+        items:
+          type: string
+        type: array
+      ipv6:
+        items:
+          type: string
+        type: array
+      mx:
+        items:
+          type: string
+        type: array
+      ptr:
+        items:
+          type: string
+        type: array
+      qualifier:
+        type: string
+      redirect:
+        additionalProperties:
+          $ref: '#/definitions/models.ExtendedSpf'
+        type: object
+    type: object
+  models.ExtendedSpfRecordResponse:
+    properties:
+      breakdown:
+        $ref: '#/definitions/models.ExtendedSpfRecord'
+      lookups:
+        type: integer
+      spf:
+        type: string
+      timestamp:
+        type: string
+      total_time:
+        type: integer
+    type: object
+  models.FailureReporting:
+    enum:
+    - "0"
+    - "1"
+    - d
+    - s
+    type: string
+    x-enum-varnames:
+    - All
+    - Any
+    - SPF
+    - DomainFailure
+  models.MXRecord:
+    properties:
+      host:
+        type: string
+      pref:
+        type: integer
+    type: object
+  models.Mode:
+    enum:
+    - r
+    - s
+    type: string
+    x-enum-varnames:
+    - Relaxed
+    - Strict
+  models.Policy:
+    enum:
+    - none
+    - quarantine
+    - reject
+    type: string
+    x-enum-varnames:
+    - None
+    - Quarantine
+    - Reject
+  models.RecordType:
+    enum:
+    - A
+    - AAAA
+    - NS
+    - MX
+    - SOA
+    - SRV
+    - PTR
+    - TXT
+    - CNAME
+    type: string
+    x-enum-varnames:
+    - A
+    - AAAA
+    - NS
+    - MX
+    - SOA
+    - SRV
+    - PTR
+    - TXT
+    - CNAME
+  models.SOARecord:
+    properties:
+      expire:
+        type: integer
+      mailbox:
+        type: string
+      minttl:
+        type: integer
+      name:
+        type: string
+      ns:
+        type: string
+      refresh:
+        type: integer
+      retry:
+        type: integer
+      serial:
+        type: integer
+    type: object
+  models.WhoisLookup:
+    properties:
+      query:
+        type: string
+      type:
+        $ref: '#/definitions/models.WhoisLookupType'
+    required:
+    - query
+    - type
+    type: object
+  models.WhoisLookupType:
+    enum:
+    - DOMAIN
+    - IP
+    - ASN
+    type: string
+    x-enum-varnames:
+    - Domain
+    - IP
+    - ASN
+info:
+  contact: {}
+paths:
+  /dns:
+    post:
+      consumes:
+      - application/json
+      description: Perform a DNS lookup for a specific query and record type
+      parameters:
+      - description: DNS lookup request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.DNSRecordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DNSRecordResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Perform a DNS lookup
+      tags:
+      - dns
+  /dns/all:
+    post:
+      consumes:
+      - application/json
+      description: Perform a DNS lookup for a specific query and record type across
+        all DNS providers
+      parameters:
+      - description: DNS lookup request for all providers
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.DNSRecordRequestAllProviders'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.DNSRecordProviderPairing'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Perform a DNS lookup across all providers
+      tags:
+      - dns
+  /dns/overview:
+    post:
+      consumes:
+      - application/json
+      description: Perform a DNS lookup overview for a specific query
+      parameters:
+      - description: DNS lookup overview request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.DNSRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DNSRecordResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Perform a DNS lookup overview
+      tags:
+      - dns
+  /email/dmarc:
+    post:
+      consumes:
+      - application/json
+      description: Validate and parse DMARC record for a given domain
+      parameters:
+      - description: DNS lookup request for DMARC record
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.DNSRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DmarcRecordResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Validate DMARC record
+      tags:
+      - email
+  /email/spf:
+    post:
+      consumes:
+      - application/json
+      description: Break down an SPF record for a given domain, including extended
+        information for includes and redirects
+      parameters:
+      - description: DNS lookup request for SPF record
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.DNSRecordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ExtendedSpfRecordResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Break down SPF record
+      tags:
+      - email
+  /whois:
+    post:
+      consumes:
+      - application/json
+      description: Perform a WHOIS lookup for a domain, IP address, or ASN
+      parameters:
+      - description: WHOIS lookup request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.WhoisLookup'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Perform a WHOIS lookup
+      tags:
+      - whois
+swagger: "2.0"

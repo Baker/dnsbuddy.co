@@ -152,7 +152,7 @@ func TestDNSRecordResponse(t *testing.T) {
 		Resolver:   []string{"1.1.1.1", "1.0.0.1"},
 		StatusCode: "OK",
 		Timestamp:  time.Now(),
-		TotalTime:  100 * time.Millisecond,
+		TotalTime:  1000,
 		Records: DNSRecords{
 			A:  []string{"93.184.216.34"},
 			NS: []string{"a.iana-servers.net", "b.iana-servers.net"},

@@ -116,14 +116,14 @@ type DNSRecords struct {
 }
 
 type DNSRecordResponse struct {
-	Host       string        `json:"host"`
-	Type       RecordType    `json:"type,omitempty"`
-	TTL        uint32        `json:"ttl"`
-	Resolver   []string      `json:"resolver"`
-	Records    DNSRecords    `json:"records"`
-	StatusCode string        `json:"status_code"`
-	Timestamp  time.Time     `json:"timestamp"`
-	TotalTime  time.Duration `json:"total_time"`
+	Host       string     `json:"host"`
+	Type       RecordType `json:"type,omitempty"`
+	TTL        uint32     `json:"ttl"`
+	Resolver   []string   `json:"resolver"`
+	Records    DNSRecords `json:"records"`
+	StatusCode string     `json:"status_code"`
+	Timestamp  time.Time  `json:"timestamp"`
+	TotalTime  int        `json:"total_time"`
 }
 
 type DNSRecordRequestAllProviders struct {
@@ -132,10 +132,10 @@ type DNSRecordRequestAllProviders struct {
 }
 
 type DNSRecordProviderPairing struct {
-	Provider   DNSProvider   `json:"provider"`
-	Record     DNSRecords    `json:"record"`
-	StatusCode string        `json:"status_code"`
-	TotalTime  time.Duration `json:"total_time"`
+	Provider   DNSProvider `json:"provider"`
+	Record     DNSRecords  `json:"record"`
+	StatusCode string      `json:"status_code"`
+	TotalTime  int         `json:"total_time"`
 }
 
 type DNSRecordResponseAllProviders struct {
@@ -143,7 +143,7 @@ type DNSRecordResponseAllProviders struct {
 	Type      RecordType                 `json:"type"`
 	Records   []DNSRecordProviderPairing `json:"records"`
 	Timestamp time.Time                  `json:"timestamp"`
-	TotalTime time.Duration              `json:"total_time"`
+	TotalTime int                        `json:"total_time"`
 }
 
 type DNSRequest struct {

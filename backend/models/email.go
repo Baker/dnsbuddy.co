@@ -8,48 +8,48 @@ import (
 
 type SpfRecord struct {
 	Qualifier   string   `json:"qualifier"`
-	IPv4        []string `json:"ipv4"`
-	IPv6        []string `json:"ipv6"`
-	MX          []string `json:"mx"`
-	PTR         []string `json:"ptr"`
-	A           []string `json:"a"`
-	Include     []string `json:"include"`
-	Exists      []string `json:"exists"`
-	Redirect    []string `json:"redirect"`
-	Explanation []string `json:"explanation"`
+	IPv4        []string `json:"ipv4,omitempty"`
+	IPv6        []string `json:"ipv6,omitempty"`
+	MX          []string `json:"mx,omitempty"`
+	PTR         []string `json:"ptr,omitempty"`
+	A           []string `json:"a,omitempty"`
+	Include     []string `json:"include,omitempty"`
+	Exists      []string `json:"exists,omitempty"`
+	Redirect    []string `json:"redirect,omitempty"`
+	Explanation []string `json:"explanation,omitempty"`
 }
 
 type ExtendedSpf struct {
 	Qualifier   string                 `json:"qualifier"`
-	IPv4        []string               `json:"ipv4"`
-	IPv6        []string               `json:"ipv6"`
-	MX          []string               `json:"mx"`
-	PTR         []string               `json:"ptr"`
-	A           []string               `json:"a"`
-	Include     map[string]ExtendedSpf `json:"include"`
-	Exists      []string               `json:"exists"`
-	Redirect    map[string]ExtendedSpf `json:"redirect"`
-	Explanation map[string]string      `json:"explanation"`
+	IPv4        []string               `json:"ipv4,omitempty"`
+	IPv6        []string               `json:"ipv6,omitempty"`
+	MX          []string               `json:"mx,omitempty"`
+	PTR         []string               `json:"ptr,omitempty"`
+	A           []string               `json:"a,omitempty"`
+	Include     map[string]ExtendedSpf `json:"include,omitempty"`
+	Exists      []string               `json:"exists,omitempty"`
+	Redirect    map[string]ExtendedSpf `json:"redirect,omitempty"`
+	Explanation map[string]string      `json:"explanation,omitempty"`
 }
 
 type ExtendedSpfRecord struct {
 	Qualifier   string                 `json:"qualifier"`
-	IPv4        []string               `json:"ipv4"`
-	IPv6        []string               `json:"ipv6"`
-	MX          []string               `json:"mx"`
-	PTR         []string               `json:"ptr"`
-	A           []string               `json:"a"`
-	Include     map[string]ExtendedSpf `json:"include"`
-	Exists      []string               `json:"exists"`
-	Redirect    map[string]ExtendedSpf `json:"redirect"`
-	Explanation map[string]string      `json:"explanation"`
+	IPv4        []string               `json:"ipv4,omitempty"`
+	IPv6        []string               `json:"ipv6,omitempty"`
+	MX          []string               `json:"mx,omitempty"`
+	PTR         []string               `json:"ptr,omitempty"`
+	A           []string               `json:"a,omitempty"`
+	Include     map[string]ExtendedSpf `json:"include,omitempty"`
+	Exists      []string               `json:"exists,omitempty"`
+	Redirect    map[string]ExtendedSpf `json:"redirect,omitempty"`
+	Explanation map[string]string      `json:"explanation,omitempty"`
 }
 
 type ExtendedSpfRecordResponse struct {
 	Lookups   int               `json:"lookups"`
 	SPF       string            `json:"spf"`
 	Timestamp time.Time         `json:"timestamp"`
-	TotalTime time.Duration     `json:"total_time"`
+	TotalTime int               `json:"total_time"`
 	Breakdown ExtendedSpfRecord `json:"breakdown"`
 }
 
@@ -141,5 +141,5 @@ type DmarcRecordResponse struct {
 	External  []DmarcExternalReporting `json:"external,omitempty"`
 	Raw       string                   `json:"raw"`
 	Timestamp time.Time                `json:"timestamp"`
-	TotalTime time.Duration            `json:"total_time"`
+	TotalTime int                      `json:"total_time"`
 }

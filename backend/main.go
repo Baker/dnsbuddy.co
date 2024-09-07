@@ -2,10 +2,13 @@ package main
 
 import (
 	"backend/controllers"
+	docs "backend/docs"
 	"backend/utils"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"net/http"
 	"time"
 )
@@ -19,6 +22,8 @@ func init() {
 func main() {
 	router := gin.Default()
 
+	docs.SwaggerInfo.BasePath = "/"
+
 	router.Use(ginzap.Ginzap(utils.Logger, time.RFC3339, true))
 	router.Use(ginzap.RecoveryWithZap(utils.Logger, true))
 	router.Use(sentrygin.New(sentrygin.Options{}))
@@ -31,6 +36,8 @@ func main() {
 			"message": "pong",
 		})
 	})
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	router.POST("/whois/", controllers.WhoisLookup)
 	router.POST("/whois/domain/available/", controllers.DomainAvailable)

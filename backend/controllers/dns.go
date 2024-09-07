@@ -11,6 +11,17 @@ import (
 	"time"
 )
 
+// DNSLookup godoc
+// @Summary Perform a DNS lookup
+// @Description Perform a DNS lookup for a specific query and record type
+// @Tags dns
+// @Accept json
+// @Produce json
+// @Param request body models.DNSRecordRequest true "DNS lookup request"
+// @Success 200 {object} models.DNSRecordResponse
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /dns [post]
 func DNSLookup(c *gin.Context) {
 	var startTime = time.Now()
 	var req models.DNSRecordRequest
@@ -68,7 +79,7 @@ func DNSLookup(c *gin.Context) {
 		TTL:        result.TTL,
 		StatusCode: result.StatusCode,
 		Timestamp:  result.Timestamp,
-		TotalTime:  time.Since(startTime),
+		TotalTime:  int(time.Since(startTime).Milliseconds()),
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -76,6 +87,17 @@ func DNSLookup(c *gin.Context) {
 	})
 }
 
+// DNSLookupAllProviders godoc
+// @Summary Perform a DNS lookup across all providers
+// @Description Perform a DNS lookup for a specific query and record type across all DNS providers
+// @Tags dns
+// @Accept json
+// @Produce json
+// @Param request body models.DNSRecordRequestAllProviders true "DNS lookup request for all providers"
+// @Success 200 {array} models.DNSRecordProviderPairing
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /dns/all [post]
 func DNSLookupAllProviders(c *gin.Context) {
 	var startTime = time.Now()
 	var req models.DNSRecordRequestAllProviders
@@ -133,7 +155,7 @@ func DNSLookupAllProviders(c *gin.Context) {
 			Provider:   provider,
 			Record:     parsedRecords,
 			StatusCode: result.StatusCode,
-			TotalTime:  time.Since(startTime),
+			TotalTime:  int(time.Since(startTime).Milliseconds()),
 		})
 	}
 
@@ -142,7 +164,7 @@ func DNSLookupAllProviders(c *gin.Context) {
 		Type:      req.Type,
 		Records:   records,
 		Timestamp: time.Now(),
-		TotalTime: time.Since(startTime),
+		TotalTime: int(time.Since(startTime).Milliseconds()),
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -150,6 +172,17 @@ func DNSLookupAllProviders(c *gin.Context) {
 	})
 }
 
+// DNSLookupOverview godoc
+// @Summary Perform a DNS lookup overview
+// @Description Perform a DNS lookup overview for a specific query
+// @Tags dns
+// @Accept json
+// @Produce json
+// @Param request body models.DNSRequest true "DNS lookup overview request"
+// @Success 200 {object} models.DNSRecordResponse
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /dns/overview [post]
 func DNSLookupOverview(c *gin.Context) {
 	var startTime = time.Now()
 	var req models.DNSRequest
@@ -231,7 +264,7 @@ func DNSLookupOverview(c *gin.Context) {
 		TTL:        result.TTL,
 		StatusCode: result.StatusCode,
 		Timestamp:  result.Timestamp,
-		TotalTime:  time.Since(startTime),
+		TotalTime:  int(time.Since(startTime).Milliseconds()),
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"response": response,

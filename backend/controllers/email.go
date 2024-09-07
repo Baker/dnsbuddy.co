@@ -13,6 +13,17 @@ import (
 	"time"
 )
 
+// BreakDownSpf godoc
+// @Summary Break down SPF record
+// @Description Break down an SPF record for a given domain, including extended information for includes and redirects
+// @Tags email
+// @Accept json
+// @Produce json
+// @Param request body models.DNSRecordRequest true "DNS lookup request for SPF record"
+// @Success 200 {object} models.ExtendedSpfRecordResponse
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /email/spf [post]
 func BreakDownSpf(c *gin.Context) {
 	var startTime = time.Now()
 	var body models.DNSRecordRequest
@@ -173,12 +184,24 @@ func BreakDownSpf(c *gin.Context) {
 		Lookups:   lookups,
 		SPF:       spfs,
 		Timestamp: time.Now(),
-		TotalTime: time.Since(startTime),
+		TotalTime: int(time.Since(startTime).Milliseconds()),
 		Breakdown: extendedSpfRecord,
 	}
 	c.JSON(http.StatusOK, response)
 }
 
+// ValidateDmarc godoc
+// @Summary Validate DMARC record
+// @Description Validate and parse DMARC record for a given domain
+// @Tags email
+// @Accept json
+// @Produce json
+// @Param request body models.DNSRequest true "DNS lookup request for DMARC record"
+// @Success 200 {object} models.DmarcRecordResponse
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /email/dmarc [post]
 func ValidateDmarc(c *gin.Context) {
 	var startTime = time.Now()
 	var body models.DNSRequest
@@ -261,7 +284,7 @@ func ValidateDmarc(c *gin.Context) {
 		Record:    record,
 		Raw:       result.TXT[0],
 		Timestamp: time.Now(),
-		TotalTime: time.Since(startTime),
+		TotalTime: int(time.Since(startTime).Milliseconds()),
 		External:  externalReporting,
 	}
 	c.JSON(http.StatusOK, response)

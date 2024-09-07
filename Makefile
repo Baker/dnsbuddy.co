@@ -16,3 +16,6 @@ backend-test: ## Run the backend tests
 
 backend-coverage: ## Generate the backend coverage report
 	@cd backend && go tool cover -html=coverage.out
+
+backend-swag: ## Generate the backend Swagger documentation
+	@cd backend && ~/go/bin/swag init
