@@ -1,22 +1,21 @@
 package utils
 
 import (
-	"fmt"
-	"log"
 	"strconv"
 
 	"github.com/joho/godotenv"
+	"go.uber.org/zap"
 	"os"
 )
 
 func LoadEnv() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		Logger.Error("Error loading .env file", zap.Error(err))
 	}
 	err = ValidateEnv()
 	if err != nil {
-		log.Fatal(err)
+		Logger.Error("Error validating environment variables", zap.Error(err))
 	}
 
 }
@@ -36,7 +35,7 @@ var OptionalEnvVars = []string{
 func ValidateEnv() error {
 	for _, envVar := range RequiredEnvVars {
 		if os.Getenv(envVar) == "" {
-			return fmt.Errorf("%s is not set in the .env file", envVar)
+			Logger.Error("ERROR: Environment variable %s is not set\n", zap.String("envVar", envVar))
 		}
 	}
 	return nil
@@ -53,6 +52,14 @@ func GetEnv(key, defaultValue string) string {
 
 func GetEnvFloat(key string, defaultValue float64) float64 {
 	value, err := strconv.ParseFloat(os.Getenv(key), 64)
+	if err != nil {
+		return defaultValue
+	}
+	return value
+}
+
+func GetEnvBool(key string, defaultValue bool) bool {
+	value, err := strconv.ParseBool(os.Getenv(key))
 	if err != nil {
 		return defaultValue
 	}

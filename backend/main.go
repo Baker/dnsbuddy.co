@@ -26,7 +26,7 @@ func main() {
 	router.GET("/", func(c *gin.Context) {
 		c.Status(http.StatusOK)
 	})
-	router.GET("/ping", func(c *gin.Context) {
+	router.GET("/ping/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})

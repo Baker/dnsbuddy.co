@@ -1,6 +1,8 @@
 package utils
 
-import "go.uber.org/zap"
+import (
+	"go.uber.org/zap"
+)
 
 var Logger *zap.Logger
 
