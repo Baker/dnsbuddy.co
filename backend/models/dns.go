@@ -36,8 +36,11 @@ const (
 
 var (
 	AllDNSProviders = []DNSProvider{
-		Cloudflare, Google, Alibaba, Quad9, DNSFilter,
-		OpenDNS, DynDNS, CenturyLink, Yandex,
+		Cloudflare, Google, Quad9, DNSFilter,
+		OpenDNS, DynDNS, CenturyLink,
+	}
+	SlowerDNSProviders = []DNSProvider{
+		Alibaba, Yandex,
 	}
 
 	AllRecordTypes = []RecordType{

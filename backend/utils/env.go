@@ -11,7 +11,7 @@ import (
 func LoadEnv() {
 	err := godotenv.Load()
 	if err != nil {
-		Logger.Error("Error loading .env file", zap.Error(err))
+		Logger.Warn("Error loading .env file", zap.Error(err))
 	}
 	err = ValidateEnv()
 	if err != nil {
@@ -28,7 +28,12 @@ var RequiredEnvVars = []string{
 
 // OptionalEnvVars defines the list of optional environment variables
 var OptionalEnvVars = []string{
-	// TODO: Add optional environment variables here
+	"ENVIRONMENT",
+	"SENTRY_DEBUG",
+	"SENTRY_SAMPLE_RATE",
+	"SENTRY_TRACING_SAMPLE_RATE",
+	"SENTRY_PROFILE_RATE",
+	"SENTRY_RELEASE",
 }
 
 // ValidateEnv checks if all required environment variables are set
@@ -36,6 +41,11 @@ func ValidateEnv() error {
 	for _, envVar := range RequiredEnvVars {
 		if os.Getenv(envVar) == "" {
 			Logger.Error("ERROR: Environment variable %s is not set\n", zap.String("envVar", envVar))
+		}
+	}
+	for _, envVar := range OptionalEnvVars {
+		if os.Getenv(envVar) == "" {
+			Logger.Info("INFO: Environment variable %s is not set\n", zap.String("envVar", envVar))
 		}
 	}
 	return nil

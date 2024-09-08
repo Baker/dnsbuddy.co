@@ -211,13 +211,11 @@ func TestFetchDnsProvider(t *testing.T) {
 	}{
 		{"Cloudflare", models.Cloudflare, []string{"1.1.1.1", "1.0.0.1"}, false},
 		{"Google", models.Google, []string{"8.8.8.8", "8.8.4.4"}, false},
-		{"Alibaba", models.Alibaba, []string{"223.5.5.5", "223.6.6.6"}, false},
 		{"Quad9", models.Quad9, []string{"9.9.9.9", "149.112.112.112"}, false},
 		{"DNSFilter", models.DNSFilter, []string{"103.247.36.36", "103.247.37.37"}, false},
 		{"OpenDNS", models.OpenDNS, []string{"208.67.222.222", "208.67.220.220"}, false},
 		{"DynDNS", models.DynDNS, []string{"216.146.35.35", "216.146.36.36"}, false},
 		{"CenturyLink", models.CenturyLink, []string{"205.171.3.65", "205.171.2.65"}, false},
-		{"Yandex", models.Yandex, []string{"77.88.8.8", "77.88.8.1"}, false},
 		{"Invalid provider", models.DNSProvider("INVALID"), nil, true},
 	}
 

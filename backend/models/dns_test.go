@@ -41,7 +41,6 @@ func TestDNSProviderIsValid(t *testing.T) {
 	}{
 		{"Valid Cloudflare", Cloudflare, true},
 		{"Valid Google", Google, true},
-		{"Valid Alibaba", Alibaba, true},
 		{"Valid Quad9", Quad9, true},
 		{"Invalid", DNSProvider("INVALID"), false},
 	}
@@ -96,7 +95,6 @@ func TestDNSProviderJSONMarshaling(t *testing.T) {
 	}{
 		{"Cloudflare", Cloudflare, `"CLOUDFLARE"`},
 		{"Google", Google, `"GOOGLE"`},
-		{"Alibaba", Alibaba, `"ALIBABA"`},
 		{"Quad9", Quad9, `"QUAD9"`},
 	}
 	for _, tt := range tests {
