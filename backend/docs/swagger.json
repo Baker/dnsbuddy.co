@@ -1,0 +1,860 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/dns": {
+            "post": {
+                "description": "Perform a DNS lookup for a specific query and record type",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dns"
+                ],
+                "summary": "Perform a DNS lookup",
+                "parameters": [
+                    {
+                        "description": "DNS lookup request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.DNSRecordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.DNSRecordResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/dns/all": {
+            "post": {
+                "description": "Perform a DNS lookup for a specific query and record type across all DNS providers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dns"
+                ],
+                "summary": "Perform a DNS lookup across all providers",
+                "parameters": [
+                    {
+                        "description": "DNS lookup request for all providers",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.DNSRecordRequestAllProviders"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.DNSRecordProviderPairing"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/dns/overview": {
+            "post": {
+                "description": "Perform a DNS lookup overview for a specific query",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dns"
+                ],
+                "summary": "Perform a DNS lookup overview",
+                "parameters": [
+                    {
+                        "description": "DNS lookup overview request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.DNSRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.DNSRecordResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/email/dmarc": {
+            "post": {
+                "description": "Validate and parse DMARC record for a given domain",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "email"
+                ],
+                "summary": "Validate DMARC record",
+                "parameters": [
+                    {
+                        "description": "DNS lookup request for DMARC record",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.DNSRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.DmarcRecordResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/email/spf": {
+            "post": {
+                "description": "Break down an SPF record for a given domain, including extended information for includes and redirects",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "email"
+                ],
+                "summary": "Break down SPF record",
+                "parameters": [
+                    {
+                        "description": "DNS lookup request for SPF record",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.DNSRecordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ExtendedSpfRecordResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/whois": {
+            "post": {
+                "description": "Perform a WHOIS lookup for a domain, IP address, or ASN",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "whois"
+                ],
+                "summary": "Perform a WHOIS lookup",
+                "parameters": [
+                    {
+                        "description": "WHOIS lookup request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.WhoisLookup"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.DNSProvider": {
+            "type": "string",
+            "enum": [
+                "CLOUDFLARE",
+                "GOOGLE",
+                "ALIBABA",
+                "QUAD9",
+                "DNSFILTER",
+                "OPENDNS",
+                "DYNDNS",
+                "CENTURYLINK",
+                "YANDEX"
+            ],
+            "x-enum-varnames": [
+                "Cloudflare",
+                "Google",
+                "Alibaba",
+                "Quad9",
+                "DNSFilter",
+                "OpenDNS",
+                "DynDNS",
+                "CenturyLink",
+                "Yandex"
+            ]
+        },
+        "models.DNSRecordProviderPairing": {
+            "type": "object",
+            "properties": {
+                "provider": {
+                    "$ref": "#/definitions/models.DNSProvider"
+                },
+                "record": {
+                    "$ref": "#/definitions/models.DNSRecords"
+                },
+                "status_code": {
+                    "type": "string"
+                },
+                "total_time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.DNSRecordRequest": {
+            "type": "object",
+            "properties": {
+                "provider": {
+                    "$ref": "#/definitions/models.DNSProvider"
+                },
+                "query": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/models.RecordType"
+                }
+            }
+        },
+        "models.DNSRecordRequestAllProviders": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/models.RecordType"
+                }
+            }
+        },
+        "models.DNSRecordResponse": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "records": {
+                    "$ref": "#/definitions/models.DNSRecords"
+                },
+                "resolver": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "status_code": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "total_time": {
+                    "type": "integer"
+                },
+                "ttl": {
+                    "type": "integer"
+                },
+                "type": {
+                    "$ref": "#/definitions/models.RecordType"
+                }
+            }
+        },
+        "models.DNSRecords": {
+            "type": "object",
+            "properties": {
+                "a": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "aaaa": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "cname": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "mx": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.MXRecord"
+                    }
+                },
+                "ns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "ptr": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "soa": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SOARecord"
+                    }
+                },
+                "srv": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "txt": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "models.DNSRequest": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.DmarcExternalReporting": {
+            "type": "object",
+            "properties": {
+                "domain": {
+                    "type": "string"
+                },
+                "record": {
+                    "type": "string"
+                },
+                "valid": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.DmarcRecord": {
+            "type": "object",
+            "properties": {
+                "adkim": {
+                    "$ref": "#/definitions/models.Mode"
+                },
+                "aspf": {
+                    "$ref": "#/definitions/models.Mode"
+                },
+                "fo": {
+                    "$ref": "#/definitions/models.FailureReporting"
+                },
+                "percentage": {
+                    "type": "integer"
+                },
+                "policy": {
+                    "$ref": "#/definitions/models.Policy"
+                },
+                "rf": {
+                    "type": "string"
+                },
+                "ri": {
+                    "type": "integer"
+                },
+                "rua": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "ruf": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "subdomain_policy": {
+                    "$ref": "#/definitions/models.Policy"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.DmarcRecordResponse": {
+            "type": "object",
+            "properties": {
+                "external": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.DmarcExternalReporting"
+                    }
+                },
+                "query": {
+                    "type": "string"
+                },
+                "raw": {
+                    "type": "string"
+                },
+                "record": {
+                    "$ref": "#/definitions/models.DmarcRecord"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "total_time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.ExtendedSpf": {
+            "type": "object",
+            "properties": {
+                "a": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "exists": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "explanation": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "include": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/models.ExtendedSpf"
+                    }
+                },
+                "ipv4": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "ipv6": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "mx": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "ptr": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "qualifier": {
+                    "type": "string"
+                },
+                "redirect": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/models.ExtendedSpf"
+                    }
+                }
+            }
+        },
+        "models.ExtendedSpfRecord": {
+            "type": "object",
+            "properties": {
+                "a": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "exists": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "explanation": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "include": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/models.ExtendedSpf"
+                    }
+                },
+                "ipv4": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "ipv6": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "mx": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "ptr": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "qualifier": {
+                    "type": "string"
+                },
+                "redirect": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/models.ExtendedSpf"
+                    }
+                }
+            }
+        },
+        "models.ExtendedSpfRecordResponse": {
+            "type": "object",
+            "properties": {
+                "breakdown": {
+                    "$ref": "#/definitions/models.ExtendedSpfRecord"
+                },
+                "lookups": {
+                    "type": "integer"
+                },
+                "spf": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "total_time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.FailureReporting": {
+            "type": "string",
+            "enum": [
+                "0",
+                "1",
+                "d",
+                "s"
+            ],
+            "x-enum-varnames": [
+                "All",
+                "Any",
+                "SPF",
+                "DomainFailure"
+            ]
+        },
+        "models.MXRecord": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "pref": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Mode": {
+            "type": "string",
+            "enum": [
+                "r",
+                "s"
+            ],
+            "x-enum-varnames": [
+                "Relaxed",
+                "Strict"
+            ]
+        },
+        "models.Policy": {
+            "type": "string",
+            "enum": [
+                "none",
+                "quarantine",
+                "reject"
+            ],
+            "x-enum-varnames": [
+                "None",
+                "Quarantine",
+                "Reject"
+            ]
+        },
+        "models.RecordType": {
+            "type": "string",
+            "enum": [
+                "A",
+                "AAAA",
+                "NS",
+                "MX",
+                "SOA",
+                "SRV",
+                "PTR",
+                "TXT",
+                "CNAME"
+            ],
+            "x-enum-varnames": [
+                "A",
+                "AAAA",
+                "NS",
+                "MX",
+                "SOA",
+                "SRV",
+                "PTR",
+                "TXT",
+                "CNAME"
+            ]
+        },
+        "models.SOARecord": {
+            "type": "object",
+            "properties": {
+                "expire": {
+                    "type": "integer"
+                },
+                "mailbox": {
+                    "type": "string"
+                },
+                "minttl": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "ns": {
+                    "type": "string"
+                },
+                "refresh": {
+                    "type": "integer"
+                },
+                "retry": {
+                    "type": "integer"
+                },
+                "serial": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.WhoisLookup": {
+            "type": "object",
+            "required": [
+                "query",
+                "type"
+            ],
+            "properties": {
+                "query": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/models.WhoisLookupType"
+                }
+            }
+        },
+        "models.WhoisLookupType": {
+            "type": "string",
+            "enum": [
+                "DOMAIN",
+                "IP",
+                "ASN"
+            ],
+            "x-enum-varnames": [
+                "Domain",
+                "IP",
+                "ASN"
+            ]
+        }
+    }
+}
